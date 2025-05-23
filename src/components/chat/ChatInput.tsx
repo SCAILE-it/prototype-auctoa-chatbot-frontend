@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send } from 'lucide-react';
+import { Send, Paperclip } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 type ChatInputProps = {
@@ -9,6 +9,7 @@ type ChatInputProps = {
   placeholder?: string;
   value?: string;
   onChange?: (value: string) => void;
+  onFileButtonClick?: () => void;
 };
 
 const ChatInput = ({ 
@@ -16,7 +17,8 @@ const ChatInput = ({
   disabled = false, 
   placeholder = "Tippen Sie hier...", 
   value = "",
-  onChange
+  onChange,
+  onFileButtonClick
 }: ChatInputProps) => {
   const [message, setMessage] = useState(value);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -59,6 +61,17 @@ const ChatInput = ({
 
   return (
     <div className="relative flex items-end border rounded-lg bg-background overflow-hidden">
+      <Button 
+        onClick={onFileButtonClick}
+        size="icon"
+        variant="ghost"
+        className="absolute left-1 bottom-1 rounded-full"
+        type="button"
+      >
+        <Paperclip size={18} />
+        <span className="sr-only">Upload documents</span>
+      </Button>
+      
       <textarea
         ref={textareaRef}
         value={message}
@@ -66,9 +79,10 @@ const ChatInput = ({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={disabled}
-        className="min-h-[44px] max-h-[150px] w-full resize-none px-3 py-2 focus:outline-none bg-transparent"
+        className="min-h-[44px] max-h-[150px] w-full resize-none px-10 py-2 focus:outline-none bg-transparent"
         rows={1}
       />
+      
       <Button 
         onClick={handleSend} 
         disabled={!message.trim() || disabled}
