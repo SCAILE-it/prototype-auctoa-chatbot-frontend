@@ -52,7 +52,7 @@ const Index = () => {
           <div className="bg-white rounded-lg shadow-md flex-1 overflow-hidden flex flex-col">
             <ChatContainer 
               variant={getVariant()}
-              apiUrl={process.env.REACT_APP_API_URL || 'https://webhook.site/your-id-here'} 
+              apiUrl={'https://webhook.site/your-id-here'} 
             />
           </div>
         </div>
