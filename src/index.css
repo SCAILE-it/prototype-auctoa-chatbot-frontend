@@ -17,7 +17,7 @@
     --primary: 24 89% 58%; /* auctoa orange */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 30 20% 96%;
+    --secondary: 42 100% 76%; /* #FFDB84 */
     --secondary-foreground: 24 89% 58%;
 
     --muted: 210 40% 96.1%;
@@ -58,7 +58,7 @@
     --primary: 24 89% 58%; /* auctoa orange */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 42 100% 76%; /* #FFDB84 */
     --secondary-foreground: 210 40% 98%;
 
     --muted: 217.2 32.6% 17.5%;

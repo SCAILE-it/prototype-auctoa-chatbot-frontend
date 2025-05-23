@@ -8,11 +8,6 @@ import PillBar from './PillBar';
 import FileUploadBar from './FileUploadBar';
 import ChatActionBar from './ChatActionBar';
 
-type CTAButton = {
-  text: string;
-  action: string;
-};
-
 type ChatContainerProps = {
   variant?: string;
   initialMessages?: Message[];
@@ -69,21 +64,25 @@ const ChatContainer = ({
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-transparent">
       <div className="flex-1 overflow-hidden flex flex-col">
-        <PillBar pills={pills} onPillClick={handlePillClick} />
         <div className="flex-1 overflow-y-auto">
           <MessageList messages={messages} isTyping={isTyping} />
         </div>
       </div>
 
-      <div className="p-4 border-t bg-background sticky bottom-0">
+      <div className="p-4 sticky bottom-0 bg-transparent">
         <ChatActionBar cta={cta} onCtaClick={handleCtaClick} />
         <FileUploadBar 
           files={files}
           onFilesAdded={handleFilesAdded}
           onFileRemove={handleFileRemove}
         />
+        {pills.length > 0 && (
+          <div className="mb-4">
+            <PillBar pills={pills} onPillClick={handlePillClick} />
+          </div>
+        )}
         <ChatInput 
           onSendMessage={handleSendMessage}
           disabled={isTyping}

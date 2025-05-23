@@ -18,7 +18,7 @@ const ChatActionBar = ({ cta, onCtaClick }: ChatActionBarProps) => {
       <Button 
         onClick={() => onCtaClick(cta.action)}
         variant="default"
-        className="w-full"
+        className="w-full bg-[#FFDB84] hover:bg-[#FFDB84]/80 text-black"
       >
         {cta.text}
       </Button>

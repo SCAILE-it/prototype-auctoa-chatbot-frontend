@@ -11,12 +11,12 @@ const PillBar = ({ pills, onPillClick }: PillBarProps) => {
   if (pills.length === 0) return null;
   
   return (
-    <div className="flex flex-wrap gap-2 mb-4">
+    <div className="flex flex-wrap gap-2">
       {pills.map((pill, index) => (
         <Button
           key={index}
           variant="outline"
-          className="rounded-full text-sm bg-white hover:bg-secondary"
+          className="rounded-full text-sm bg-[#FCECC9] border-[#FCECC9] hover:bg-[#FCECC9]/80 text-black"
           onClick={() => onPillClick(pill)}
         >
           {pill}
