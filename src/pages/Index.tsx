@@ -2,7 +2,6 @@
 import React from 'react';
 import ChatContainer from '@/components/chat/ChatContainer';
 import { Button } from '@/components/ui/button';
-import { Home } from 'lucide-react';
 
 const Index = () => {
   const getSessionId = () => {
@@ -19,8 +18,8 @@ const Index = () => {
     <div className="min-h-screen flex flex-col relative">
       {/* Full viewport background image */}
       <div 
-        className="fixed inset-0 z-0 bg-cover bg-center" 
-        style={{ backgroundImage: "url('/lovable-uploads/29679e81-d20a-4793-949b-17b9a85706e3.png')" }}
+        className="fixed inset-0 z-0 bg-cover bg-center w-screen h-screen" 
+        style={{ backgroundImage: "url('/lovable-uploads/9fb56aab-0c40-494d-8fc7-f34f494795c2.png')" }}
       />
       
       {/* Content overlay */}
@@ -28,8 +27,8 @@ const Index = () => {
         {/* Header */}
         <header className="p-4 flex justify-between items-center bg-transparent border-b">
           <div className="flex items-center">
-            <Home className="h-6 w-6 text-primary mr-2" />
-            <span className="text-xl font-medium text-white">auctoa</span>
+            <img src="/lovable-uploads/logo-creme.png" alt="Auctoa Logo" className="h-8 mr-2" />
+            <span className="text-xl font-medium text-black">auctoa</span>
           </div>
           <Button variant="secondary">Beratungsgespräch anfragen</Button>
         </header>
@@ -67,7 +66,7 @@ const Index = () => {
         </main>
         
         {/* Footer */}
-        <footer className="p-4 bg-transparent border-t text-center text-sm text-white">
+        <footer className="p-4 bg-transparent border-t text-center text-sm text-black">
           <div className="flex justify-center space-x-4">
             <a href="#" className="hover:underline">Datenschutz</a>
             <a href="#" className="hover:underline">Impressum</a>
