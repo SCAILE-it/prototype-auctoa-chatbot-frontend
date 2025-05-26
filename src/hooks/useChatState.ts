@@ -69,6 +69,7 @@ export function useChatState({
       };
 
       setMessages((prev) => [...prev, userMessage]);
+      setInputValue(""); // ← add this to clear the input
       setPills([]);
       setIsTyping(true);
 
