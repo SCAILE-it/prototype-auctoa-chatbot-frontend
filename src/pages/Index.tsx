@@ -48,11 +48,11 @@ const Index = () => {
           </div>
         </main>
         
-        {/* Footer */}
-        <footer className="p-2 md:p-2 px-2 md:px-4 bg-transparent text-center text-sm text-black">
-          <div className="flex justify-center space-x-4">
-            <a href="#" className="hover:underline">Datenschutz</a>
-            <a href="#" className="hover:underline">Impressum</a>
+        {/* Footer - much smaller and less prominent */}
+        <footer className="py-1 px-2 md:px-4 bg-transparent text-center">
+          <div className="flex justify-center space-x-3">
+            <a href="#" className="text-xs text-gray-500 hover:text-gray-700 hover:underline">Datenschutz</a>
+            <a href="#" className="text-xs text-gray-500 hover:text-gray-700 hover:underline">Impressum</a>
           </div>
         </footer>
       </div>

@@ -16,10 +16,15 @@ const PillBar = ({ pills, onPillClick }: PillBarProps) => {
         <Button
           key={index}
           variant="outline"
-          className="rounded-full text-sm bg-[#FCECC9] border-[#FCECC9] hover:bg-[#FCECC9]/80 text-black"
+          className="rounded-full text-sm bg-[#FCECC9] border-[#FCECC9] hover:bg-[#FCECC9]/80 text-black max-w-full"
           onClick={() => onPillClick(pill)}
         >
-          {pill}
+          <span className="block md:hidden truncate max-w-[200px]" title={pill}>
+            {pill}
+          </span>
+          <span className="hidden md:block">
+            {pill}
+          </span>
         </Button>
       ))}
     </div>
