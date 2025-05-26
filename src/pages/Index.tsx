@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
 import ChatContainer from "@/components/chat/ChatContainer";
+import ChatInput from "@/components/chat/ChatInput";
+import PillBar from "@/components/chat/PillBar";
 import { Button } from "@/components/ui/button";
+import { useChatState } from "@/hooks/useChatState";
 
 const Index = () => {
   const getSessionId = () => {
@@ -13,14 +16,29 @@ const Index = () => {
     return urlParams.get("variant") || "valuation";
   };
 
+  const {
+    messages,
+    isTyping,
+    files,
+    pills,
+    inputValue,
+    setInputValue,
+    sendMessage,
+    handleFilesAdded,
+  } = useChatState({
+    variant: getVariant(),
+    apiUrl: "https://webhook.site/your-id-here",
+  });
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   return (
     <div className="min-h-screen flex flex-col relative">
       {/* Full viewport background image */}
       <div
         className="fixed inset-0 z-0 bg-cover bg-center w-screen h-screen"
         style={{
-          backgroundImage:
-            "url('/uploads/background.png')",
+          backgroundImage: "url('/uploads/background.png')",
         }}
       />
 
@@ -38,18 +56,48 @@ const Index = () => {
           <Button variant="default">Beratungsgespräch anfragen</Button>
         </header>
 
-        {/* Main content with proper spacing for fixed header and footer */}
-        <main className="flex-1 flex flex-col overflow-hidden pt-16 pb-12">
+        {/* Main chat area */}
+        <main className="flex-1 flex flex-col overflow-hidden pt-16 pb-36">
           <div className="flex-1 overflow-hidden px-2 md:px-4">
-            <ChatContainer
-              variant={getVariant()}
-              apiUrl={"https://webhook.site/your-id-here"}
-            />
+            <ChatContainer messages={messages} isTyping={isTyping} files={files} />
           </div>
         </main>
 
+        {/* Chat input + pills (fixed) */}
+        <div className="fixed bottom-8 left-0 right-0 z-20 px-4">
+          <div className="max-w-4xl mx-auto">
+            {pills.length > 0 && (
+              <div className="mb-4">
+                <PillBar pills={pills} onPillClick={setInputValue} />
+              </div>
+            )}
+            <ChatInput
+              value={inputValue}
+              onChange={setInputValue}
+              onSendMessage={(message) => sendMessage(message, files)}
+              onFileButtonClick={() => fileInputRef.current?.click()}
+              hasFiles={files.length > 0}
+              disabled={isTyping}
+            />
+            {/* Hidden file input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              multiple
+              accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+              onChange={(e) => {
+                if (e.target.files?.length) {
+                  handleFilesAdded(Array.from(e.target.files));
+                  e.target.value = "";
+                }
+              }}
+            />
+          </div>
+        </div>
+
         {/* Fixed Footer */}
-        <footer className="fixed bottom-0 left-0 right-0 z-20 py-1 px-2 md:px-4 bg-transparent text-center">
+        <footer className="fixed bottom-0 left-0 right-0 z-10 py-1 px-2 md:px-4 bg-transparent text-center">
           <div className="flex justify-center space-x-3">
             <a
               href="#"
