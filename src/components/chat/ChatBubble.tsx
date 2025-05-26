@@ -10,10 +10,12 @@ type ChatBubbleProps = {
 const ChatBubble = ({ isUser, children }: ChatBubbleProps) => {
   return (
     <div className={cn(
-      'max-w-[85%] rounded-2xl p-4 mb-4',
+      'max-w-[90%] rounded-2xl p-4 mb-4',
       isUser ? 'ml-auto bg-[#B3B0A6] text-white' : 'mr-auto bg-[#FAF4E6] text-foreground'
     )}>
-      {children}
+      <div className="chat-content">
+        {children}
+      </div>
     </div>
   );
 };
