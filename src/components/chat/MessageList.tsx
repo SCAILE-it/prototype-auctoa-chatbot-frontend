@@ -14,6 +14,7 @@ export type Message = {
   isUser: boolean;
   files?: MessageFile[];
   html?: string;
+  sources?: { title: string; url: string }[];
 };
 
 type MessageListProps = {
@@ -41,12 +42,12 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
     <div className={containerClasses}>
       <div className="text-sm md:text-base w-full">
         {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`${
-              message.isUser ? "items-end" : "items-start"
-            } flex flex-col w-full`}
-          >
+<div
+  key={message.id}
+  className={`${
+    message.isUser ? "items-end" : "items-start"
+  } flex flex-col w-full mb-6`}
+>
             {/* Show files ABOVE the message bubble */}
             {message.files?.length > 0 && (
               <div
@@ -69,6 +70,26 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
               <ChatBubble isUser={message.isUser}>
                 {message.html ? renderHTML(message.html) : message.content}
               </ChatBubble>
+            )}
+
+            {message.sources && message.sources.length > 0 && (
+              <div className="mt-1 text-xs text-[color:var(--neutral-grey)]">
+                <p className="mb-1 font-medium">Quellen:</p>
+                <ul className="list-disc pl-4">
+                  {message.sources.map((src, i) => (
+                    <li key={i}>
+                      <a
+                        href={src.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[color:var(--neutral-grey)] hover:text-[color:var(--primary-creme)]"
+                      >
+                        {src.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
           </div>
         ))}

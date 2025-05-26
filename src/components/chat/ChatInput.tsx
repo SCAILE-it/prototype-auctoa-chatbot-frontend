@@ -66,7 +66,7 @@ const ChatInput = ({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={disabled}
-        className="w-full resize-none bg-transparent focus:outline-none text-md placeholder-[color:var(--transparent-50)] text-[color:var(--neutral-light)] min-h-[48px] max-h-[150px]"
+        className="w-full resize-none bg-transparent focus:outline-none text-md placeholder-[color:var(--transparent-50)] text-[color:var(--primary-creme)] min-h-[48px] max-h-[150px]"
         rows={1}
       />
 

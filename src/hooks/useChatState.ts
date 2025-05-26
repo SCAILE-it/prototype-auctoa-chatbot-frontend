@@ -6,10 +6,7 @@ import { Message } from "@/components/chat/MessageList";
 type ApiResponse = {
   chatResponse: string;
   pills?: string[];
-  cta?: {
-    text: string;
-    action: string;
-  };
+  sources?: { url: string; title: string }[];
 };
 
 type UseChatStateProps = {
@@ -30,7 +27,6 @@ export function useChatState({
   const [files, setFiles] = useState<File[]>([]);
   const [pills, setPills] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
-  const [cta, setCta] = useState<{ text: string; action: string } | null>(null);
 
   // Load chat history from localStorage
   useEffect(() => {
@@ -103,10 +99,9 @@ export function useChatState({
             "Kriege ich das Objekt gut vermietet?",
             "Wie kann ich den Preis nach unten verhandeln?",
           ],
-          cta: {
-            text: "Show strategy",
-            action: "showStrategy",
-          },
+          sources: [
+            { url: "https://example.com/source1", title: "Source 1" },
+            { url: "https://example.com/source2", title: "Source 2" },]
         };
 
         const botMessage: Message = {
@@ -114,11 +109,11 @@ export function useChatState({
           content: "",
           html: simulatedResponse.chatResponse,
           isUser: false,
+          sources: simulatedResponse.sources || [],
         };
 
         setMessages((prev) => [...prev, botMessage]);
         setPills(simulatedResponse.pills || []);
-        setCta(simulatedResponse.cta || null);
         setFiles([]);
       } catch (error) {
         console.error("Error sending message:", error);
@@ -152,7 +147,6 @@ export function useChatState({
     pills,
     inputValue,
     setInputValue,
-    cta,
     sendMessage,
     handleFilesAdded,
     handleFileRemove,
