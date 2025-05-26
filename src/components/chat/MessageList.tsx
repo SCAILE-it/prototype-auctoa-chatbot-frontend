@@ -35,10 +35,15 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
     return <div dangerouslySetInnerHTML={{ __html: html }} />;
   };
 
+  // ChatGPT-style layout: center content when no messages, normal flow when messages exist
+  const containerClasses = messages.length === 0 && !isTyping 
+    ? "flex flex-col justify-center items-center min-h-full p-4"
+    : "flex flex-col p-4 max-w-4xl mx-auto";
+
   return (
-    <div className="flex flex-col overflow-y-auto p-4">
+    <div className={containerClasses}>
       {messages.map((message) => (
-        <div key={message.id} className={`${message.isUser ? 'items-end' : 'items-start'} flex flex-col`}>
+        <div key={message.id} className={`${message.isUser ? 'items-end' : 'items-start'} flex flex-col w-full`}>
           {message.files && message.files.length > 0 && (
             <div className={`flex flex-col ${message.isUser ? 'items-end' : 'items-start'} mb-1`}>
               {message.files.map((file, index) => (

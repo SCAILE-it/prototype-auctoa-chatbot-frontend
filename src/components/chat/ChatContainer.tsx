@@ -54,34 +54,38 @@ const ChatContainer = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-transparent">
+    <div className="h-full flex flex-col bg-transparent relative">
+      {/* Messages area - ChatGPT style: centered when empty, scrollable when full */}
       <div className="flex-1 overflow-hidden flex flex-col">
         <div className="flex-1 overflow-y-auto">
           <MessageList messages={messages} isTyping={isTyping} />
         </div>
       </div>
 
-      <div className="p-4 sticky bottom-0 bg-transparent">
-        <FileUploadBar 
-          files={files}
-          onFilesAdded={handleFilesAdded}
-          onFileRemove={handleFileRemove}
-          uploadInputRef={fileInputRef}
-        />
-        
-        {pills.length > 0 && (
-          <div className="mb-4">
-            <PillBar pills={pills} onPillClick={handlePillClick} />
-          </div>
-        )}
-        
-        <ChatInput 
-          onSendMessage={handleSendMessage}
-          disabled={isTyping}
-          value={inputValue}
-          onChange={setInputValue}
-          onFileButtonClick={handleFileButtonClick}
-        />
+      {/* Sticky bottom input area */}
+      <div className="sticky bottom-0 bg-transparent pb-4">
+        <div className="max-w-4xl mx-auto px-4">
+          <FileUploadBar 
+            files={files}
+            onFilesAdded={handleFilesAdded}
+            onFileRemove={handleFileRemove}
+            uploadInputRef={fileInputRef}
+          />
+          
+          {pills.length > 0 && (
+            <div className="mb-4">
+              <PillBar pills={pills} onPillClick={handlePillClick} />
+            </div>
+          )}
+          
+          <ChatInput 
+            onSendMessage={handleSendMessage}
+            disabled={isTyping}
+            value={inputValue}
+            onChange={setInputValue}
+            onFileButtonClick={handleFileButtonClick}
+          />
+        </div>
       </div>
     </div>
   );

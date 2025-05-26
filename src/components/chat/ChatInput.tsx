@@ -88,7 +88,7 @@ const ChatInput = ({
         disabled={!message.trim() || disabled}
         size="icon"
         variant="ghost"
-        className="absolute right-1 bottom-1 rounded-full"
+        className="absolute right-1 bottom-1 rounded-full bg-[#FFDB84] hover:bg-[#FFDB84]/80 text-black"
       >
         <Send size={18} />
         <span className="sr-only">Send message</span>
