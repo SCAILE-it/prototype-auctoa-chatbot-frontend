@@ -10,6 +10,7 @@ type ChatInputProps = {
   value?: string;
   onChange?: (value: string) => void;
   onFileButtonClick?: () => void;
+  hasFiles?: boolean;
 };
 
 const ChatInput = ({ 
@@ -18,7 +19,8 @@ const ChatInput = ({
   placeholder = "Tippen Sie hier...", 
   value = "",
   onChange,
-  onFileButtonClick
+  onFileButtonClick,
+  hasFiles = false
 }: ChatInputProps) => {
   const [message, setMessage] = useState(value);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -45,7 +47,7 @@ const ChatInput = ({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      if (message.trim() && !disabled) {
+      if ((message.trim() || hasFiles) && !disabled) {
         onSendMessage(message);
         setMessage('');
       }
@@ -53,11 +55,13 @@ const ChatInput = ({
   };
 
   const handleSend = () => {
-    if (message.trim() && !disabled) {
+    if ((message.trim() || hasFiles) && !disabled) {
       onSendMessage(message);
       setMessage('');
     }
   };
+
+  const canSend = (message.trim() || hasFiles) && !disabled;
 
   return (
     <div className="relative flex items-end border rounded-lg bg-background overflow-hidden">
@@ -86,10 +90,10 @@ const ChatInput = ({
       
       <Button 
         onClick={handleSend} 
-        disabled={!message.trim() || disabled}
+        disabled={!canSend}
         size="icon"
         variant="ghost"
-        className="absolute right-1 bottom-1 rounded-full bg-[#FFDB84] hover:bg-[#FFDB84]/80 text-black"
+        className="absolute right-1 bottom-1 rounded-full bg-[#FFDB84] hover:bg-[#FFDB84]/80 text-black disabled:opacity-50"
       >
         <Send size={18} />
         <span className="sr-only">Send message</span>

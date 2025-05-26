@@ -24,11 +24,10 @@ const Index = () => {
       
       {/* Content overlay */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Header */}
-        <header className="p-4 md:p-4 px-2 md:px-4 flex justify-between items-center bg-transparent">
+        {/* Fixed Header */}
+        <header className="fixed top-0 left-0 right-0 z-20 p-4 md:p-4 px-2 md:px-4 flex justify-between items-center bg-transparent">
           <div className="flex items-center">
-            <img src="/lovable-uploads/29679e81-d20a-4793-949b-17b9a85706e3.png" alt="Auctoa Logo" className="h-8 mr-2" />
-            <span className="text-xl font-medium text-black">auctoa</span>
+            <img src="/lovable-uploads/29679e81-d20a-4793-949b-17b9a85706e3.png" alt="Auctoa Logo" className="h-6" />
           </div>
           <Button 
             variant="secondary" 
@@ -38,8 +37,8 @@ const Index = () => {
           </Button>
         </header>
         
-        {/* Main content - ChatGPT style layout */}
-        <main className="flex-1 flex flex-col overflow-hidden">
+        {/* Main content with proper spacing for fixed header and footer */}
+        <main className="flex-1 flex flex-col overflow-hidden pt-16 pb-12">
           <div className="flex-1 overflow-hidden px-2 md:px-4">
             <ChatContainer 
               variant={getVariant()}
@@ -48,8 +47,8 @@ const Index = () => {
           </div>
         </main>
         
-        {/* Footer - much smaller and less prominent */}
-        <footer className="py-1 px-2 md:px-4 bg-transparent text-center">
+        {/* Fixed Footer */}
+        <footer className="fixed bottom-0 left-0 right-0 z-20 py-1 px-2 md:px-4 bg-transparent text-center">
           <div className="flex justify-center space-x-3">
             <a href="#" className="text-xs text-gray-500 hover:text-gray-700 hover:underline">Datenschutz</a>
             <a href="#" className="text-xs text-gray-500 hover:text-gray-700 hover:underline">Impressum</a>

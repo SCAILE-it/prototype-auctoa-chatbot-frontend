@@ -55,15 +55,13 @@ const ChatContainer = ({
 
   return (
     <div className="h-full flex flex-col bg-transparent relative">
-      {/* Messages area - fills available space and expands upward */}
-      <div className="flex-1 overflow-hidden flex flex-col justify-end">
-        <div className="overflow-y-auto flex-shrink-0">
-          <MessageList messages={messages} isTyping={isTyping} />
-        </div>
+      {/* Messages area - fills available space and is scrollable */}
+      <div className="flex-1 overflow-y-auto">
+        <MessageList messages={messages} isTyping={isTyping} files={files} />
       </div>
 
-      {/* Sticky bottom input area */}
-      <div className="sticky bottom-0 bg-transparent pb-4">
+      {/* Fixed bottom input area */}
+      <div className="fixed bottom-8 left-0 right-0 z-10 bg-transparent">
         <div className="max-w-4xl mx-auto px-2 md:px-4">
           {pills.length > 0 && (
             <div className="mb-4">
@@ -77,17 +75,24 @@ const ChatContainer = ({
             value={inputValue}
             onChange={setInputValue}
             onFileButtonClick={handleFileButtonClick}
+            hasFiles={files.length > 0}
           />
           
-          {/* File upload section below the input */}
-          <div className="mt-2">
-            <FileUploadBar 
-              files={files}
-              onFilesAdded={handleFilesAdded}
-              onFileRemove={handleFileRemove}
-              uploadInputRef={fileInputRef}
-            />
-          </div>
+          {/* Hidden file input */}
+          <input
+            type="file"
+            className="hidden"
+            ref={fileInputRef}
+            onChange={(e) => {
+              if (e.target.files?.length) {
+                const filesArray = Array.from(e.target.files);
+                handleFilesAdded(filesArray);
+                e.target.value = '';
+              }
+            }}
+            multiple
+            accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+          />
         </div>
       </div>
     </div>
