@@ -10,8 +10,8 @@ type ChatBubbleProps = {
 const ChatBubble = ({ isUser, children }: ChatBubbleProps) => {
   return (
     <div className={cn(
-      'max-w-[85%] rounded-2xl p-4 mb-4',
-      isUser ? 'ml-auto bg-[#B3B0A6] text-white' : 'mr-auto bg-[#FAF4E6] text-foreground'
+      'max-w-[85%] rounded-xl p-3 mb-3',
+      isUser ? 'ml-auto bg-[color:var(--neutral-grey)] text-[color:var(--neutral-dark)]' : 'mr-auto bg-[color:var(--primary-creme)] text-[color:var(--neutral-dark)]'
     )}>
       {children}
     </div>
