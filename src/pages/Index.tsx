@@ -4,6 +4,7 @@ import ChatInput from "@/components/chat/ChatInput";
 import PillBar from "@/components/chat/PillBar";
 import { Button } from "@/components/ui/button";
 import { useChatState } from "@/hooks/useChatState";
+import FileUploadBar from "@/components/chat/FileUploadBar";
 
 const Index = () => {
   const getSessionId = () => {
@@ -25,6 +26,8 @@ const Index = () => {
     setInputValue,
     sendMessage,
     handleFilesAdded,
+    handleFileRemove,
+    clearFiles,
   } = useChatState({
     variant: getVariant(),
     apiUrl: "https://webhook.site/your-id-here",
@@ -85,10 +88,21 @@ const Index = () => {
             <ChatInput
               value={inputValue}
               onChange={setInputValue}
-              onSendMessage={(message) => sendMessage(message, files)}
+              onSendMessage={(message) => {
+                sendMessage(message, files);
+                clearFiles();
+              }}
               onFileButtonClick={() => fileInputRef.current?.click()}
               hasFiles={files.length > 0}
               disabled={isTyping}
+              fileBubbles={
+                <FileUploadBar
+                  files={files}
+                  onFilesAdded={handleFilesAdded}
+                  onFileRemove={handleFileRemove}
+                  uploadInputRef={fileInputRef}
+                />
+              }
             />
             {/* Hidden file input */}
             <input
