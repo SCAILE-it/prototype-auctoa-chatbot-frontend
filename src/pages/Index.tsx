@@ -20,7 +20,7 @@ const Index = () => {
         className="fixed inset-0 z-0 bg-cover bg-center w-screen h-screen"
         style={{
           backgroundImage:
-            "url('/lovable-uploads/background.png')",
+            "url('/uploads/background.png')",
         }}
       />
 
@@ -30,7 +30,7 @@ const Index = () => {
         <header className="fixed top-0 left-0 right-0 z-20 p-4 md:p-4 px-2 md:px-4 flex justify-between items-center bg-transparent">
           <div className="flex items-center">
             <img
-              src="/lovable-uploads/logo-transparent.png"
+              src="/uploads/logo-transparent.png"
               alt="Auctoa Logo"
               className="h-4"
             />
