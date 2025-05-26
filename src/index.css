@@ -67,3 +67,25 @@
 .delay-300 {
   animation-delay: 300ms;
 }
+
+/* === SCROLLBAR STYLING === */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--transparent-10);
+  border-radius: 100px;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: medium;
+  scrollbar-color: var(--transparent-10) transparent;
+}

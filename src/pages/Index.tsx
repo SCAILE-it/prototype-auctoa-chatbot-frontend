@@ -112,13 +112,13 @@ const Index = () => {
           <div className="flex justify-center space-x-3">
             <a
               href="#"
-              className="text-xs text-gray-500 hover:text-gray-700 hover:underline"
+              className="text-xs text-[color:var(--neutral-grey)] hover:text-[color:var(--primary-creme)]"
             >
               Datenschutz
             </a>
             <a
               href="#"
-              className="text-xs text-gray-500 hover:text-gray-700 hover:underline"
+              className="text-xs text-[color:var(--neutral-grey)] hover:text-[color:var(--primary-creme)]"
             >
               Impressum
             </a>
