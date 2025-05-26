@@ -66,7 +66,7 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
 
             {/* Message bubble */}
             <ChatBubble isUser={message.isUser}>
-              {message.content &&
+              {message.content || message.html &&
                 (message.html
                   ? renderHTML(message.html)
                   : message.content)}
