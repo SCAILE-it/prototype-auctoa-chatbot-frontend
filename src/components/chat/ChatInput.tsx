@@ -75,14 +75,16 @@ const ChatInput = ({
         {/* Left: Upload */}
         <Button
           onClick={onFileButtonClick}
-          size="icon"
+          size="default" // use "default" or "sm" to allow for text
           variant="ghost"
-          className="rounded-xl hover:bg-[color:var(--transparent-10)]"
+          className="rounded-xl hover:bg-[color:var(--transparent-10)] flex items-center gap-2"
           type="button"
-          aria-label="Dokument hochladen"
+          aria-label="Dokumente hochladen"
         >
-          <Paperclip size={18} className="text-[color:var(--primary-creme)]"/>
-          <span className="sr-only">Dokument hochladen</span>
+          <Paperclip size={18} className="text-[color:var(--primary-creme)]" />
+          <span className="text-[color:var(--primary-creme)] text-sm">
+            Dokumente hochladen
+          </span>
         </Button>
 
         {/* Right: Send */}
