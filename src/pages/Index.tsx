@@ -27,7 +27,7 @@ const Index = () => {
         {/* Fixed Header */}
         <header className="fixed top-0 left-0 right-0 z-20 p-4 md:p-4 px-2 md:px-4 flex justify-between items-center bg-transparent">
           <div className="flex items-center">
-            <img src="/lovable-uploads/29679e81-d20a-4793-949b-17b9a85706e3.png" alt="Logo" className="h-4" />
+            <img src="/lovable-uploads/29679e81-d20a-4793-949b-17b9a85706e3.png" alt="Auctoa Logo" className="h-6" />
           </div>
           <Button 
             variant="secondary" 
@@ -37,8 +37,8 @@ const Index = () => {
           </Button>
         </header>
         
-        {/* Main content with proper spacing for fixed header and input */}
-        <main className="flex-1 flex flex-col overflow-hidden pt-12 pb-32">
+        {/* Main content with proper spacing for fixed header and footer */}
+        <main className="flex-1 flex flex-col overflow-hidden pt-16 pb-12">
           <div className="flex-1 overflow-hidden px-2 md:px-4">
             <ChatContainer 
               variant={getVariant()}
@@ -47,11 +47,11 @@ const Index = () => {
           </div>
         </main>
         
-        {/* Fixed Footer - positioned relative to bottom input */}
+        {/* Fixed Footer */}
         <footer className="fixed bottom-0 left-0 right-0 z-20 py-1 px-2 md:px-4 bg-transparent text-center">
-          <div className="flex justify-center space-x-3 mb-1">
-            <a href="#" className="text-xs text-gray-400 hover:text-gray-600 hover:underline">Datenschutz</a>
-            <a href="#" className="text-xs text-gray-400 hover:text-gray-600 hover:underline">Impressum</a>
+          <div className="flex justify-center space-x-3">
+            <a href="#" className="text-xs text-gray-500 hover:text-gray-700 hover:underline">Datenschutz</a>
+            <a href="#" className="text-xs text-gray-500 hover:text-gray-700 hover:underline">Impressum</a>
           </div>
         </footer>
       </div>

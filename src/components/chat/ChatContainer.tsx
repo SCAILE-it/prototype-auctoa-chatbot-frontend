@@ -5,7 +5,7 @@ import { useChatState } from '@/hooks/useChatState';
 import MessageList, { Message } from './MessageList';
 import ChatInput from './ChatInput';
 import PillBar from './PillBar';
-import FileBubble from './FileBubble';
+import FileUploadBar from './FileUploadBar';
 
 type ChatContainerProps = {
   variant?: string;
@@ -54,32 +54,18 @@ const ChatContainer = ({
   };
 
   return (
-    <div className="h-full flex flex-col bg-transparent">
+    <div className="h-full flex flex-col bg-transparent relative">
       {/* Messages area - fills available space and is scrollable */}
       <div className="flex-1 overflow-y-auto">
-        <MessageList messages={messages} isTyping={isTyping} />
+        <MessageList messages={messages} isTyping={isTyping} files={files} />
       </div>
 
       {/* Fixed bottom input area */}
-      <div className="bg-transparent border-t border-transparent">
-        <div className="max-w-4xl mx-auto px-2 md:px-4 pb-4">
+      <div className="fixed bottom-8 left-0 right-0 z-10 bg-transparent">
+        <div className="max-w-4xl mx-auto px-2 md:px-4">
           {pills.length > 0 && (
             <div className="mb-4">
               <PillBar pills={pills} onPillClick={handlePillClick} />
-            </div>
-          )}
-          
-          {/* Show uploaded files above the input */}
-          {files.length > 0 && (
-            <div className="mb-2 flex flex-wrap gap-2">
-              {files.map((file, index) => (
-                <FileBubble
-                  key={index}
-                  fileName={file.name}
-                  onRemove={() => handleFileRemove(index)}
-                  isUserMessage={true}
-                />
-              ))}
             </div>
           )}
           
