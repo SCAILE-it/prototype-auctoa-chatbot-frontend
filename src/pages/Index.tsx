@@ -19,13 +19,13 @@ const Index = () => {
       {/* Full viewport background image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center w-screen h-screen" 
-        style={{ backgroundImage: "url('/lovable-uploads/57cae35f-8e6a-41e0-9dc4-82468fd59e9d.png')" }}
+        style={{ backgroundImage: "url('/lovable-uploads/9fb56aab-0c40-494d-8fc7-f34f494795c2.png')" }}
       />
       
       {/* Content overlay */}
       <div className="relative z-10 flex flex-col min-h-screen">
         {/* Header */}
-        <header className="p-4 md:p-4 px-2 md:px-4 flex justify-between items-center bg-transparent border-b">
+        <header className="p-4 md:p-4 px-2 md:px-4 flex justify-between items-center bg-transparent">
           <div className="flex items-center">
             <img src="/lovable-uploads/29679e81-d20a-4793-949b-17b9a85706e3.png" alt="Auctoa Logo" className="h-8 mr-2" />
             <span className="text-xl font-medium text-black">auctoa</span>
@@ -49,7 +49,7 @@ const Index = () => {
         </main>
         
         {/* Footer */}
-        <footer className="p-4 md:p-4 px-2 md:px-4 bg-transparent border-t text-center text-sm text-black">
+        <footer className="p-2 md:p-2 px-2 md:px-4 bg-transparent text-center text-sm text-black">
           <div className="flex justify-center space-x-4">
             <a href="#" className="hover:underline">Datenschutz</a>
             <a href="#" className="hover:underline">Impressum</a>

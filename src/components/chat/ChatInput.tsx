@@ -60,39 +60,45 @@ const ChatInput = ({
   };
 
   return (
-    <div className="relative flex items-end border rounded-lg bg-background overflow-hidden">
-      <Button 
-        onClick={onFileButtonClick}
-        size="icon"
-        variant="ghost"
-        className="absolute left-1 bottom-1 rounded-full"
-        type="button"
-      >
-        <Paperclip size={18} />
-        <span className="sr-only">Upload documents</span>
-      </Button>
+    <div className="flex flex-col space-y-2">
+      {/* Main input area */}
+      <div className="relative flex items-end border rounded-lg bg-background overflow-hidden">
+        <textarea
+          ref={textareaRef}
+          value={message}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder}
+          disabled={disabled}
+          className="min-h-[44px] max-h-[150px] w-full resize-none px-4 py-2 pr-12 focus:outline-none bg-transparent"
+          rows={1}
+        />
+        
+        <Button 
+          onClick={handleSend} 
+          disabled={!message.trim() || disabled}
+          size="icon"
+          variant="ghost"
+          className="absolute right-1 bottom-1 rounded-full bg-[#FFDB84] hover:bg-[#FFDB84]/80 text-black"
+        >
+          <Send size={18} />
+          <span className="sr-only">Send message</span>
+        </Button>
+      </div>
       
-      <textarea
-        ref={textareaRef}
-        value={message}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        placeholder={placeholder}
-        disabled={disabled}
-        className="min-h-[44px] max-h-[150px] w-full resize-none px-10 py-2 focus:outline-none bg-transparent"
-        rows={1}
-      />
-      
-      <Button 
-        onClick={handleSend} 
-        disabled={!message.trim() || disabled}
-        size="icon"
-        variant="ghost"
-        className="absolute right-1 bottom-1 rounded-full bg-[#FFDB84] hover:bg-[#FFDB84]/80 text-black"
-      >
-        <Send size={18} />
-        <span className="sr-only">Send message</span>
-      </Button>
+      {/* File upload button below input */}
+      <div className="flex justify-center">
+        <Button 
+          onClick={onFileButtonClick}
+          size="sm"
+          variant="outline"
+          className="text-xs bg-white/80 hover:bg-white border-gray-300"
+          type="button"
+        >
+          <Paperclip size={14} className="mr-1" />
+          Dokument hochladen
+        </Button>
+      </div>
     </div>
   );
 };

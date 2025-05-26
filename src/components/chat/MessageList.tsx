@@ -37,32 +37,34 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
 
   // ChatGPT-style layout: center content when no messages, normal flow when messages exist
   const containerClasses = messages.length === 0 && !isTyping 
-    ? "flex flex-col justify-center items-center min-h-full p-4"
-    : "flex flex-col p-4 max-w-4xl mx-auto";
+    ? "flex flex-col justify-center items-center min-h-full p-2 md:p-4"
+    : "flex flex-col p-2 md:p-4 max-w-4xl mx-auto";
 
   return (
     <div className={containerClasses}>
-      {messages.map((message) => (
-        <div key={message.id} className={`${message.isUser ? 'items-end' : 'items-start'} flex flex-col w-full`}>
-          {message.files && message.files.length > 0 && (
-            <div className={`flex flex-col ${message.isUser ? 'items-end' : 'items-start'} mb-1`}>
-              {message.files.map((file, index) => (
-                <FileBubble 
-                  key={index} 
-                  fileName={file.name} 
-                  isUserMessage={message.isUser}
-                />
-              ))}
-            </div>
-          )}
-          
-          <ChatBubble isUser={message.isUser}>
-            {message.html ? renderHTML(message.html) : message.content}
-          </ChatBubble>
-        </div>
-      ))}
-      
-      {isTyping && <TypingIndicator />}
+      <div className="text-sm md:text-base">
+        {messages.map((message) => (
+          <div key={message.id} className={`${message.isUser ? 'items-end' : 'items-start'} flex flex-col w-full`}>
+            {message.files && message.files.length > 0 && (
+              <div className={`flex flex-col ${message.isUser ? 'items-end' : 'items-start'} mb-1`}>
+                {message.files.map((file, index) => (
+                  <FileBubble 
+                    key={index} 
+                    fileName={file.name} 
+                    isUserMessage={message.isUser}
+                  />
+                ))}
+              </div>
+            )}
+            
+            <ChatBubble isUser={message.isUser}>
+              {message.html ? renderHTML(message.html) : message.content}
+            </ChatBubble>
+          </div>
+        ))}
+        
+        {isTyping && <TypingIndicator />}
+      </div>
       <div ref={messagesEndRef} />
     </div>
   );
