@@ -15,6 +15,7 @@
     --accent: #ffa984; /* Peach */
     --primary-hover: #f0c36d; /* Yellow Hover */
     --transparent-50: rgba(255, 255, 255, 0.5); /* Transparent White 50%*/
+    --transparent-20: rgba(255, 255, 255, 0.2); /* Transparent White 20%*/
     --transparent-10: rgba(255, 255, 255, 0.1); /* Transparent White 10% */
     --radius: 0.5rem;
   }
