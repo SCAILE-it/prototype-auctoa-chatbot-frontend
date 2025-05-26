@@ -45,7 +45,7 @@ const Index = () => {
       {/* Content overlay */}
       <div className="relative z-10 flex flex-col min-h-screen">
         {/* Fixed Header */}
-        <header className="fixed top-0 left-0 right-0 z-20 p-4 md:p-4 px-2 md:px-4 flex justify-between items-center bg-transparent">
+        <header className="fixed top-0 left-0 right-0 z-20 p-4 md:p-4 px-2 md:px-4 flex justify-between items-center">
           <div className="flex items-center">
             <img
               src="/uploads/logo-transparent.png"
@@ -57,9 +57,20 @@ const Index = () => {
         </header>
 
         {/* Main chat area */}
-        <main className="flex-1 flex flex-col overflow-hidden pt-16 pb-36">
-          <div className="flex-1 overflow-hidden px-2 md:px-4">
-            <ChatContainer messages={messages} isTyping={isTyping} files={files} />
+        <main
+          className="flex flex-col overflow-hidden px-2 md:px-4"
+          style={{
+            paddingTop: "64px",
+            paddingBottom: "260px",
+            height: "100vh",
+          }}
+        >
+          <div className="flex-1 overflow-hidden">
+            <ChatContainer
+              messages={messages}
+              isTyping={isTyping}
+              files={files}
+            />
           </div>
         </main>
 
