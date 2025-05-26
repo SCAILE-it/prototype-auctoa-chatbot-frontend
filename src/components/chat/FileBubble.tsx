@@ -39,7 +39,7 @@ const FileBubble = ({
 
   return (
     <div
-      className={`flex items-center px-3 py-2 rounded-lg bg-[color:var(--primary-yellow)] ${
+      className={`flex items-center px-3 py-2 rounded-lg bg-[color:var(--neutral-grey)] ${
         isUserMessage ? "ml-auto" : "mr-auto"
       } mb-2`}
     >
