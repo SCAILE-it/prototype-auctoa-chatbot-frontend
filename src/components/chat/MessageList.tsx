@@ -64,13 +64,12 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
               </div>
             )}
 
-            {/* Message bubble */}
-            <ChatBubble isUser={message.isUser}>
-              {message.content || message.html &&
-                (message.html
-                  ? renderHTML(message.html)
-                  : message.content)}
-            </ChatBubble>
+            {/* Message bubble – only if content or html exists */}
+            {(message.content?.trim() || message.html?.trim()) && (
+              <ChatBubble isUser={message.isUser}>
+                {message.html ? renderHTML(message.html) : message.content}
+              </ChatBubble>
+            )}
           </div>
         ))}
 
