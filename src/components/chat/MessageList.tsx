@@ -42,12 +42,12 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
     <div className={containerClasses}>
       <div className="text-sm md:text-base w-full">
         {messages.map((message) => (
-<div
-  key={message.id}
-  className={`${
-    message.isUser ? "items-end" : "items-start"
-  } flex flex-col w-full mb-6`}
->
+          <div
+            key={message.id}
+            className={`${
+              message.isUser ? "items-end" : "items-start"
+            } flex flex-col w-full mb-6`}
+          >
             {/* Show files ABOVE the message bubble */}
             {message.files?.length > 0 && (
               <div

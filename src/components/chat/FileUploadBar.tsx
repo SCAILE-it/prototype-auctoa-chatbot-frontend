@@ -1,7 +1,6 @@
-
-import React, { useCallback, useRef } from 'react';
-import { useDropzone } from 'react-dropzone';
-import FileBubble from './FileBubble';
+import React, { useCallback, useRef } from "react";
+import { useDropzone } from "react-dropzone";
+import FileBubble from "./FileBubble";
 
 type FileUploadBarProps = {
   files: File[];
@@ -10,27 +9,36 @@ type FileUploadBarProps = {
   uploadInputRef?: React.RefObject<HTMLInputElement>;
 };
 
-const FileUploadBar = ({ files, onFilesAdded, onFileRemove, uploadInputRef }: FileUploadBarProps) => {
+const FileUploadBar = ({
+  files,
+  onFilesAdded,
+  onFileRemove,
+  uploadInputRef,
+}: FileUploadBarProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const actualRef = uploadInputRef || inputRef;
-  
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    onFilesAdded(acceptedFiles);
-  }, [onFilesAdded]);
+
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      onFilesAdded(acceptedFiles);
+    },
+    [onFilesAdded]
+  );
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     noClick: true,
     noKeyboard: true,
     accept: {
-      'application/pdf': ['.pdf'],
-      'image/png': ['.png'],
-      'image/jpeg': ['.jpg', '.jpeg'],
-      'application/msword': ['.doc'],
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx']
-    }
+      "application/pdf": [".pdf"],
+      "image/png": [".png"],
+      "image/jpeg": [".jpg", ".jpeg"],
+      "application/msword": [".doc"],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        [".docx"],
+    },
   });
-  
+
   // Only render if there are files to show
   return files.length > 0 ? (
     <div className="mb-2">
@@ -46,7 +54,7 @@ const FileUploadBar = ({ files, onFilesAdded, onFileRemove, uploadInputRef }: Fi
           ))}
         </div>
       </div>
-      
+
       {/* Hidden input for file selection */}
       <input
         type="file"
@@ -57,7 +65,7 @@ const FileUploadBar = ({ files, onFilesAdded, onFileRemove, uploadInputRef }: Fi
             const filesArray = Array.from(e.target.files);
             onFilesAdded(filesArray);
             // Reset the input value to allow selecting the same file again
-            e.target.value = '';
+            e.target.value = "";
           }
         }}
         multiple
@@ -73,7 +81,7 @@ const FileUploadBar = ({ files, onFilesAdded, onFileRemove, uploadInputRef }: Fi
         if (e.target.files?.length) {
           const filesArray = Array.from(e.target.files);
           onFilesAdded(filesArray);
-          e.target.value = '';
+          e.target.value = "";
         }
       }}
       multiple
