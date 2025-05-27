@@ -1,11 +1,13 @@
 import React, { useRef } from "react";
+
+import ChatHeader from "@/components/chat/ChatHeader";
 import ChatContainer from "@/components/chat/ChatContainer";
-import ChatInput from "@/components/chat/ChatInput";
 import PillBar from "@/components/chat/PillBar";
-import { Button } from "@/components/ui/button";
-import { useChatState } from "@/hooks/useChatState";
 import FileUploadBar from "@/components/chat/FileUploadBar";
+import ChatInput from "@/components/chat/ChatInput";
 import ChatFooter from "@/components/chat/ChatFooter";
+
+import { useChatState } from "@/hooks/useChatState";
 
 const Index = () => {
   const getSessionId = () => {
@@ -49,17 +51,7 @@ const Index = () => {
 
       {/* Content overlay */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Fixed Header */}
-        <header className="fixed top-0 left-0 right-0 z-20 p-4 md:p-4 px-2 md:px-4 flex justify-between items-center">
-          <div className="flex items-center">
-            <img
-              src="/uploads/logo-transparent.png"
-              alt="Auctoa Logo"
-              className="h-4"
-            />
-          </div>
-          <Button variant="default">Gratis Expertengespräch anfragen</Button>
-        </header>
+        <ChatHeader />
 
         {/* Main chat area */}
         <main
@@ -70,6 +62,7 @@ const Index = () => {
             height: "100vh",
           }}
         >
+          {/* Chat messages container */}
           <div className="flex-1 overflow-hidden">
             <ChatContainer
               messages={messages}
