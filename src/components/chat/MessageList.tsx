@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import ChatBubble from "./ChatBubble";
+import SourcesDropdown from "./SourcesDropdown";
 import TypingIndicator from "./TypingIndicator";
 import FileBubble from "./FileBubble";
 
@@ -96,34 +97,17 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
                       href={CTA_CONFIG[message.ctaType].url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-block bg-[color:var(--primary-yellow)] text-[color:var(--neutral-dark)] text-sm font-medium px-4 py-2 rounded-xl hover:bg-[color:var(--primary-hover)] transition-colors"
+                      className="inline-block bg-[color:var(--primary-yellow)] text-[color:var(--neutral-dark)] text-sm font-medium px-4 py-2 rounded-lg hover:bg-[color:var(--primary-hover)] transition-colors"
                     >
                       {CTA_CONFIG[message.ctaType].label}
                     </a>
                   </div>
                 )}
-              </ChatBubble>
-            )}
 
-            {/* Sources – only if there's at least one source provided */}
-            {message.sources && message.sources.length > 0 && (
-              <div className="mt-1 text-xs text-[color:var(--neutral-grey)]">
-                <p className="mb-1 font-medium">Quellen:</p>
-                <ul className="list-disc pl-4">
-                  {message.sources.map((src, i) => (
-                    <li key={i}>
-                      <a
-                        href={src.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[color:var(--neutral-grey)] hover:text-[color:var(--primary-creme)]"
-                      >
-                        {src.title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                {message.sources && message.sources.length > 0 && (
+                  <SourcesDropdown sources={message.sources} />
+                )}
+              </ChatBubble>
             )}
           </div>
         ))}
