@@ -64,7 +64,7 @@ const Index = () => {
           className="flex flex-col overflow-hidden px-2 md:px-4"
           style={{
             paddingTop: "64px",
-            paddingBottom: "270px",
+            paddingBottom: "290px",
             height: "100vh",
           }}
         >
