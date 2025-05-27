@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import FileBubble from "./FileBubble";
+import ChatFooter from "@/components/chat/ChatFooter.tsx";
 
 type FileUploadBarProps = {
   files: File[];

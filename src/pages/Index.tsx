@@ -5,6 +5,7 @@ import PillBar from "@/components/chat/PillBar";
 import { Button } from "@/components/ui/button";
 import { useChatState } from "@/hooks/useChatState";
 import FileUploadBar from "@/components/chat/FileUploadBar";
+import ChatFooter from "@/components/chat/ChatFooter";
 
 const Index = () => {
   const getSessionId = () => {
@@ -30,7 +31,8 @@ const Index = () => {
     clearFiles,
   } = useChatState({
     variant: getVariant(),
-    apiUrl: "https://n8n.scaile.it/webhook/c8298f2e-aa44-40ae-bc0e-3ce4dd93d1f2",
+    apiUrl:
+      "https://n8n.scaile.it/webhook/c8298f2e-aa44-40ae-bc0e-3ce4dd93d1f2",
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -120,24 +122,7 @@ const Index = () => {
             />
           </div>
         </div>
-
-        {/* Fixed Footer */}
-        <footer className="fixed bottom-0 left-0 right-0 z-10 py-1 px-2 md:px-4 bg-transparent text-center">
-          <div className="flex justify-center space-x-3">
-            <a
-              href="#"
-              className="text-xs text-[color:var(--neutral-grey)] hover:text-[color:var(--primary-creme)]"
-            >
-              Datenschutz
-            </a>
-            <a
-              href="#"
-              className="text-xs text-[color:var(--neutral-grey)] hover:text-[color:var(--primary-creme)]"
-            >
-              Impressum
-            </a>
-          </div>
-        </footer>
+        <ChatFooter />
       </div>
     </div>
   );
