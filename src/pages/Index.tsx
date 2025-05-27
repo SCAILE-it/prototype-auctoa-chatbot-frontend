@@ -30,7 +30,7 @@ const Index = () => {
     clearFiles,
   } = useChatState({
     variant: getVariant(),
-    apiUrl: "https://webhook.site/your-id-here",
+    apiUrl: "https://n8n.scaile.it/webhook/c8298f2e-aa44-40ae-bc0e-3ce4dd93d1f2",
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);

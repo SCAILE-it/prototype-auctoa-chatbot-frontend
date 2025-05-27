@@ -21,7 +21,7 @@ const STORAGE_KEY = "auctoa-chat-session";
 export function useChatState({
   initialMessages = [],
   variant = "valuation",
-  apiUrl = "https://webhook.site/your-id-here",
+  apiUrl = "https://n8n.scaile.it/webhook/c8298f2e-aa44-40ae-bc0e-3ce4dd93d1f2",
 }: UseChatStateProps = {}) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [isTyping, setIsTyping] = useState(false);
@@ -66,11 +66,10 @@ export function useChatState({
       };
 
       setMessages((prev) => [...prev, userMessage]);
-      setInputValue(""); // ← add this to clear the input
+      setInputValue("");
       setPills([]);
       setIsTyping(true);
 
-      // Simulate uploaded file references
       const messageFiles = uploadedFiles.map((file) => ({
         name: file.name,
         url: "https://example.com/files/" + file.name,
@@ -83,41 +82,34 @@ export function useChatState({
       };
 
       try {
-        await new Promise((res) => setTimeout(res, 1500)); // Simulate delay
+        const conversationId =
+          localStorage.getItem("conversation-id") || crypto.randomUUID();
+        localStorage.setItem("conversation-id", conversationId);
 
-        const simulatedResponse: ApiResponse = {
-          chatResponse: `
-            <p>Thank you for your inquiry about your property.</p>
-            <p>Your property in Munich with 212m² of living space and a 330m² plot is likely valued between <strong>€680,000</strong> and <strong>€740,000</strong>.</p>
-            <p>To improve accuracy, we’d need:</p>
-            <ul>
-              <li>Condition of the property</li>
-              <li>Features and amenities</li>
-              <li>Last modernization year</li>
-            </ul>`,
-          pills: [
-            "Lohnt sich das Investment unter den gegebenen Bedingungen?",
-            "Kriege ich das Objekt gut vermietet?",
-            "Wie kann ich den Preis nach unten verhandeln?",
-          ],
-          sources: [
-            { url: "https://example.com/source1", title: "Source 1" },
-            { url: "https://example.com/source2", title: "Source 2" },
-          ],
-          ctaType: "gutachten",
-        };
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-conversation-id": conversationId,
+          },
+          body: JSON.stringify(requestData),
+        });
+
+        if (!response.ok) throw new Error("Request failed");
+
+        const data: ApiResponse = await response.json();
 
         const botMessage: Message = {
           id: uuidv4(),
           content: "",
-          html: simulatedResponse.chatResponse,
+          html: data.chatResponse,
           isUser: false,
-          sources: simulatedResponse.sources || [],
-          ctaType: simulatedResponse.ctaType,
+          sources: data.sources || [],
+          ctaType: data.ctaType,
         };
 
         setMessages((prev) => [...prev, botMessage]);
-        setPills(simulatedResponse.pills || []);
+        setPills(data.pills || []);
         setFiles([]);
       } catch (error) {
         console.error("Error sending message:", error);
@@ -130,7 +122,7 @@ export function useChatState({
         setIsTyping(false);
       }
     },
-    [variant]
+    [variant, apiUrl]
   );
 
   const handleFilesAdded = (newFiles: File[]) => {
