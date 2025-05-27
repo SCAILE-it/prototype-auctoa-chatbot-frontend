@@ -56,7 +56,7 @@ const Index = () => {
               className="h-4"
             />
           </div>
-          <Button variant="default">Beratungsgespräch anfragen</Button>
+          <Button variant="default">Gratis Expertengespräch anfragen</Button>
         </header>
 
         {/* Main chat area */}
@@ -64,7 +64,7 @@ const Index = () => {
           className="flex flex-col overflow-hidden px-2 md:px-4"
           style={{
             paddingTop: "64px",
-            paddingBottom: "260px",
+            paddingBottom: "270px",
             height: "100vh",
           }}
         >

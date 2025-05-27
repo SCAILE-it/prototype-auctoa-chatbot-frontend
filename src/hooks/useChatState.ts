@@ -7,6 +7,7 @@ type ApiResponse = {
   chatResponse: string;
   pills?: string[];
   sources?: { url: string; title: string }[];
+  ctaType?: "gutachten" | "termin" | "makler";
 };
 
 type UseChatStateProps = {
@@ -101,7 +102,9 @@ export function useChatState({
           ],
           sources: [
             { url: "https://example.com/source1", title: "Source 1" },
-            { url: "https://example.com/source2", title: "Source 2" },]
+            { url: "https://example.com/source2", title: "Source 2" },
+          ],
+          ctaType: "gutachten",
         };
 
         const botMessage: Message = {
@@ -110,6 +113,7 @@ export function useChatState({
           html: simulatedResponse.chatResponse,
           isUser: false,
           sources: simulatedResponse.sources || [],
+          ctaType: simulatedResponse.ctaType,
         };
 
         setMessages((prev) => [...prev, botMessage]);

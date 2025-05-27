@@ -10,17 +10,33 @@ export type MessageFile = {
 
 export type Message = {
   id: string;
-  content: string;
-  isUser: boolean;
-  files?: MessageFile[];
-  html?: string;
-  sources?: { title: string; url: string }[];
+  content: string; // Text content of the message (user)
+  isUser: boolean; // Indicates if the message is from the user (true) or the AI (false)
+  files?: MessageFile[]; // Optional array of files attached to the message
+  html?: string; // Optional HTML content for the message (AI)
+  sources?: { title: string; url: string }[]; // Optional sources for the message, each with a title and URL
+  ctaType?: "gutachten" | "termin" | "makler"; // Optional CTA type for specific message actions
 };
 
 type MessageListProps = {
   messages: Message[];
   isTyping: boolean;
 };
+
+const CTA_CONFIG = {
+  gutachten: {
+    label: "Physisches Gutachten anfragen",
+    url: "https://example.com/gutachten",
+  },
+  termin: {
+    label: "Gratis Expertenberatung erhalten",
+    url: "https://example.com/beratung",
+  },
+  makler: {
+    label: "Mit Makler verbunden werden",
+    url: "https://example.com/makler",
+  },
+} as const;
 
 const MessageList = ({ messages, isTyping }: MessageListProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -66,12 +82,30 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
             )}
 
             {/* Message bubble – only if content or html exists */}
-            {(message.content?.trim() || message.html?.trim()) && (
+            {(message.content?.trim() ||
+              message.html?.trim() ||
+              message.ctaType) && (
               <ChatBubble isUser={message.isUser}>
+                {/* Chat content */}
                 {message.html ? renderHTML(message.html) : message.content}
+
+                {/* CTA inside the bubble */}
+                {message.ctaType && CTA_CONFIG[message.ctaType] && (
+                  <div className="mt-3">
+                    <a
+                      href={CTA_CONFIG[message.ctaType].url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block bg-[color:var(--primary-yellow)] text-[color:var(--neutral-dark)] text-sm font-medium px-4 py-2 rounded-xl hover:bg-[color:var(--primary-hover)] transition-colors"
+                    >
+                      {CTA_CONFIG[message.ctaType].label}
+                    </a>
+                  </div>
+                )}
               </ChatBubble>
             )}
 
+            {/* Sources – only if there's at least one source provided */}
             {message.sources && message.sources.length > 0 && (
               <div className="mt-1 text-xs text-[color:var(--neutral-grey)]">
                 <p className="mb-1 font-medium">Quellen:</p>
