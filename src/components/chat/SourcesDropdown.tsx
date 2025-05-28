@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 
 type Source = { title: string; url: string };
 
@@ -10,20 +11,22 @@ const SourcesDropdown = ({ sources }: { sources: Source[] }) => {
       {/* Trigger area */}
       <button
         onClick={() => setOpen(!open)}
-        className="inline-flex items-center gap-2 py-1 px-2 bg-[color:var(--transparent-10)] rounded-full w-fit text-xs text-[color:var(--neutral-grey)] hover:bg-[color:var(--transparent-20)] transition"
+        className="inline-flex items-center gap-2 py-1 px-3 bg-[color:var(--transparent-10)] rounded-full w-fit text-xs text-[color:var(--neutral-grey)] hover:bg-[color:var(--transparent-20)] transition"
       >
-        <div className="flex -space-x-2">
-          {sources.slice(0, 3).map((_, i) => (
-            <div
-              key={i}
-              className="w-5 h-5 rounded-full bg-[color:var(--neutral-grey)] text-[color:var(--neutral-dark)] font-medium flex items-center justify-center border border-[color:var(--neutral-light)]"
-            >
-              🔗
-            </div>
-          ))}
-        </div>
-        <span
-        className="text-[color:var(--neutral-dark)]">Quellen</span>
+        <span className="text-[color:var(--neutral-dark)] font-medium">
+          Quellen
+        </span>
+        {open ? (
+          <IconChevronUp
+            size={16}
+            className="text-[color:var(--neutral-grey)]"
+          />
+        ) : (
+          <IconChevronDown
+            size={16}
+            className="text-[color:var(--neutral-grey)]"
+          />
+        )}
       </button>
 
       {/* Inline expansion below the button */}
