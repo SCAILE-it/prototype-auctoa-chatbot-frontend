@@ -37,6 +37,22 @@ const CTA_CONFIG = {
     label: "Mit Makler verbunden werden",
     url: "https://example.com/makler",
   },
+  finanzrechner: {
+    label: "Finanzierung berechnen",
+    url: "https://example.com/finanzrechner",
+  },
+  anwalt: {
+    label: "Juristische Beratung sichern",
+    url: "https://example.com/anwalt",
+  },
+  ibuyer: {
+    label: "Jetzt direkt verkaufen (iBuyer)",
+    url: "https://example.com/ibuyer",
+  },
+  sanierer: {
+    label: "Sanierungsexperten kontaktieren",
+    url: "https://example.com/sanierung",
+  },
 } as const;
 
 const MessageList = ({ messages, isTyping }: MessageListProps) => {
