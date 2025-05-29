@@ -1,17 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 
 type Source = { title: string; url: string };
 
-const SourcesDropdown = ({ sources }: { sources: Source[] }) => {
+const SourcesDropdown = ({
+  sources,
+  parentRef,
+}: {
+  sources: Source[];
+  parentRef?: React.RefObject<HTMLDivElement>;
+}) => {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (open && parentRef?.current) {
+      parentRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [open, parentRef]);
 
   return (
     <div className="mt-3 space-y-2">
       {/* Trigger area */}
       <button
         onClick={() => setOpen(!open)}
-        className="inline-flex items-center gap-2 py-1 px-3 bg-[color:var(--transparent-10)] rounded-full w-fit text-xs text-[color:var(--neutral-grey)] hover:bg-[color:var(--transparent-20)] transition"
+        className="inline-flex items-center gap-2 py-1 px-3 bg-transparent  rounded-full w-fit text-xs text-[color:var(--neutral-grey)] transition"
       >
         <span className="text-[color:var(--neutral-dark)] font-medium">
           Quellen
@@ -19,12 +34,12 @@ const SourcesDropdown = ({ sources }: { sources: Source[] }) => {
         {open ? (
           <IconChevronUp
             size={16}
-            className="text-[color:var(--neutral-grey)]"
+            className="text-[color:var(--neutral-dark)]"
           />
         ) : (
           <IconChevronDown
             size={16}
-            className="text-[color:var(--neutral-grey)]"
+            className="text-[color:var(--neutral-dark)]"
           />
         )}
       </button>

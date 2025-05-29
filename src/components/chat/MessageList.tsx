@@ -105,7 +105,7 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
                 )}
 
                 {message.sources && message.sources.length > 0 && (
-                  <SourcesDropdown sources={message.sources} />
+                  <SourcesDropdown sources={message.sources} parentRef={messagesEndRef}/>
                 )}
               </ChatBubble>
             )}
