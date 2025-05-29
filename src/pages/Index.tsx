@@ -45,7 +45,7 @@ const Index = () => {
       <div
         className="fixed inset-0 z-0 bg-cover bg-center w-screen h-screen"
         style={{
-          backgroundImage: "url('/uploads/background.png')",
+          backgroundImage: "url('/uploads/background-image.png')",
         }}
       />
 
