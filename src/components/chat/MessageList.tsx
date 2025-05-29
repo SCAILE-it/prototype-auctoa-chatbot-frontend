@@ -1,8 +1,11 @@
 import React, { useRef, useEffect } from "react";
+import { IconArrowUpRight } from "@tabler/icons-react";
+
+import { Button } from "@/components/ui/button";
 import ChatBubble from "./ChatBubble";
+import FileBubble from "./FileBubble";
 import SourcesDropdown from "./SourcesDropdown";
 import TypingIndicator from "./TypingIndicator";
-import FileBubble from "./FileBubble";
 
 export type MessageFile = {
   name: string;
@@ -24,6 +27,7 @@ type MessageListProps = {
   isTyping: boolean;
 };
 
+// Mapping CTA types to their labels and URLs
 const CTA_CONFIG = {
   gutachten: {
     label: "Physisches Gutachten anfragen",
@@ -109,19 +113,24 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
                 {/* CTA inside the bubble */}
                 {message.ctaType && CTA_CONFIG[message.ctaType] && (
                   <div className="mt-3">
-                    <a
-                      href={CTA_CONFIG[message.ctaType].url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-block bg-[color:var(--primary-yellow)] text-[color:var(--neutral-dark)] text-sm font-medium px-4 py-2 rounded-lg hover:bg-[color:var(--primary-hover)] transition-colors"
-                    >
-                      {CTA_CONFIG[message.ctaType].label}
-                    </a>
+                    <Button asChild variant="default" size="default">
+                      <a
+                        href={CTA_CONFIG[message.ctaType].url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {CTA_CONFIG[message.ctaType].label}
+                        <IconArrowUpRight size={14} stroke={2} />
+                      </a>
+                    </Button>
                   </div>
                 )}
 
                 {message.sources && message.sources.length > 0 && (
-                  <SourcesDropdown sources={message.sources} parentRef={messagesEndRef}/>
+                  <SourcesDropdown
+                    sources={message.sources}
+                    parentRef={messagesEndRef}
+                  />
                 )}
               </ChatBubble>
             )}

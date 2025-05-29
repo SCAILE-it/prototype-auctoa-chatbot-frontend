@@ -1,4 +1,6 @@
 import React from "react";
+import { IconArrowUpRight } from "@tabler/icons-react";
+
 import { Button } from "@/components/ui/button";
 
 const ChatHeader = () => {
@@ -8,10 +10,19 @@ const ChatHeader = () => {
         <img
           src="/uploads/logo-transparent.png"
           alt="Auctoa Logo"
-          className="h-4"
+          className="h-3 md:h-6"
         />
       </div>
-      <Button variant="default">Gratis Expertengespräch anfragen</Button>
+      <Button asChild variant="default" className="text-xs px-3 py-1.5 md:text-sm md:px-4 md:py-2">
+        <a
+          href="https://example.com/beratung"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Gratis Expertengespräch anfragen
+          <IconArrowUpRight size={14} stroke={2} className="ml-1" />
+        </a>
+      </Button>
     </header>
   );
 };
