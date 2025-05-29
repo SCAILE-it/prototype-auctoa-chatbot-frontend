@@ -78,7 +78,7 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
   return (
     <div className={containerClasses}>
       <div className="text-sm md:text-base w-full">
-        {messages.map((message) => (
+        {messages.map((message, i) => (
           <div
             key={message.id}
             className={`${
@@ -130,6 +130,7 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
                   <SourcesDropdown
                     sources={message.sources}
                     parentRef={messagesEndRef}
+                    isLastMessage={i === messages.length - 1} // <== nur wenn letzte Nachricht
                   />
                 )}
               </ChatBubble>

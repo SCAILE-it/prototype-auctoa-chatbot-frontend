@@ -6,20 +6,22 @@ type Source = { title: string; url: string };
 const SourcesDropdown = ({
   sources,
   parentRef,
+  isLastMessage = false,
 }: {
   sources: Source[];
   parentRef?: React.RefObject<HTMLDivElement>;
+  isLastMessage?: boolean;
 }) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (open && parentRef?.current) {
+    if (open && isLastMessage && parentRef?.current) {
       parentRef.current.scrollIntoView({
         behavior: "smooth",
         block: "nearest",
       });
     }
-  }, [open, parentRef]);
+  }, [open, isLastMessage, parentRef]);
 
   return (
     <div className="mt-3 space-y-2">
