@@ -77,7 +77,7 @@ const ChatInput = ({
           onClick={onFileButtonClick}
           size="default" // use "default" or "sm" to allow for text
           variant="ghost"
-          className="rounded-xl hover:bg-[color:var(--transparent-10)] flex items-center gap-2"
+          className="text-xs px-3 py-1.5 md:text-sm md:px-4 md:py-2"
           type="button"
           aria-label="Dokumente hochladen"
         >

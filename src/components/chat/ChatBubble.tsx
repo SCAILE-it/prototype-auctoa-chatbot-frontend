@@ -30,7 +30,7 @@ const ChatBubble = ({ isUser, children }: ChatBubbleProps) => {
           "rounded-xl p-3 mb-3",
           isUser
             ? "bg-[color:var(--neutral-grey)] text-[color:var(--neutral-dark)]"
-            : "bg-[color:var(--primary-creme)] text-[color:var(--neutral-dark)] max-w-[80%]"
+            : "bg-[color:var(--primary-creme)] text-[color:var(--neutral-dark)] max-w-[90%] md:max-w-[80%]"
         )}
       >
         {children}
