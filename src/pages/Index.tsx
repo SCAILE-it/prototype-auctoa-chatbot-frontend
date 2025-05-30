@@ -34,7 +34,7 @@ const Index = () => {
   } = useChatState({
     variant: getVariant(),
     apiUrl:
-      "https://n8n.scaile.it/webhook/c8298f2e-aa44-40ae-bc0e-3ce4dd93d1f2",
+      import.meta.env.VITE_API_URL,
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);

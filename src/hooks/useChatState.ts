@@ -21,7 +21,7 @@ const STORAGE_KEY = "auctoa-chat-session";
 export function useChatState({
   initialMessages = [],
   variant = "valuation",
-  apiUrl = "https://n8n.scaile.it/webhook/c8298f2e-aa44-40ae-bc0e-3ce4dd93d1f2",
+  apiUrl = import.meta.env.VITE_API_URL,
 }: UseChatStateProps = {}) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [isTyping, setIsTyping] = useState(false);
