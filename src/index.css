@@ -11,7 +11,7 @@
     --primary-creme: #faf4e6; /* Creme */
     --secondary-darkgreen: #262c2a; /* Dark Green */
     --secondary-lightgreen: #e6efd3; /* Light Green */
-    --secondary-lightyellow: #FCECC9; /* Light Yellow */
+    --secondary-lightyellow: #fcecc9; /* Light Yellow */
     --accent: #ffa984; /* Peach */
     --primary-hover: #f0c36d; /* Yellow Hover */
     --transparent-50: rgba(255, 255, 255, 0.5); /* Transparent White 50%*/
@@ -50,6 +50,14 @@
 
   .chat-content strong {
     @apply font-semibold;
+  }
+
+  .chat-content li {
+    @apply mb-1;
+  }
+
+  .chat-content h3 {
+    @apply font-bold text-lg mb-2;
   }
 }
 
