@@ -30,32 +30,32 @@ type MessageListProps = {
 // Mapping CTA types to their labels and URLs
 const CTA_CONFIG = {
   gutachten: {
-    label: "Physisches Gutachten anfragen",
-    url: "https://example.com/gutachten",
+    label: "Gutachten anfragen",
+    url: "https://www.auctoa.de/lead-survey/gutachten",
   },
   termin: {
     label: "Gratis Expertenberatung erhalten",
-    url: "https://example.com/beratung",
+    url: "https://www.auctoa.de/lead-survey/termin",
   },
   makler: {
     label: "Mit Makler verbunden werden",
-    url: "https://example.com/makler",
+    url: "https://www.auctoa.de/lead-survey/ctaID",
   },
   finanzrechner: {
     label: "Finanzierung berechnen",
-    url: "https://example.com/finanzrechner",
+    url: "https://www.auctoa.de/lead-survey/finanzrechner",
   },
   anwalt: {
     label: "Juristische Beratung sichern",
-    url: "https://example.com/anwalt",
+    url: "https://www.auctoa.de/lead-survey/anwalt",
   },
   ibuyer: {
     label: "Jetzt direkt verkaufen (iBuyer)",
-    url: "https://example.com/ibuyer",
+    url: "https://www.auctoa.de/lead-survey/ibuyer",
   },
   sanierer: {
     label: "Sanierungsexperten kontaktieren",
-    url: "https://example.com/sanierung",
+    url: "https://www.auctoa.de/lead-survey/sanierung",
   },
 } as const;
 
@@ -67,7 +67,7 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
   }, [messages, isTyping]);
 
   const renderHTML = (html: string) => (
-    <div dangerouslySetInnerHTML={{ __html: html }} />
+    <div className="chat-content" dangerouslySetInnerHTML={{ __html: html }} />
   );
 
   const containerClasses =
