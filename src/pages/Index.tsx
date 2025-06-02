@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef } from "react";
 
 import ChatHeader from "@/components/chat/ChatHeader";
 import ChatContainer from "@/components/chat/ChatContainer";
@@ -33,25 +33,11 @@ const Index = () => {
     clearFiles,
   } = useChatState({
     variant: getVariant(),
-    apiUrl: import.meta.env.VITE_API_URL,
+    apiUrl:
+      import.meta.env.VITE_API_URL,
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const bottomRef = useRef<HTMLDivElement>(null); // 🆕 reference to pills + input container
-  const [bottomOffset, setBottomOffset] = useState(0); // 🆕 state to store its height
-
-  useEffect(() => {
-    const updateOffset = () => {
-      if (bottomRef.current) {
-        setBottomOffset(bottomRef.current.offsetHeight); // 🆕 get height of bottom block
-      }
-    };
-
-    updateOffset(); // 🆕 run once on mount
-    window.addEventListener("resize", updateOffset); // 🆕 update on resize
-
-    return () => window.removeEventListener("resize", updateOffset); // 🆕 cleanup
-  }, []);
 
   return (
     <div className="min-h-screen flex flex-col relative">
@@ -69,14 +55,14 @@ const Index = () => {
 
         {/* Main chat area */}
         <main
-          className="flex flex-col overflow-hidden px-2 md:px-4"
+          className="flex flex-col px-2 md:px-4 overflow-y-auto"
           style={{
             paddingTop: "64px",
-            paddingBottom: bottomOffset, // dynamic
+            height: "100vh",
           }}
         >
           {/* Chat messages container */}
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden pb-[160px] md:pb-[160px]">
             <ChatContainer
               messages={messages}
               isTyping={isTyping}
@@ -86,10 +72,7 @@ const Index = () => {
         </main>
 
         {/* Chat input + pills (fixed) */}
-        <div
-          ref={bottomRef}
-          className="fixed bottom-8 left-0 right-0 z-20 px-4"
-        >
+        <div className="fixed bottom-8 left-0 right-0 z-20 px-4">
           <div className="max-w-4xl mx-auto">
             {pills.length > 0 && (
               <div className="mb-4">
