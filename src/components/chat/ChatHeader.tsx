@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 const ChatHeader = () => {
   return (
-    <header className="fixed top-0 left-0 right-0 z-20 p-4 md:p-4 px-2 md:px-4 flex justify-between items-center">
+    <header className="fixed top-0 left-0 right-0 z-100 p-4 md:p-4 px-2 md:px-4 flex justify-between items-center background-[color:var(--transparent-10)] backdrop-blur-md">
       <div className="flex items-center">
         <a
           href="https://www.auctoa.de/"
