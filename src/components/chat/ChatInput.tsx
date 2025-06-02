@@ -52,7 +52,7 @@ const ChatInput = ({
   const canSend = (value.trim() || hasFiles) && !disabled;
 
   return (
-    <div className="flex flex-col bg-[color:var(--transparent-10)] backdrop-blur-md rounded-xl px-3 py-2 gap-y-2 z-0">
+    <div className="flex flex-col bg-[color:var(--transparent-10)] backdrop-blur-md rounded-xl px-3 py-3 gap-y-2 z-0">
       {/* FILE BUBBLES ABOVE TEXTAREA */}
       {fileBubbles && (
         <div className="mb-1 flex justify-start">{fileBubbles}</div>
@@ -77,7 +77,7 @@ const ChatInput = ({
           onClick={onFileButtonClick}
           size="default" // use "default" or "sm" to allow for text
           variant="ghost"
-          className="text-xs px-3 py-1.5 md:text-sm md:px-4 md:py-2"
+          className="text-xs px-3 py-3 md:text-sm md:px-3 md:py-3 bg-[color:var(--transparent-10)] hover:bg-[color:var(--transparent-20)] rounded-lg h-10"
           type="button"
           aria-label="Dokumente hochladen"
         >
@@ -93,7 +93,7 @@ const ChatInput = ({
           disabled={!canSend}
           size="icon"
           variant="default"
-          className="rounded-xl bg-[color:var(--primary-yellow)] hover:bg-[color:var(--primary-hover)] text-[color:var(--neutral-dark)] disabled:opacity-50"
+          className="rounded-xl bg-[color:var(--primary-yellow)] hover:bg-[color:var(--primary-hover)] text-[color:var(--neutral-dark)] disabled:opacity-50 h-10"
           aria-label="Nachricht senden"
         >
           <Send size={18} />
