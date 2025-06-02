@@ -73,7 +73,7 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
   const containerClasses =
     messages.length === 0 && !isTyping
       ? "flex flex-col justify-center items-center min-h-full p-2 md:p-4"
-      : "flex flex-col px-2 py-9 md:px-2 md:py-24 max-w-4xl mx-auto pb-36";
+      : "flex flex-col px-2 py-9 md:px-2 md:py-28 max-w-4xl mx-auto pb-36";
 
   return (
     <div className={containerClasses}>
@@ -83,7 +83,7 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
             key={message.id}
             className={`${
               message.isUser ? "items-end" : "items-start"
-            } flex flex-col w-full mb-6`}
+            } flex flex-col w-full mb-4 md:mb-2`}
           >
             {/* Show files ABOVE the message bubble */}
             {message.files?.length > 0 && (
