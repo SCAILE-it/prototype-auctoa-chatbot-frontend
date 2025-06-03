@@ -1,13 +1,6 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Send, Paperclip, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-  TooltipProvider,
-} from "@/components/ui/tooltip";
 
 type ChatInputProps = {
   onSendMessage: (message: string) => void;
@@ -32,7 +25,7 @@ const ChatInput = ({
 }: ChatInputProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [tooltipOpen, setTooltipOpen] = React.useState(false);
+  const [visible, setVisible] = useState(false);
 
   // Auto-resize the textarea based on content
   useEffect(() => {
@@ -81,58 +74,41 @@ const ChatInput = ({
 
       {/* Bottom: Buttons row with justify-between */}
       <div className="flex items-center justify-between">
-        <TooltipProvider>
-          <div className="flex items-center gap-2">
-            {/* Upload Button */}
-            <Button
-              onClick={onFileButtonClick}
-              size="default"
-              variant="ghost"
-              className="text-xs px-3 py-3 md:text-sm md:px-3 md:py-3 bg-[color:var(--transparent-10)] hover:bg-[color:var(--transparent-20)] rounded-lg h-10"
-              type="button"
-              aria-label="Dokumente hochladen"
+        <div className="flex items-center gap-2">
+          {/* Upload Button */}
+          <Button
+            onClick={onFileButtonClick}
+            size="default"
+            variant="ghost"
+            className="text-xs px-3 py-3 md:text-sm md:px-3 md:py-3 bg-[color:var(--transparent-10)] hover:bg-[color:var(--transparent-20)] rounded-lg h-10"
+            type="button"
+            aria-label="Dokumente hochladen"
+          >
+            <Paperclip
+              size={18}
+              className="text-[color:var(--primary-creme)]"
+            />
+            <span className="text-[color:var(--primary-creme)] text-sm">
+              Dokumente hochladen
+            </span>
+          </Button>
+
+          <div className="relative inline-block">
+            <button
+              onClick={() => setVisible((v) => !v)}
+              className="rounded-full border-none flex items-center justify-center"
+              aria-label="Datenschutzhinweis"
             >
-              <Paperclip
-                size={18}
-                className="text-[color:var(--primary-creme)]"
-              />
-              <span className="text-[color:var(--primary-creme)] text-sm">
-                Dokumente hochladen
-              </span>
-            </Button>
+              <Info size={16} className="text-[color:var(--primary-creme)]" />
+            </button>
 
-            {/* Info Icon with Tooltip */}
-            <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  aria-label="Datenschutzhinweis"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setTooltipOpen((prev) => !prev); // Toggle on click
-                  }}
-                  className="rounded-full border-none flex items-center justify-center"
-                >
-                  <Info
-                    size={16}
-                    className="text-[color:var(--primary-creme)]"
-                  />
-                </button>
-              </TooltipTrigger>
-
-              {tooltipOpen && (
-                <TooltipContent
-                  forceMount
-                  side="top"
-                  className="z-50 bg-[color:var(--secondary-darkgreen)] text-[color:var(--primary-creme)] border-none shadow-md text-xs px-3 py-2 max-w-[80vw] break-words"
-                  sideOffset={6}
-                >
-                  Ihre Dokumente und Daten werden DSGVO-konform behandelt.
-                </TooltipContent>
-              )}
-            </Tooltip>
+            {visible && (
+              <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 z-50 bg-[color:var(--secondary-darkgreen)] text-[color:var(--primary-creme)] text-xs px-3 py-2 rounded shadow-md max-w-[70vw] w-max">
+                Ihre Dokumente und Daten werden DSGVO-konform behandelt.
+              </div>
+            )}
           </div>
-        </TooltipProvider>
+        </div>
 
         {/* Right: Send */}
         <Button
