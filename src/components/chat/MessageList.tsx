@@ -19,7 +19,7 @@ export type Message = {
   files?: MessageFile[]; // Optional array of files attached to the message
   html?: string; // Optional HTML content for the message (AI)
   sources?: { title: string; url: string }[]; // Optional sources for the message, each with a title and URL
-  ctaType?: "gutachten" | "termin" | "makler"; // Optional CTA type for specific message actions
+  ctaType?: "gutachten" | "termin" | "makler" | "finanzrechner" | "anwalt" | "ibuyer" | "sanierer"; // Optional CTA type for specific message actions
 };
 
 type MessageListProps = {

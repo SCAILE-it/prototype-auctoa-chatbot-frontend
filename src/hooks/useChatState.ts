@@ -2,21 +2,35 @@ import { useState, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "@/hooks/use-toast";
 import { Message } from "@/components/chat/MessageList";
+import { convertFileToBase64 } from "@/lib/files.ts";
+import { loadSession, saveSession } from "@/lib/session.ts";
+
+/** useChatState.ts
+ * Custom hook to manage chat state, including messages, typing status, files, and pills.
+ * It handles sending messages to the API and saving/loading chat history from localStorage.
+ */
 
 type ApiResponse = {
-  chatResponse: string;
-  pills?: string[];
-  sources?: { url: string; title: string }[];
-  ctaType?: "gutachten" | "termin" | "makler";
+  chatResponse: string; // HTML response from the chat API
+  pills?: string[]; // Optional pills to display in the chat
+  sources?: { url: string; title: string }[]; // Optional sources for the message, each with a title and URL
+  ctaType?:
+    | "gutachten"
+    | "termin"
+    | "makler"
+    | "finanzrechner"
+    | "anwalt"
+    | "ibuyer"
+    | "sanierer"; // Optional CTA type for specific message actions
 };
 
 type UseChatStateProps = {
-  initialMessages?: Message[];
-  variant?: string;
-  apiUrl?: string;
+  initialMessages?: Message[]; // Initial messages to load into the chat
+  variant?: string; // Variant of the chat, e.g., "valuation"
+  apiUrl?: string; // URL of the API endpoint to send messages to
 };
 
-const STORAGE_KEY = "auctoa-chat-session";
+const STORAGE_KEY = "auctoa-chat-session"; // Key for localStorage to save chat session
 
 export function useChatState({
   initialMessages = [],
@@ -29,102 +43,79 @@ export function useChatState({
   const [pills, setPills] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
 
-  // Load chat history from localStorage
+  // useEffect für loading:
   useEffect(() => {
-    const savedSession = localStorage.getItem(STORAGE_KEY);
-    if (savedSession) {
-      try {
-        const sessionData = JSON.parse(savedSession);
-        if (Array.isArray(sessionData.messages)) {
-          setMessages(sessionData.messages);
-        }
-        if (Array.isArray(sessionData.pills)) {
-          setPills(sessionData.pills);
-        }
-      } catch (error) {
-        console.error("Failed to parse saved session", error);
-      }
+    const sessionData = loadSession(STORAGE_KEY);
+    if (sessionData) {
+      if (Array.isArray(sessionData.messages))
+        setMessages(sessionData.messages);
+      if (Array.isArray(sessionData.pills)) setPills(sessionData.pills);
     }
   }, []);
 
-  // Save chat history to localStorage
+  // useEffect für saving:
   useEffect(() => {
     if (messages.length > 0) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ messages, pills }));
+      saveSession(STORAGE_KEY, { messages, pills });
     }
   }, [messages, pills]);
 
-  const convertFileToBase64 = (
-    file: File
-  ): Promise<{ name: string; base64: string }> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve({ name: file.name, base64: reader.result as string });
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  };
-
+  // Function to send a message to the API
+  // It handles both text content and file uploads, converting files to Base64
   const sendMessage = useCallback(
     async (content: string, uploadedFiles: File[] = []) => {
-      if (!content.trim() && uploadedFiles.length === 0) return;
-
+      if (!content.trim() && uploadedFiles.length === 0) return; // Do not send empty messages
+ 
       const userMessage: Message = {
-        id: uuidv4(),
-        content,
-        isUser: true,
-        files: uploadedFiles.map((file) => ({ name: file.name })),
+        id: uuidv4(), // Generate a unique ID for the message
+        content, // Text content of the message
+        isUser: true, // Indicates this message is from the user
+        files: uploadedFiles.map((file) => ({ name: file.name })), // Store only file names in the message
       };
 
-      setMessages((prev) => [...prev, userMessage]);
-      setInputValue("");
-      setPills([]);
-      setIsTyping(true);
+      setMessages((prev) => [...prev, userMessage]); // Add user message to chat
+      setInputValue(""); // Clear input field
+      setPills([]); // Clear pills
+      setIsTyping(true); // Set typing status to true
 
-      // 🔁 BASE64 konvertieren
+      // BASE64 konvertieren
       const messageFiles = await Promise.all(
         uploadedFiles.map((file) => convertFileToBase64(file))
       );
 
       const requestData = {
         message: content,
-        files: messageFiles,
+        files: await Promise.all(
+          uploadedFiles.map((file) => convertFileToBase64(file))
+        ),
         variant,
       };
 
       try {
         const conversationId =
-          localStorage.getItem("conversation-id") || crypto.randomUUID();
-        localStorage.setItem("conversation-id", conversationId);
+          localStorage.getItem("conversation-id") || crypto.randomUUID(); // Use existing conversation ID or generate a new one
+        localStorage.setItem("conversation-id", conversationId); // Save conversation ID to localStorage
 
-        // ✅ LOG: Was wird tatsächlich gesendet?
-        console.log("📦 Sending payload to webhook:", {
-          conversationId,
-          requestData,
-        });
         // Send the request to the API
-        const response = await fetch(apiUrl, {
-          method: "POST",
+        const response = await fetch(apiUrl, {    
+          method: "POST", 
           headers: {
             "Content-Type": "application/json",
-            "x-conversation-id": conversationId,
+            "x-conversation-id": conversationId, // Include conversation ID in headers
           },
           body: JSON.stringify(requestData),
         });
 
-
         if (!response.ok) {
-          // ❌ LOG: bei Fehlern response body als Text lesen
+          // LOG: bei Fehlern response body als Text lesen
           const errorText = await response.text();
-          console.error("❌ Error response body:", errorText);
           throw new Error("Request failed");
         }
 
-        const data: ApiResponse = await response.json();
+        const data: ApiResponse = await response.json();   
 
-        const botMessage: Message = {
+        // Response from n8n
+        const botMessage: Message = { 
           id: uuidv4(),
           content: "",
           html: data.chatResponse,
@@ -133,13 +124,10 @@ export function useChatState({
           ctaType: data.ctaType,
         };
 
-        console.log("📦 Bot message:", botMessage);
-
-        setMessages((prev) => [...prev, botMessage]);
-        setPills(data.pills || []);
-        setFiles([]);
+        setMessages((prev) => [...prev, botMessage]); // Add bot message to chat
+        setPills(data.pills || []); // Set pills from API response
+        setFiles([]); // Clear files after sending message
       } catch (error) {
-        console.error("❌ Error sending message:", error);
         toast({
           title: "Error",
           description: "Failed to send message. Please try again.",
@@ -152,10 +140,12 @@ export function useChatState({
     [variant, apiUrl]
   );
 
-  const handleFilesAdded = (newFiles: File[]) => {
+  // Function to handle files added by the user
+  const handleFilesAdded = (newFiles: File[]) => { 
     setFiles((prev) => [...prev, ...newFiles]);
-  };
+  }; 
 
+  // Function to remove a file from the list 
   const handleFileRemove = (index: number) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
@@ -163,16 +153,17 @@ export function useChatState({
   const clearFiles = () => {
     setFiles([]);
   };
-  return {
+
+  return {  
     messages,
     isTyping,
     files,
     pills,
     inputValue,
     setInputValue,
-    sendMessage,
+    sendMessage, 
     handleFilesAdded,
     handleFileRemove,
     clearFiles,
-  };
+  }; 
 }
