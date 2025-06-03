@@ -13,7 +13,7 @@ const ChatHeader = () => {
           rel="noopener noreferrer"
         >
           <img
-            src="/uploads/logo-transparent.png"
+            src="/uploads/auctoa-logo-creme.png"
             alt="Auctoa Logo"
             className="h-3 md:h-6"
           />
