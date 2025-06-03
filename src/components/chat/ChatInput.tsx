@@ -1,6 +1,13 @@
 import React, { useRef, useEffect } from "react";
-import { Send, Paperclip } from "lucide-react";
+import { Send, Paperclip, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
 
 type ChatInputProps = {
   onSendMessage: (message: string) => void;
@@ -72,20 +79,49 @@ const ChatInput = ({
 
       {/* Bottom: Buttons row with justify-between */}
       <div className="flex items-center justify-between">
-        {/* Left: Upload */}
-        <Button
-          onClick={onFileButtonClick}
-          size="default" // use "default" or "sm" to allow for text
-          variant="ghost"
-          className="text-xs px-3 py-3 md:text-sm md:px-3 md:py-3 bg-[color:var(--transparent-10)] hover:bg-[color:var(--transparent-20)] rounded-lg h-10"
-          type="button"
-          aria-label="Dokumente hochladen"
-        >
-          <Paperclip size={18} className="text-[color:var(--primary-creme)]" />
-          <span className="text-[color:var(--primary-creme)] text-sm">
-            Dokumente hochladen
-          </span>
-        </Button>
+        <TooltipProvider>
+          <div className="flex items-center gap-2">
+            {/* Upload Button */}
+            <Button
+              onClick={onFileButtonClick}
+              size="default"
+              variant="ghost"
+              className="text-xs px-3 py-3 md:text-sm md:px-3 md:py-3 bg-[color:var(--transparent-10)] hover:bg-[color:var(--transparent-20)] rounded-lg h-10"
+              type="button"
+              aria-label="Dokumente hochladen"
+            >
+              <Paperclip
+                size={18}
+                className="text-[color:var(--primary-creme)]"
+              />
+              <span className="text-[color:var(--primary-creme)] text-sm">
+                Dokumente hochladen
+              </span>
+            </Button>
+
+            {/* Info Icon with Tooltip */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  aria-label="Datenschutzhinweis"
+                  className="rounded-full border-none flex items-center justify-center"
+                >
+                  <Info
+                    size={16}
+                    className="text-[color:var(--primary-creme)]"
+                  />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent
+                side="top"
+                className="bg-[color:var(--secondary-darkgreen)] text-[color:var(--primary-creme)] border-none shadow-md text-xs px-3 py-2 max-w-[80vw] break-words"
+              >
+                Ihre Dokumente und Daten werden DSGVO-konform behandelt.
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
 
         {/* Right: Send */}
         <Button
