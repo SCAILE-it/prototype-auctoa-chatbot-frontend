@@ -30,6 +30,8 @@
   body {
     background-color: var(--primary-creme);
     color: var(--neutral-dark);
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Apply specific styles for HTML content in chat bubbles */
@@ -79,8 +81,7 @@
   animation-delay: 300ms;
 }
 
-/* === SCROLLBAR STYLING === */
-
+/* Scrollbar Styling === */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
