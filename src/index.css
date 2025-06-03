@@ -30,8 +30,6 @@
   body {
     background-color: var(--primary-creme);
     color: var(--neutral-dark);
-    overscroll-behavior-y: none;
-    -webkit-overflow-scrolling: touch;
   }
 
   /* Apply specific styles for HTML content in chat bubbles */
