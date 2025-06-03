@@ -1,5 +1,8 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { IconArrowUpRight } from "@tabler/icons-react";
+
+import { Button } from "@/components/ui/button";
 
 const NotFound = () => {
   const location = useLocation();
@@ -12,13 +15,24 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4">404</h1>
-        <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-          Return to Home
+        <p className="text-xl text-[color:var(--neutral-dark)] mb-4">Oops! Diese Seite existiert nicht.</p>
+              <Button
+        asChild
+        variant="default"
+        className="text-xs px-3 py-1.5 md:text-sm md:px-4 md:py-2"
+      >
+        <a
+          href="/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Zum Chat
+          <IconArrowUpRight size={14} stroke={2} className="ml-1" />
         </a>
+      </Button>
       </div>
     </div>
   );
