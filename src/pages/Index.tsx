@@ -32,8 +32,7 @@ const Index = () => {
     clearFiles,
   } = useChatState({
     variant: getVariant(),
-    apiUrl:
-      import.meta.env.VITE_API_URL,
+    apiUrl: import.meta.env.VITE_API_URL,
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -61,7 +60,7 @@ const Index = () => {
           }}
         >
           {/* Chat messages container */}
-          <div className="flex-1 overflow-hidden pb-[160px] md:pb-[160px]">
+          <div className="flex-1 overflow-hidden pb-[160px]">
             <ChatContainer
               messages={messages}
               isTyping={isTyping}

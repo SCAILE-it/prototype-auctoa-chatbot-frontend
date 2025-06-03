@@ -61,16 +61,10 @@ const CTA_CONFIG = {
 
 const MessageList = ({ messages, isTyping }: MessageListProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-useEffect(() => {
-  const el = messagesEndRef.current;
-  if (el) {
-    el.parentElement?.scrollTo({
-      top: el.offsetTop,
-      behavior: "smooth",
-    });
-  }
-}, [messages, isTyping]);
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isTyping]);
 
   const renderHTML = (html: string) => (
     <div className="chat-content" dangerouslySetInnerHTML={{ __html: html }} />
@@ -79,11 +73,12 @@ useEffect(() => {
   const containerClasses =
     messages.length === 0 && !isTyping
       ? "flex flex-col justify-center items-center min-h-full p-2 md:p-4"
-      : "flex flex-col px-2 py-9 md:px-2 md:pt-4 md:pb-32 max-w-4xl mx-auto pb-40";
+      : "flex flex-col px-2 pt-9 pb-40 md:px-2 md:pt-4 md:pb-30 max-w-4xl mx-auto";
 
   return (
     <div className={containerClasses}>
-      <div className="text-sm md:text-base w-full">
+      <div className="text-sm md:text-base w-full justify-end">
+
         {messages.map((message, i) => (
           <div
             key={message.id}
@@ -91,7 +86,7 @@ useEffect(() => {
               message.isUser ? "items-end" : "items-start"
             } flex flex-col w-full mb-4 md:mb-2`}
           >
-            {/* Show files ABOVE the message bubble */}
+            {/* Show files above the message bubble */}
             {message.files?.length > 0 && (
               <div
                 className={`mt-1 flex flex-wrap gap-2 ${
@@ -146,7 +141,7 @@ useEffect(() => {
 
         {isTyping && <TypingIndicator />}
       </div>
-      <div ref={messagesEndRef} className="scroll-mt-20" />
+      <div ref={messagesEndRef} />
     </div>
   );
 };
