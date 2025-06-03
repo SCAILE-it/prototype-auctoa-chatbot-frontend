@@ -8,12 +8,17 @@ import FileUploadBar from "@/components/chat/FileUploadBar";
 import ChatInput from "@/components/chat/ChatInput";
 import ChatFooter from "@/components/chat/ChatFooter";
 
+// This is the main chat page component
+// It initializes the chat state and renders the chat interface
+
 const Index = () => {
+  // Function to get the sessionId from URL parameters
   const getSessionId = () => {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get("sessionId") || "";
   };
 
+  // Function to get the variant from URL parameters, defaulting to "valuation"
   const getVariant = () => {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get("variant") || "valuation";
@@ -32,10 +37,10 @@ const Index = () => {
     clearFiles,
   } = useChatState({
     variant: getVariant(),
-    apiUrl: import.meta.env.VITE_API_URL,
+    apiUrl: import.meta.env.VITE_API_URL, // API URL from environment variables
   });
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null); // Reference to the hidden file input
 
   return (
     <div className="min-h-screen flex flex-col relative">

@@ -6,12 +6,12 @@ import ChatBubble from "./ChatBubble";
 import FileBubble from "./FileBubble";
 import SourcesDropdown from "./SourcesDropdown";
 import TypingIndicator from "./TypingIndicator";
+import { CTA_CONFIG } from "@/lib/ctaConfig";
 
-export type MessageFile = {
-  name: string;
-  url?: string;
-};
+// This component renders a list of messages in the chat interface.
+// It handles both user and AI messages, displays files, and includes CTAs for specific actions.
 
+// Represents a single message in the chat
 export type Message = {
   id: string;
   content: string; // Text content of the message (user)
@@ -19,126 +19,113 @@ export type Message = {
   files?: MessageFile[]; // Optional array of files attached to the message
   html?: string; // Optional HTML content for the message (AI)
   sources?: { title: string; url: string }[]; // Optional sources for the message, each with a title and URL
-  ctaType?: "gutachten" | "termin" | "makler" | "finanzrechner" | "anwalt" | "ibuyer" | "sanierer"; // Optional CTA type for specific message actions
+  ctaType?:
+    | "gutachten"
+    | "termin"
+    | "makler"
+    | "finanzrechner"
+    | "anwalt"
+    | "ibuyer"
+    | "sanierer"; // Optional CTA type for specific message actions
+};
+
+// Represents a file attached to a message
+export type MessageFile = {
+  name: string;
+  url?: string;
 };
 
 type MessageListProps = {
-  messages: Message[];
-  isTyping: boolean;
+  messages: Message[]; // Array of messages to display in the chat
+  isTyping: boolean; // Indicates if the AI is currently typing a response
 };
-
-// Mapping CTA types to their labels and URLs
-const CTA_CONFIG = {
-  gutachten: {
-    label: "Gutachten anfragen",
-    url: "https://www.auctoa.de/lead-survey/gutachten",
-  },
-  termin: {
-    label: "Gratis Expertenberatung erhalten",
-    url: "https://www.auctoa.de/lead-survey/termin",
-  },
-  makler: {
-    label: "Mit Makler verbunden werden",
-    url: "https://www.auctoa.de/lead-survey/makler",
-  },
-  finanzrechner: {
-    label: "Finanzierung berechnen",
-    url: "https://www.auctoa.de/lead-survey/finanzrechner",
-  },
-  anwalt: {
-    label: "Juristische Beratung sichern",
-    url: "https://www.auctoa.de/lead-survey/anwalt",
-  },
-  ibuyer: {
-    label: "Jetzt direkt verkaufen",
-    url: "https://www.auctoa.de/lead-survey/ibuyer",
-  },
-  sanierer: {
-    label: "Sanierungsexperten kontaktieren",
-    url: "https://www.auctoa.de/lead-survey/sanierung",
-  },
-} as const;
 
 const MessageList = ({ messages, isTyping }: MessageListProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Scroll to the bottom of the message list whenever messages change or when typing status updates
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
+  // Helper function to render HTML content safely
+  // This function uses dangerouslySetInnerHTML to render HTML content in a React component.
   const renderHTML = (html: string) => (
     <div className="chat-content" dangerouslySetInnerHTML={{ __html: html }} />
   );
 
+  // Function to render each message in the list
+  // It checks if the message is from the user or AI, and formats it accordingly.
+  const renderMessage = (message: Message, index: number) => {
+    const isLast = index === messages.length - 1;
+
+    return (
+      <div
+        key={message.id}
+        className={`${
+          message.isUser ? "items-end" : "items-start"
+        } flex flex-col w-full mb-4 md:mb-2`}
+      >
+        {message.files?.length > 0 && ( // If the message has files, render them in a bubble
+          <div
+            className={`mt-1 flex flex-wrap gap-2 ${
+              message.isUser ? "justify-end" : "justify-start"
+            }`}
+          >
+            {message.files.map((file, i) => (
+              <FileBubble
+                key={i}
+                fileName={file.name}
+                isUserMessage={message.isUser}
+              />
+            ))}
+          </div>
+        )}
+
+        {(message.content?.trim() || // If the message has content or HTML, render it in a chat bubble
+          message.html?.trim() ||
+          message.ctaType) && (
+          <ChatBubble isUser={message.isUser}>
+            {message.html ? renderHTML(message.html) : message.content}
+
+            {message.ctaType &&
+              CTA_CONFIG[message.ctaType] && ( // If the message has a CTA type, render the corresponding button
+                <div className="mt-3">
+                  <Button asChild variant="default" size="default">
+                    <a
+                      href={CTA_CONFIG[message.ctaType].url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {CTA_CONFIG[message.ctaType].label}
+                      <IconArrowUpRight size={14} stroke={2} />
+                    </a>
+                  </Button>
+                </div>
+              )}
+
+            {message.sources?.length > 0 && ( // If the message has sources, render the SourcesDropdown component
+              <SourcesDropdown
+                sources={message.sources}
+                parentRef={messagesEndRef}
+                isLastMessage={isLast}
+              />
+            )}
+          </ChatBubble>
+        )}
+      </div>
+    );
+  };
+
   const containerClasses =
     messages.length === 0 && !isTyping
-      ? "flex flex-col justify-center items-center min-h-full p-2 md:p-4"
-      : "flex flex-col px-2 pt-9 pb-40 md:px-2 md:pt-4 md:pb-30 max-w-4xl mx-auto";
+      ? "flex flex-col justify-center items-center min-h-full p-2 md:p-4" // If no messages and not typing, center the content
+      : "flex flex-col px-2 pt-9 pb-40 md:px-2 md:pt-4 md:pb-30 max-w-4xl mx-auto"; // Otherwise, use the standard chat layout
 
   return (
     <div className={containerClasses}>
-      <div className="text-sm md:text-base w-full justify-end">
-
-        {messages.map((message, i) => (
-          <div
-            key={message.id}
-            className={`${
-              message.isUser ? "items-end" : "items-start"
-            } flex flex-col w-full mb-4 md:mb-2`}
-          >
-            {/* Show files above the message bubble */}
-            {message.files?.length > 0 && (
-              <div
-                className={`mt-1 flex flex-wrap gap-2 ${
-                  message.isUser ? "justify-end" : "justify-start"
-                }`}
-              >
-                {message.files.map((file, index) => (
-                  <FileBubble
-                    key={index}
-                    fileName={file.name}
-                    isUserMessage={message.isUser}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Message bubble – only if content or html exists */}
-            {(message.content?.trim() ||
-              message.html?.trim() ||
-              message.ctaType) && (
-              <ChatBubble isUser={message.isUser}>
-                {/* Chat content */}
-                {message.html ? renderHTML(message.html) : message.content}
-
-                {/* CTA inside the bubble */}
-                {message.ctaType && CTA_CONFIG[message.ctaType] && (
-                  <div className="mt-3">
-                    <Button asChild variant="default" size="default">
-                      <a
-                        href={CTA_CONFIG[message.ctaType].url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {CTA_CONFIG[message.ctaType].label}
-                        <IconArrowUpRight size={14} stroke={2} />
-                      </a>
-                    </Button>
-                  </div>
-                )}
-
-                {message.sources && message.sources.length > 0 && (
-                  <SourcesDropdown
-                    sources={message.sources}
-                    parentRef={messagesEndRef}
-                    isLastMessage={i === messages.length - 1} // <== nur wenn letzte Nachricht
-                  />
-                )}
-              </ChatBubble>
-            )}
-          </div>
-        ))}
-
+      <div className="text-sm md:text-base w-full">
+        {messages.map(renderMessage)}
         {isTyping && <TypingIndicator />}
       </div>
       <div ref={messagesEndRef} />
