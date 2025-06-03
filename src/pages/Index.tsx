@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import { useChatState } from "@/hooks/useChatState";
 
 import ChatHeader from "@/components/chat/ChatHeader";
 import ChatContainer from "@/components/chat/ChatContainer";
@@ -6,8 +7,6 @@ import PillBar from "@/components/chat/PillBar";
 import FileUploadBar from "@/components/chat/FileUploadBar";
 import ChatInput from "@/components/chat/ChatInput";
 import ChatFooter from "@/components/chat/ChatFooter";
-
-import { useChatState } from "@/hooks/useChatState";
 
 const Index = () => {
   const getSessionId = () => {

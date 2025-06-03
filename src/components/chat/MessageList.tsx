@@ -39,7 +39,7 @@ const CTA_CONFIG = {
   },
   makler: {
     label: "Mit Makler verbunden werden",
-    url: "https://www.auctoa.de/lead-survey/ctaID",
+    url: "https://www.auctoa.de/lead-survey/makler",
   },
   finanzrechner: {
     label: "Finanzierung berechnen",
@@ -50,7 +50,7 @@ const CTA_CONFIG = {
     url: "https://www.auctoa.de/lead-survey/anwalt",
   },
   ibuyer: {
-    label: "Jetzt direkt verkaufen (iBuyer)",
+    label: "Jetzt direkt verkaufen",
     url: "https://www.auctoa.de/lead-survey/ibuyer",
   },
   sanierer: {

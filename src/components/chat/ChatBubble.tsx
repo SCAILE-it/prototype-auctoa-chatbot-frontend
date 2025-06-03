@@ -1,6 +1,5 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { IconUser } from "@tabler/icons-react";
 
 type ChatBubbleProps = {
   isUser: boolean;
@@ -17,10 +16,11 @@ const ChatBubble = ({ isUser, children }: ChatBubbleProps) => {
     >
       {/* Avatar only for AI */}
       {!isUser && (
-        <div className="w-8 h-8 mt-1 rounded-full bg-[color:var(--primary-creme)] flex items-center justify-center shrink-0">
-          <IconUser
-            size={20}
-            className="text-[color:var(--neutral-dark)]"
+        <div className="w-8 h-8 mt-1 rounded-full bg-[color:var(--primary-creme)] flex items-center justify-center shrink-0 overflow-hidden">
+          <img
+            src="/uploads/auctoa-icon.png"
+            alt="Auctoa"
+            className="w-full h-full object-contain"
           />
         </div>
       )}
