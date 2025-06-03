@@ -63,7 +63,10 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
   }, [messages, isTyping]);
 
   const renderHTML = (html: string) => (
@@ -73,7 +76,7 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
   const containerClasses =
     messages.length === 0 && !isTyping
       ? "flex flex-col justify-center items-center min-h-full p-2 md:p-4"
-      : "flex flex-col px-2 py-9 md:px-2 md:py-32 max-w-4xl mx-auto pb-40";
+      : "flex flex-col px-2 py-9 md:px-2 md:pt-4 md:pb-32 max-w-4xl mx-auto pb-40";
 
   return (
     <div className={containerClasses}>
@@ -140,7 +143,7 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
 
         {isTyping && <TypingIndicator />}
       </div>
-      <div ref={messagesEndRef} />
+      <div ref={messagesEndRef} className="scroll-mt-20" />
     </div>
   );
 };
