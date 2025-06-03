@@ -71,7 +71,7 @@ const Index = () => {
         </main>
 
         {/* Chat input + pills (fixed) */}
-        <div className="fixed bottom-8 left-0 right-0 z-20 px-4">
+        <div className="fixed bottom-12 left-0 right-0 z-20 px-4">
           <div className="max-w-4xl mx-auto">
             {pills.length > 0 && (
               <div className="mb-4">
