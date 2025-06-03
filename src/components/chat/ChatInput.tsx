@@ -107,7 +107,10 @@ const ChatInput = ({
                 <button
                   type="button"
                   aria-label="Datenschutzhinweis"
-                  onClick={() => setTooltipOpen((prev) => !prev)} // Toggle manuell
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setTooltipOpen((prev) => !prev); // Toggle on click
+                  }}
                   className="rounded-full border-none flex items-center justify-center"
                 >
                   <Info
@@ -116,13 +119,17 @@ const ChatInput = ({
                   />
                 </button>
               </TooltipTrigger>
-              <TooltipContent
-                side="top"
-                className="bg-[color:var(--secondary-darkgreen)] text-[color:var(--primary-creme)] border-none shadow-md text-xs px-3 py-2 max-w-[80vw] break-words"
-                sideOffset={6}
-              >
-                Ihre Dokumente und Daten werden DSGVO-konform behandelt.
-              </TooltipContent>
+
+              {tooltipOpen && (
+                <TooltipContent
+                  forceMount
+                  side="top"
+                  className="z-50 bg-[color:var(--secondary-darkgreen)] text-[color:var(--primary-creme)] border-none shadow-md text-xs px-3 py-2 max-w-[80vw] break-words"
+                  sideOffset={6}
+                >
+                  Ihre Dokumente und Daten werden DSGVO-konform behandelt.
+                </TooltipContent>
+              )}
             </Tooltip>
           </div>
         </TooltipProvider>
