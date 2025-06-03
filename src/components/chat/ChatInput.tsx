@@ -32,6 +32,8 @@ const ChatInput = ({
 }: ChatInputProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const [tooltipOpen, setTooltipOpen] = React.useState(false);
+
   // Auto-resize the textarea based on content
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -100,11 +102,12 @@ const ChatInput = ({
             </Button>
 
             {/* Info Icon with Tooltip */}
-            <Tooltip>
+            <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
               <TooltipTrigger asChild>
                 <button
                   type="button"
                   aria-label="Datenschutzhinweis"
+                  onClick={() => setTooltipOpen((prev) => !prev)} // Toggle manuell
                   className="rounded-full border-none flex items-center justify-center"
                 >
                   <Info
@@ -116,6 +119,7 @@ const ChatInput = ({
               <TooltipContent
                 side="top"
                 className="bg-[color:var(--secondary-darkgreen)] text-[color:var(--primary-creme)] border-none shadow-md text-xs px-3 py-2 max-w-[80vw] break-words"
+                sideOffset={6}
               >
                 Ihre Dokumente und Daten werden DSGVO-konform behandelt.
               </TooltipContent>
