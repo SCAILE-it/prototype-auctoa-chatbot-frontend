@@ -61,13 +61,16 @@ const CTA_CONFIG = {
 
 const MessageList = ({ messages, isTyping }: MessageListProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({
+useEffect(() => {
+  const el = messagesEndRef.current;
+  if (el) {
+    el.parentElement?.scrollTo({
+      top: el.offsetTop,
       behavior: "smooth",
-      block: "nearest",
     });
-  }, [messages, isTyping]);
+  }
+}, [messages, isTyping]);
+
 
   const renderHTML = (html: string) => (
     <div className="chat-content" dangerouslySetInnerHTML={{ __html: html }} />
