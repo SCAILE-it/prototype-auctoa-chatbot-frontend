@@ -1,6 +1,6 @@
 # Auctoa Chatbot Frontend
 
-🌐 **Live:** [https://chat-auctoa.vercel.app](https://chat-auctoa.vercel.app)
+🌐 **Live:** [https://auctoa-chat-frontend.vercel.app](https://auctoa-chat-frontend.vercel.app)
 
 Frontend für den AI-gestützten Immobilien-Chatbot von Auctoa. Entwickelt mit React + Vite + TailwindCSS.
 
@@ -27,4 +27,4 @@ Frontend für den AI-gestützten Immobilien-Chatbot von Auctoa. Entwickelt mit R
     Wird aktuell über Vercel deployed. 
     Die .env-Variable **VITE_API_URL** muss dort ebenfalls hinterlegt werden.
 
-    🌐 [https://chat-auctoa.vercel.app](https://chat-auctoa.vercel.app)
+    🌐 [https://auctoa-chat-frontend.vercel.app](https://auctoa-chat-frontend.vercel.app)
