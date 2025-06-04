@@ -1,4 +1,6 @@
-import React from "react";
+// This component represents the main chat container in a chat interface.
+// It displays a list of messages and handles typing indicators and file attachments.
+
 import MessageList, { Message } from "./MessageList";
 
 type ChatContainerProps = {

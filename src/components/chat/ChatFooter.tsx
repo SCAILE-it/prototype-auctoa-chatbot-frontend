@@ -1,4 +1,5 @@
-import React from "react";
+// This component represents the footer of a chat interface.
+// It includes links to privacy policy and imprint, and a disclaimer about AI-generated responses.
 
 const ChatFooter = () => {
   return (

@@ -1,3 +1,5 @@
+// This hook is used to manage toast notifications in a React application.
+
 import * as React from "react"
 
 import type {

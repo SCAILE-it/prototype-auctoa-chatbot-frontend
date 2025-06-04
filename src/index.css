@@ -1,3 +1,7 @@
+/* This file is used to define global styles and Tailwind CSS configurations.
+   It includes custom colors, animations, and scrollbar styles.
+*/
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

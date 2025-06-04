@@ -1,14 +1,12 @@
+// This custom hook is used to manage chat state, including messages, typing status, files, and pills.
+// It handles sending messages to the API and saving/loading chat history from localStorage.
+
 import { useState, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "@/hooks/use-toast";
 import { Message } from "@/components/chat/MessageList";
 import { convertFileToBase64 } from "@/lib/files.ts";
 import { loadSession, saveSession } from "@/lib/session.ts";
-
-/** useChatState.ts
- * Custom hook to manage chat state, including messages, typing status, files, and pills.
- * It handles sending messages to the API and saving/loading chat history from localStorage.
- */
 
 type ApiResponse = {
   chatResponse: string; // HTML response from the chat API
@@ -65,7 +63,7 @@ export function useChatState({
   const sendMessage = useCallback(
     async (content: string, uploadedFiles: File[] = []) => {
       if (!content.trim() && uploadedFiles.length === 0) return; // Do not send empty messages
- 
+
       const userMessage: Message = {
         id: uuidv4(), // Generate a unique ID for the message
         content, // Text content of the message
@@ -97,8 +95,8 @@ export function useChatState({
         localStorage.setItem("conversation-id", conversationId); // Save conversation ID to localStorage
 
         // Send the request to the API
-        const response = await fetch(apiUrl, {    
-          method: "POST", 
+        const response = await fetch(apiUrl, {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             "x-conversation-id": conversationId, // Include conversation ID in headers
@@ -112,10 +110,10 @@ export function useChatState({
           throw new Error("Request failed");
         }
 
-        const data: ApiResponse = await response.json();   
+        const data: ApiResponse = await response.json();
 
         // Response from n8n
-        const botMessage: Message = { 
+        const botMessage: Message = {
           id: uuidv4(),
           content: "",
           html: data.chatResponse,
@@ -123,6 +121,7 @@ export function useChatState({
           sources: data.sources || [],
           ctaType: data.ctaType,
         };
+        console.log("Bot message:", botMessage);
 
         setMessages((prev) => [...prev, botMessage]); // Add bot message to chat
         setPills(data.pills || []); // Set pills from API response
@@ -141,11 +140,11 @@ export function useChatState({
   );
 
   // Function to handle files added by the user
-  const handleFilesAdded = (newFiles: File[]) => { 
+  const handleFilesAdded = (newFiles: File[]) => {
     setFiles((prev) => [...prev, ...newFiles]);
-  }; 
+  };
 
-  // Function to remove a file from the list 
+  // Function to remove a file from the list
   const handleFileRemove = (index: number) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
@@ -154,16 +153,16 @@ export function useChatState({
     setFiles([]);
   };
 
-  return {  
+  return {
     messages,
     isTyping,
     files,
     pills,
     inputValue,
     setInputValue,
-    sendMessage, 
+    sendMessage,
     handleFilesAdded,
     handleFileRemove,
     clearFiles,
-  }; 
+  };
 }

@@ -1,7 +1,9 @@
+// This page displays a 404 Not Found error when a user attempts to access a non-existent route.
+// It logs the error to the console and provides a button to redirect the user back to the chat page.
+
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { IconArrowUpRight } from "@tabler/icons-react";
-
 import { Button } from "@/components/ui/button";
 
 const NotFound = () => {

@@ -1,3 +1,5 @@
+// This function is used to load and save session data in the browser's local storage.
+
 export const loadSession = (key: string) => {
   try {
     const raw = localStorage.getItem(key);

@@ -1,6 +1,6 @@
-import React from "react";
-import { IconArrowUpRight } from "@tabler/icons-react";
+// This component is a header for a chat interface, providing branding and a call-to-action button for users to request a free expert consultation. It includes an external link to the Auctoa website and uses Tailwind CSS for styling.
 
+import { IconArrowUpRight } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 
 const ChatHeader = () => {

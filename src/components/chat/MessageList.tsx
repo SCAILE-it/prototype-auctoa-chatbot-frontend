@@ -1,4 +1,7 @@
-import React, { useRef, useEffect } from "react";
+// This component renders a list of messages in the chat interface.
+// It handles both user and AI messages, displays files, and includes CTAs for specific actions.
+
+import { useRef, useEffect } from "react";
 import { IconArrowUpRight } from "@tabler/icons-react";
 
 import { Button } from "@/components/ui/button";
@@ -7,9 +10,6 @@ import FileBubble from "./FileBubble";
 import SourcesDropdown from "./SourcesDropdown";
 import TypingIndicator from "./TypingIndicator";
 import { CTA_CONFIG } from "@/lib/ctaConfig";
-
-// This component renders a list of messages in the chat interface.
-// It handles both user and AI messages, displays files, and includes CTAs for specific actions.
 
 // Represents a single message in the chat
 export type Message = {

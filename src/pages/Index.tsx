@@ -1,15 +1,15 @@
-import React, { useRef } from "react";
-import { useChatState } from "@/hooks/useChatState";
-
-import ChatHeader from "@/components/chat/ChatHeader";
-import ChatContainer from "@/components/chat/ChatContainer";
-import PillBar from "@/components/chat/PillBar";
-import FileUploadBar from "@/components/chat/FileUploadBar";
-import ChatInput from "@/components/chat/ChatInput";
-import ChatFooter from "@/components/chat/ChatFooter";
-
 // This is the main chat page component
 // It initializes the chat state and renders the chat interface
+
+import { useRef } from "react";
+
+import { useChatState } from "@/hooks/useChatState";
+import ChatContainer from "@/components/chat/ChatContainer";
+import ChatFooter from "@/components/chat/ChatFooter";
+import ChatHeader from "@/components/chat/ChatHeader";
+import ChatInput from "@/components/chat/ChatInput";
+import FileUploadBar from "@/components/chat/FileUploadBar";
+import PillBar from "@/components/chat/PillBar";
 
 const Index = () => {
   // Function to get the sessionId from URL parameters

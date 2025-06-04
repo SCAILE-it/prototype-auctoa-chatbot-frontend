@@ -1,3 +1,5 @@
+// This hook determines if the current device is mobile based on the screen width.
+
 import * as React from "react"
 
 const MOBILE_BREAKPOINT = 768

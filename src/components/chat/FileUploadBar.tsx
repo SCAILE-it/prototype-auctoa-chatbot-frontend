@@ -1,7 +1,9 @@
+// This component represents a file upload bar in a chat interface.
+// It allows users to drag and drop files or select files from their device.
+
 import React, { useCallback, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import FileBubble from "./FileBubble";
-import ChatFooter from "@/components/chat/ChatFooter.tsx";
 
 type FileUploadBarProps = {
   files: File[];
@@ -10,19 +12,27 @@ type FileUploadBarProps = {
   uploadInputRef?: React.RefObject<HTMLInputElement>;
 };
 
+const ACCEPTED_FORMATS = {
+  "application/pdf": [".pdf"],
+  "image/png": [".png"],
+  "image/jpeg": [".jpg", ".jpeg"],
+  "application/msword": [".doc"],
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+    ".docx",
+  ],
+};
+
 const FileUploadBar = ({
   files,
   onFilesAdded,
   onFileRemove,
   uploadInputRef,
 }: FileUploadBarProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const actualRef = uploadInputRef || inputRef;
+  const fallbackRef = useRef<HTMLInputElement>(null);
+  const inputRef = uploadInputRef || fallbackRef;
 
   const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      onFilesAdded(acceptedFiles);
-    },
+    (acceptedFiles: File[]) => onFilesAdded(acceptedFiles),
     [onFilesAdded]
   );
 
@@ -30,64 +40,43 @@ const FileUploadBar = ({
     onDrop,
     noClick: true,
     noKeyboard: true,
-    accept: {
-      "application/pdf": [".pdf"],
-      "image/png": [".png"],
-      "image/jpeg": [".jpg", ".jpeg"],
-      "application/msword": [".doc"],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        [".docx"],
-    },
+    accept: ACCEPTED_FORMATS,
   });
 
-  // Only render if there are files to show
-  return files.length > 0 ? (
-    <div className="mb-2">
-      <div {...getRootProps()}>
-        <input {...getInputProps()} ref={actualRef} />
-        <div className="flex flex-wrap gap-2">
-          {files.map((file, index) => (
-            <FileBubble
-              key={index}
-              fileName={file.name}
-              onRemove={() => onFileRemove(index)}
-            />
-          ))}
-        </div>
-      </div>
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.length) {
+      onFilesAdded(Array.from(e.target.files));
+      e.target.value = "";
+    }
+  };
 
-      {/* Hidden input for file selection */}
+  return (
+    <>
+      {files.length > 0 && (
+        <div className="mb-2" {...getRootProps()}>
+          <input {...getInputProps()} ref={inputRef} />
+          <div className="flex flex-wrap gap-2">
+            {files.map((file, index) => (
+              <FileBubble
+                key={`${file.name}-${index}`}
+                fileName={file.name}
+                onRemove={() => onFileRemove(index)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Render the hidden file input */} 
       <input
         type="file"
         className="hidden"
-        ref={actualRef}
-        onChange={(e) => {
-          if (e.target.files?.length) {
-            const filesArray = Array.from(e.target.files);
-            onFilesAdded(filesArray);
-            // Reset the input value to allow selecting the same file again
-            e.target.value = "";
-          }
-        }}
+        ref={inputRef}
+        onChange={handleInputChange}
         multiple
-        accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+        accept={Object.values(ACCEPTED_FORMATS).flat().join(",")}
       />
-    </div>
-  ) : (
-    <input
-      type="file"
-      className="hidden"
-      ref={actualRef}
-      onChange={(e) => {
-        if (e.target.files?.length) {
-          const filesArray = Array.from(e.target.files);
-          onFilesAdded(filesArray);
-          e.target.value = "";
-        }
-      }}
-      multiple
-      accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
-    />
+    </>
   );
 };
 

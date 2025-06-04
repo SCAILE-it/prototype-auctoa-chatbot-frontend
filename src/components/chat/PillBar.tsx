@@ -1,9 +1,11 @@
-import React from "react";
+// This component renders a pill bar with clickable pills.
+// It allows users to click on pills to trigger an action.
+
 import { Button } from "@/components/ui/button";
 
 type PillBarProps = {
-  pills: string[];
-  onPillClick: (pill: string) => void;
+  pills: string[]; // Array of pills to display in the bar coming from n8n response
+  onPillClick: (pill: string) => void; // Callback function to handle pill click events
 };
 
 const PillBar = ({ pills, onPillClick }: PillBarProps) => {

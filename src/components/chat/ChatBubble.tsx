@@ -1,3 +1,6 @@
+// This component represents a chat bubble in a chat interface.
+// It displays messages from either the user or the AI, with appropriate styling and avatars.
+
 import React from "react";
 import { cn } from "@/lib/utils";
 
@@ -6,7 +9,7 @@ type ChatBubbleProps = {
   children: React.ReactNode;
 };
 
-const ChatBubble = ({ isUser, children }: ChatBubbleProps) => {
+const ChatBubble = ({ isUser, children }: ChatBubbleProps) => { // Determines if the message is from the user or AI
   return (
     <div
       className={cn(

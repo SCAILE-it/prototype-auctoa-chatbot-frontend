@@ -1,5 +1,4 @@
-
-import React from 'react';
+// TypeScript React component for a typing indicator in a chat application
 
 const TypingIndicator = () => {
   return (

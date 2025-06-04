@@ -1,18 +1,22 @@
+// This component renders a dropdown for displaying sources related to a chat message.
+// It allows users to expand or collapse the list of sources, and scrolls into view when opened.
+// Each source has a title and a URL, and the dropdown is styled to fit within a chat interface.
+
 import React, { useState, useEffect } from "react";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 
-type Source = { title: string; url: string };
+type Source = { title: string; url: string }; // Represents a source with a title and URL
 
 const SourcesDropdown = ({
   sources,
-  parentRef,
+  parentRef, 
   isLastMessage = false,
 }: {
-  sources: Source[];
+  sources: Source[]; // Array of sources to display in the dropdown
   parentRef?: React.RefObject<HTMLDivElement>;
   isLastMessage?: boolean;
 }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // State to track if the dropdown is open
 
   useEffect(() => {
     if (open && isLastMessage && parentRef?.current) {
