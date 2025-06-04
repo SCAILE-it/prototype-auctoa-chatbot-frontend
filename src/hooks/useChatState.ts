@@ -76,7 +76,7 @@ export function useChatState({
       setPills([]); // Clear pills
       setIsTyping(true); // Set typing status to true
 
-      // BASE64 konvertieren
+      // Convert uploaded files to Base64 format
       const messageFiles = await Promise.all(
         uploadedFiles.map((file) => convertFileToBase64(file))
       );
@@ -87,8 +87,12 @@ export function useChatState({
           uploadedFiles.map((file) => convertFileToBase64(file))
         ),
         variant,
+        // Variant is a chat context identifier, that can be used by n8n to trigger different flows per use case
+        // It is identified as a query parameter, e.g. `https://api.example.com/chat?variant=valuation`
+        // So when you link to https://api.example.com/chat?variant=makler, the variant will be "makler" and the n8n workflow will be triggered accordingly
       };
 
+      // Prepare the request data for the API
       try {
         const conversationId =
           localStorage.getItem("conversation-id") || crypto.randomUUID(); // Use existing conversation ID or generate a new one
@@ -110,16 +114,16 @@ export function useChatState({
           throw new Error("Request failed");
         }
 
-        const data: ApiResponse = await response.json();
+        const data: ApiResponse = await response.json(); // Parse the JSON response
 
         // Response from n8n
         const botMessage: Message = {
           id: uuidv4(),
           content: "",
-          html: data.chatResponse,
+          html: data.chatResponse, // HTML content from the API response
           isUser: false,
-          sources: data.sources || [],
-          ctaType: data.ctaType,
+          sources: data.sources || [], // Optional sources for the message
+          ctaType: data.ctaType, // Optional CTA type for specific message actions
         };
         console.log("Bot message:", botMessage);
 
