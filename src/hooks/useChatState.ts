@@ -48,27 +48,17 @@ export function useChatState({
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const prefill = params.get("prefill");
-    console.log(
-      "💬 useChatState: window.location.search =",
-      window.location.search
-    );
-    console.log("💬 useChatState: extracted prefill =", prefill);
-
     const sessionData = loadSession(STORAGE_KEY);
-    console.log("💬 useChatState: loaded session =", sessionData);
 
     if (prefill !== null && prefill !== "") {
-      console.log("💬 useChatState: setting inputValue from prefill");
       setInputValue(prefill);
     }
 
     if (sessionData) {
       if (Array.isArray(sessionData.messages)) {
-        console.log("💬 useChatState: setting messages from session");
         setMessages(sessionData.messages);
       }
       if (Array.isArray(sessionData.pills)) {
-        console.log("💬 useChatState: setting pills from session");
         setPills(sessionData.pills);
       }
     }
