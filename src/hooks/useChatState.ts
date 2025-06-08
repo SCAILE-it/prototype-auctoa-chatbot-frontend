@@ -48,30 +48,19 @@ export function useChatState({
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const prefill = params.get("prefill");
-    console.log("Prefilled text: " + prefill);
+
     const sessionData = loadSession(STORAGE_KEY);
 
-    if (prefill) {
+    if (prefill !== null && prefill !== "") {
       setInputValue(prefill);
     }
-  }, [window.location.search]);
 
-  // useEffect für loading:
-  useEffect(() => {
-    const sessionData = loadSession(STORAGE_KEY);
     if (sessionData) {
       if (Array.isArray(sessionData.messages))
         setMessages(sessionData.messages);
       if (Array.isArray(sessionData.pills)) setPills(sessionData.pills);
     }
   }, []);
-
-  // useEffect für saving:
-  useEffect(() => {
-    if (messages.length > 0) {
-      saveSession(STORAGE_KEY, { messages, pills });
-    }
-  }, [messages, pills]);
 
   // Function to send a message to the API
   // It handles both text content and file uploads, converting files to Base64
