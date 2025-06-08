@@ -41,6 +41,18 @@ export function useChatState({
   const [pills, setPills] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
 
+  // Effect to prefill the input value from URL parameters
+  // This allows the chat to be pre-populated with a message when the page is loaded
+  // If users enter something on the auctoa landing page, they will be redirected to the chat with a prefilled message
+  useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const prefill = params.get("prefill");
+  if (prefill) {
+    setInputValue(prefill);
+  }
+}, []);
+
+
   // useEffect für loading:
   useEffect(() => {
     const sessionData = loadSession(STORAGE_KEY);
