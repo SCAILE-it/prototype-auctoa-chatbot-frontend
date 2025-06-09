@@ -65,7 +65,7 @@ const Index = () => {
           }}
         >
           {/* Chat messages container */}
-          <div className="flex-1 overflow-hidden pb-[160px]">
+          <div className="flex-1 overflow-hidden pb-[70px] md:pb-[160px]">
             <ChatContainer
               messages={messages}
               isTyping={isTyping}
