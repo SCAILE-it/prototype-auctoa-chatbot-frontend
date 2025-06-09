@@ -12,21 +12,25 @@ const PillBar = ({ pills, onPillClick }: PillBarProps) => {
   if (pills.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div
+      className="
+        flex gap-2 
+        overflow-x-auto whitespace-nowrap 
+        md:overflow-visible md:flex-wrap 
+        no-scrollbar
+        -mx-2 px-2
+      "
+    >
       {pills.map((pill, index) => (
         <Button
           key={index}
           variant="outline"
-          className="rounded-full text-sm bg-[color:var(--secondary-lightyellow)] backdrop-blur-md hover:bg-[color:var(--primary-yellow)] text-[color:var(--neutral-dark)]"
+          className="rounded-full text-sm bg-[color:var(--secondary-lightyellow)] backdrop-blur-md hover:bg-[color:var(--primary-yellow)] text-[color:var(--neutral-dark)] whitespace-nowrap"
           onClick={() => onPillClick(pill)}
         >
-          <span
-            className="block md:hidden truncate max-w-[calc(100vw-4rem)]"
-            title={pill}
-          >
+          <span className="truncate max-w-[70vw] md:max-w-none" title={pill}>
             {pill}
           </span>
-          <span className="hidden md:block">{pill}</span>
         </Button>
       ))}
     </div>
