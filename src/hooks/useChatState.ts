@@ -120,7 +120,11 @@ export function useChatState({
           throw new Error("Request failed");
         }
 
-        const data: ApiResponse = await response.json(); // Parse the JSON response
+        const rawData = await response.json(); // Parse the JSON response
+        // Handle n8n response format: [{"output": {...}}]
+        const data: ApiResponse = Array.isArray(rawData) && rawData[0]?.output 
+          ? rawData[0].output 
+          : rawData;
 
         // Response from n8n
         const botMessage: Message = {
