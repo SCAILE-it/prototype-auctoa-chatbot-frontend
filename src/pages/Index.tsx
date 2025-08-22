@@ -1,46 +1,13 @@
-// This is the main chat page component
-// It initializes the chat state and renders the chat interface
+// This is the main property evaluation page component
+// It renders the chat interface on the left and the form on the right
 
-import { useRef } from "react";
-
-import { useChatState } from "@/hooks/useChatState";
-import ChatContainer from "@/components/chat/ChatContainer";
-import ChatFooter from "@/components/chat/ChatFooter";
-import ChatHeader from "@/components/chat/ChatHeader";
-import ChatInput from "@/components/chat/ChatInput";
-import FileUploadBar from "@/components/chat/FileUploadBar";
-import PillBar from "@/components/chat/PillBar";
+import { useRef, useState } from "react";
+import MultiStepForm from "@/components/forms/MultiStepForm";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
-  // Function to get the sessionId from URL parameters
-  const getSessionId = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get("sessionId") || "";
-  };
-
-  // Function to get the variant from URL parameters, defaulting to "valuation"
-  const getVariant = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get("variant") || "valuation";
-  };
-
-  const {
-    messages,
-    isTyping,
-    files,
-    pills,
-    inputValue,
-    setInputValue,
-    sendMessage,
-    handleFilesAdded,
-    handleFileRemove,
-    clearFiles,
-  } = useChatState({
-    variant: getVariant(),
-    apiUrl: import.meta.env.VITE_API_URL, // API URL from environment variables
-  });
-
-  const fileInputRef = useRef<HTMLInputElement>(null); // Reference to the hidden file input
+  const [inputValue, setInputValue] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className="min-h-screen flex flex-col relative">
@@ -54,70 +21,107 @@ const Index = () => {
 
       {/* Content overlay */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        <ChatHeader />
-
-        {/* Main chat area */}
-        <main
-          className="flex flex-col px-2 md:px-4 overflow-y-auto"
-          style={{
-            paddingTop: "64px",
-            height: "100vh",
-          }}
-        >
-          {/* Chat messages container */}
-          <div className="flex-1 overflow-hidden pb-[70px] md:pb-[160px]">
-            <ChatContainer
-              messages={messages}
-              isTyping={isTyping}
-              files={files}
+        {/* Header */}
+        <header className="flex items-center justify-between p-4 md:p-6">
+          <div className="flex items-center gap-2">
+            <img 
+              src="/uploads/auctoa-logo-creme.png" 
+              alt="Auctoa" 
+              className="h-8 w-auto"
             />
+          </div>
+          <Button 
+            variant="outline" 
+            className="bg-amber-500 hover:bg-amber-600 text-white border-amber-500"
+          >
+            Gratis Expertengespräch anfragen
+          </Button>
+        </header>
+
+        {/* Main content area - split layout */}
+        <main className="flex-1 flex overflow-hidden">
+          {/* Left side - Chat interface */}
+          <div className="w-1/2 flex flex-col p-4 min-w-0">
+            {/* Chat messages area */}
+            <div className="flex-1 mb-4 overflow-y-auto pr-2">
+              {/* Welcome chat bubble */}
+              <div className="flex justify-start mb-4">
+                <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-lg max-w-md border border-gray-200 relative">
+                  <div className="absolute -left-2 top-4 w-4 h-4 bg-white/95 border-l border-b border-gray-200 transform rotate-45"></div>
+                  <p className="text-gray-700 text-sm">
+                    Hallo! Meine Schwester und ich haben in Nürnberg-Eibach 
+                    eine Wohnung geerbt. Wir wissen weder, was sie wert ist 
+                    noch, wie wir den Verkauf angehen.
+                  </p>
+                </div>
+              </div>
+
+              {/* Additional chat messages can be added here */}
+            </div>
+
+            {/* Chat input at bottom of left side */}
+            <div className="flex-shrink-0">
+              <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-4">
+                <div className="flex items-center gap-3">
+                  <input 
+                    type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="Schreibe deine Nachricht"
+                    className="flex-1 bg-transparent text-white placeholder-gray-300 border-none outline-none text-sm"
+                  />
+                  <Button 
+                    size="sm"
+                    className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-full"
+                  >
+                    →
+                  </Button>
+                </div>
+                <div className="mt-3 flex items-center gap-2">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="text-white/70 hover:text-white text-xs"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    📎 Dokumente hochladen
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Hidden file input */}
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                multiple
+                accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+                onChange={(e) => {
+                  if (e.target.files?.length) {
+                    console.log("Files selected:", e.target.files);
+                    e.target.value = "";
+                  }
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Right side - Multi-step form (fixed) */}
+          <div className="w-1/2 p-2 flex flex-col">
+            <div className="h-full">
+              <MultiStepForm />
+            </div>
           </div>
         </main>
 
-        {/* Chat input + pills (fixed) */}
-        <div className="fixed bottom-12 left-0 right-0 z-20 px-4">
-          <div className="max-w-4xl mx-auto">
-            {pills.length > 0 && (
-              <div className="mb-4">
-                <PillBar pills={pills} onPillClick={setInputValue} />
-              </div>
-            )}
-            <ChatInput
-              value={inputValue}
-              onChange={setInputValue}
-              onSendMessage={(message) => {
-                sendMessage(message, files);
-                clearFiles();
-              }}
-              onFileButtonClick={() => fileInputRef.current?.click()}
-              hasFiles={files.length > 0}
-              disabled={isTyping}
-              fileBubbles={
-                <FileUploadBar
-                  files={files}
-                  onFilesAdded={handleFilesAdded}
-                  onFileRemove={handleFileRemove}
-                  uploadInputRef={fileInputRef}
-                />
-              }
-            />
-            {/* Hidden file input */}
-            <input
-              type="file"
-              ref={fileInputRef}
-              className="hidden"
-              multiple
-              accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
-              onChange={(e) => {
-                if (e.target.files?.length) {
-                  handleFilesAdded(Array.from(e.target.files));
-                  e.target.value = "";
-                }
-              }}
-            />
+        {/* Footer */}
+        <footer className="text-center py-4">
+          <div className="flex items-center justify-center gap-6 text-white/70 text-xs">
+            <span>Antworten einer KI. Infos bitte prüfen.</span>
+            <span>Datenschutz</span>
+            <span>Impressum</span>
           </div>
-        </div>
-        <ChatFooter />
+        </footer>
       </div>
     </div>
   );
