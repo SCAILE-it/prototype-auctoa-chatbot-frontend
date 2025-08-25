@@ -20,47 +20,36 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
   totalSteps, 
   stepTitles 
 }) => {
+  const steps = [
+    { n: 1, label: 'Datenerfassung' },
+    { n: 2, label: 'Status Quo Analyse' },
+    { n: 3, label: 'Strategische Next Steps' },
+  ];
+  
   return (
-    <div className="flex items-center justify-between w-full mb-8">
-      {stepTitles.map((title, index) => (
-        <React.Fragment key={index}>
-          <div className="flex flex-col items-center">
-            <div
-              className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors",
-                index + 1 <= currentStep
-                  ? "bg-amber-500 text-white"
-                  : index + 1 === currentStep + 1
-                  ? "bg-amber-100 text-amber-700 border-2 border-amber-500"
-                  : "bg-gray-200 text-gray-500"
-              )}
+    <nav role="tablist" aria-label="Schritte" className="pb-2">
+      <div className="flex w-full items-center gap-3 text-sm bg-[rgba(238,238,238,0.88)] rounded-[3px] px-3 py-2">
+        {steps.map((s, i) => (
+          <div key={s.n} className="flex items-center gap-3">
+            <button
+              role="tab"
+              aria-selected={s.n === currentStep}
+              className={[
+                'flex items-center gap-2 px-2 py-2 rounded-md',
+                s.n === currentStep ? 'text-black' : 'text-[#999999]',
+              ].join(' ')}
             >
-              {index + 1}
-            </div>
-            <span
-              className={cn(
-                "text-xs mt-2 text-center max-w-[100px]",
-                index + 1 <= currentStep
-                  ? "text-amber-700 font-medium"
-                  : "text-gray-500"
-              )}
-            >
-              {title}
-            </span>
+              <span className={[
+                'inline-flex items-center justify-center size-6 rounded-full border',
+                s.n === currentStep ? 'border-black text-black bg-white' : 'border-black/20 text-[#999999] bg-white'
+              ].join(' ')}>{s.n}</span>
+              <span className="whitespace-nowrap" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', fontWeight: 700, color: s.n === currentStep ? '#333333' : '#999999' }}>{s.label}</span>
+            </button>
+            {i < steps.length - 1 && <span className="text-[#999999]">›</span>}
           </div>
-          {index < totalSteps - 1 && (
-            <div
-              className={cn(
-                "flex-1 h-0.5 mx-2 transition-colors",
-                index + 1 < currentStep
-                  ? "bg-amber-500"
-                  : "bg-gray-200"
-              )}
-            />
-          )}
-        </React.Fragment>
-      ))}
-    </div>
+        ))}
+      </div>
+    </nav>
   );
 };
 
@@ -171,8 +160,8 @@ const MultiStepForm: React.FC = () => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(handleSubmit)} className="w-full h-full flex flex-col">
-        <Card className="w-full max-w-[708px] h-[800px] bg-[#FAF4E6] backdrop-blur-[10px] border-0 shadow-xl flex flex-col rounded-[15px]">
-          <CardContent className="px-[16px] py-[12px] flex-1 flex flex-col overflow-hidden">
+        <Card className="w-full max-w-[920px] h-[800px] bg-[#FDFAF6] rounded-[3px] shadow-[2px_2px_12px_0_rgba(0,0,0,0.2)] border-0 flex flex-col">
+          <CardContent className="p-6 md:p-8 flex-1 flex flex-col overflow-hidden">
             {/* Step Indicator */}
             <div className="flex-shrink-0 mb-2">
               <StepIndicator 
@@ -188,17 +177,25 @@ const MultiStepForm: React.FC = () => {
             </div>
 
             {/* Bottom section with text and button */}
-            <div className="flex justify-between items-end mt-3 flex-shrink-0">
-              <p className="text-[#FF8C42] text-[11px] leading-[120%] max-w-[60%]">
+            <div className="space-y-2 flex-shrink-0">
+              <p className="text-[12px] text-[#f97373] mt-2">
                 Bitte ergänze fehlende Informationen, um den Immobilienwert berechnen zu lassen.
               </p>
-              <Button
-                type="submit"
-                className="px-6 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg text-[12px] font-medium"
-                disabled={isNextDisabled()}
-              >
-                Bewertung erhalten
-              </Button>
+              
+              <div className="mt-8">
+                <Button
+                  type="submit"
+                  className="w-full rounded-md py-3 font-medium shadow-sm uppercase tracking-[.06em]"
+                  style={{ 
+                    fontFamily: 'Fraunces, ui-serif, Georgia, serif', 
+                    backgroundColor: isNextDisabled() ? '#eeeeee' : '#F97316', 
+                    color: isNextDisabled() ? '#999999' : '#ffffff' 
+                  }}
+                  disabled={isNextDisabled()}
+                >
+                  Bewertung erhalten
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

@@ -22,6 +22,10 @@
     --transparent-10: rgba(255, 255, 255, 0.1); /* Transparent White 10% */
     --dark-transparent: rgba(0, 0, 0, 0.3); /* Transparent White 10% */
     --radius: 0.5rem;
+    
+    /* Form colors matching colleague's design */
+    --color-cream: #FDFAF6;
+    --color-brand-orange: #F97316;
   }
 }
 
@@ -31,8 +35,9 @@
   }
 
   body {
-    background-color: var(--primary-creme);
-    color: var(--neutral-dark);
+    background-color: var(--color-cream);
+    color: #1F2937;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   }
 
   /* Apply specific styles for HTML content in chat bubbles */
@@ -110,4 +115,32 @@
 * {
   scrollbar-width: medium;
   scrollbar-color: var(--transparent-10) transparent;
+}
+
+/* Form styling to match colleague's design */
+input::placeholder,
+textarea::placeholder {
+  font-size: 0.875rem; /* 14px */
+  color: #999999;
+}
+
+/* Style select when placeholder option (value="") is selected */
+select:has(option[value=""]:checked) {
+  color: #999999;
+  font-size: 0.875rem; /* 14px */
+}
+
+/* Ensure selected values use consistent font, size, and color */
+input,
+select,
+textarea {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  font-size: 0.875rem; /* 14px */
+  color: #1F2937; /* match inputs */
+}
+
+/* Unit adornments color slightly darker for readability than #eee */
+.unit-muted { 
+  color: #cfcfcf; 
+  font-size: 0.875rem; 
 }

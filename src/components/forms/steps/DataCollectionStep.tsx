@@ -31,9 +31,12 @@ const FormField: React.FC<FormFieldProps> = ({
 
   return (
     <div className="space-y-1">
-      <Label htmlFor={name} className="text-[9px] font-medium text-gray-700 flex items-center gap-1">
+      <Label htmlFor={name} className="text-sm font-medium flex items-center" style={{ color: '#999999' }}>
         {label}
-        {required && <span className="text-red-500 text-[9px]">!</span>}
+        {required && <span className="ml-1 align-middle text-[12px] font-medium" style={{ color: '#999999' }}>*</span>}
+        {required && (
+          <span className="ml-1 inline-flex items-center justify-center align-middle text-[10px] font-bold text-[#F97316] bg-[#FDEAD7] rounded-full size-4">!</span>
+        )}
       </Label>
       {children || (
         <Input
@@ -41,11 +44,11 @@ const FormField: React.FC<FormFieldProps> = ({
           type={type}
           placeholder={placeholder}
           {...register(name)}
-          className={`h-7 text-[11px] ${error ? "border-red-500 focus:ring-red-500" : ""}`}
+          className={`mt-1 block w-full rounded-md bg-white/95 shadow-[0_1px_3px_rgba(0,0,0,0.22)] placeholder-[#999] text-[#1F2937] focus:ring-2 focus:ring-[#F97316] px-3.5 py-2.5 text-sm ${error ? "border-red-500" : ""}`}
         />
       )}
       {error && (
-        <p className="text-red-500 text-[9px] mt-1">{error.message}</p>
+        <p className="text-xs text-red-600 mt-1">{error.message}</p>
       )}
     </div>
   );
@@ -72,27 +75,30 @@ const SelectField: React.FC<SelectFieldProps> = ({
 
   return (
     <div className="space-y-1">
-      <Label className="text-[9px] font-medium text-gray-700 flex items-center gap-1">
+      <Label className="text-sm font-medium flex items-center" style={{ color: '#999999' }}>
         {label}
-        {required && <span className="text-red-500 text-[9px]">!</span>}
+        {required && <span className="ml-1 align-middle text-[12px] font-medium" style={{ color: '#999999' }}>*</span>}
+        {required && (
+          <span className="ml-1 inline-flex items-center justify-center align-middle text-[10px] font-bold text-[#F97316] bg-[#FDEAD7] rounded-full size-4">!</span>
+        )}
       </Label>
       <Select 
         value={value as string || ""} 
         onValueChange={(val) => setValue(name, val)}
       >
-        <SelectTrigger className={`h-7 text-[11px] ${error ? "border-red-500 focus:ring-red-500" : ""}`}>
+        <SelectTrigger className={`mt-1 block w-full rounded-md bg-white/95 shadow-[0_1px_3px_rgba(0,0,0,0.22)] placeholder-[#999] text-[#1F2937] focus:ring-2 focus:ring-[#F97316] px-3.5 py-2.5 text-sm ${error ? "border-red-500" : ""}`}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
-            <SelectItem key={option.value} value={option.value} className="text-[11px]">
+            <SelectItem key={option.value} value={option.value} className="text-sm">
               {option.label}
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
       {error && (
-        <p className="text-red-500 text-[9px] mt-1">{error.message}</p>
+        <p className="text-xs text-red-600 mt-1">{error.message}</p>
       )}
     </div>
   );
@@ -100,34 +106,35 @@ const SelectField: React.FC<SelectFieldProps> = ({
 
 const DataCollectionStep: React.FC = () => {
   return (
-    <div className="space-y-3">
-      <div className="text-center mb-2">
-        <h2 className="text-[18px] leading-[20px] font-bold text-gray-900 mb-1">Datenerfassung</h2>
-        <p className="text-[12px] leading-[110%] text-gray-600">Bitte geben Sie die Informationen zu Ihrer Immobilie ein.</p>
+    <div className="space-y-8">
+      <div className="text-left">
+        <h1 className="text-2xl md:text-[28px] font-semibold tracking-[.02em] mb-4" style={{ color: '#333', fontFamily: 'Fraunces, ui-serif, Georgia, serif' }}>Datenerfassung</h1>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-8">
         {/* Standort Section */}
-        <div className="space-y-1">
-          <h3 className="flex items-center gap-1 text-[12px] leading-[110%] font-semibold text-gray-900 uppercase">
-            <MapPin className="w-4 h-4 text-amber-500" />
+        <section aria-labelledby="standort">
+          <h3 id="standort" className="uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', color: '#333333' }}>
+            <MapPin className="w-4 h-4" style={{ color: '#333333' }} />
             STANDORT
           </h3>
-          <FormField
-            label="Adresse"
-            name="address"
-            required
-            placeholder="Bitte auswählen"
-          />
-        </div>
+          <div className="mt-3">
+            <FormField
+              label="Adresse"
+              name="address"
+              required
+              placeholder="Bitte auswählen"
+            />
+          </div>
+        </section>
 
         {/* Objekttyp & Basisdaten Section */}
-        <div className="space-y-1">
-          <h3 className="flex items-center gap-1 text-[12px] leading-[110%] font-semibold text-gray-900 uppercase">
-            <Home className="w-4 h-4 text-amber-500" />
+        <section aria-labelledby="basis">
+          <h3 id="basis" className="uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', color: '#333333' }}>
+            <Home className="w-4 h-4" style={{ color: '#333333' }} />
             OBJEKTTYP & BASISDATEN
           </h3>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
             <SelectField
               label="Immobilientyp"
               name="propertyType"
@@ -170,15 +177,15 @@ const DataCollectionStep: React.FC = () => {
               placeholder="Bitte auswählen"
             />
           </div>
-        </div>
+        </section>
 
         {/* Zustand & Ausstattung Section */}
-        <div className="space-y-1">
-          <h3 className="flex items-center gap-1 text-[12px] leading-[110%] font-semibold text-gray-900 uppercase">
-            <Wrench className="w-4 h-4 text-amber-500" />
+        <section aria-labelledby="zustand">
+          <h3 id="zustand" className="uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', color: '#333333' }}>
+            <Wrench className="w-4 h-4" style={{ color: '#333333' }} />
             ZUSTAND & AUSSTATTUNG
           </h3>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
             <SelectField
               label="Zustand"
               name="condition"
@@ -202,15 +209,15 @@ const DataCollectionStep: React.FC = () => {
               />
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Energie & Rechtliche Aspekte (Optional) */}
-        <div className="space-y-1">
-          <h3 className="flex items-center gap-1 text-[12px] leading-[110%] font-semibold text-gray-900 uppercase">
-            <Zap className="w-4 h-4 text-amber-500" />
+        <section aria-labelledby="energie">
+          <h3 id="energie" className="uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', color: '#333333' }}>
+            <Zap className="w-4 h-4" style={{ color: '#333333' }} />
             ENERGIE & RECHTLICHE ASPEKTE (OPTIONAL)
           </h3>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
             <FormField
               label="Energiekennwert (kWh/m²a)"
               name="energyValue"
@@ -235,25 +242,26 @@ const DataCollectionStep: React.FC = () => {
               placeholder="Bitte auswählen"
             />
           </div>
-        </div>
+        </section>
 
         {/* Sonstige Angaben */}
-        <div className="space-y-1">
-          <h3 className="flex items-center gap-1 text-[12px] leading-[110%] font-semibold text-gray-900 uppercase">
-            <FileText className="w-4 h-4 text-amber-500" />
+        <section aria-labelledby="sonstiges">
+          <h3 id="sonstiges" className="uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', color: '#333333' }}>
+            <FileText className="w-4 h-4" style={{ color: '#333333' }} />
             SONSTIGE ANGABEN (OPTIONAL)
           </h3>
-          <div className="space-y-1">
-            <Label className="text-[9px] leading-[110%] font-medium text-gray-700">
-              Ergänzende Infos
-            </Label>
-            <Textarea
-              {...useFormContext<PropertyFormData>().register("additionalInfo")}
-              placeholder=""
-              className="min-h-[45px] resize-none text-[11px] leading-[110%]"
-            />
+          <div className="grid grid-cols-1 gap-4 mt-3">
+            <label className="block">
+              <span className="text-sm font-medium flex items-center" style={{ color: '#999999' }}>Ergänzende Infos</span>
+              <Textarea
+                {...useFormContext<PropertyFormData>().register("additionalInfo")}
+                placeholder="Bitte auswählen"
+                rows={4}
+                className="mt-1 block w-full rounded-md bg-white/95 shadow-[0_1px_3px_rgba(0,0,0,0.22)] placeholder-[#999] text-[#1F2937] focus:ring-2 focus:ring-[#F97316] px-3.5 py-2.5 text-sm"
+              />
+            </label>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );
