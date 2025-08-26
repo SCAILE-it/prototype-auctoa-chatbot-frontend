@@ -106,101 +106,106 @@ const SelectField: React.FC<SelectFieldProps> = ({
 
 const DataCollectionStep: React.FC = () => {
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       <div className="text-left">
-        <h1 className="text-2xl md:text-[28px] font-semibold tracking-[.02em] mb-4" style={{ color: '#333', fontFamily: 'Fraunces, ui-serif, Georgia, serif' }}>Datenerfassung</h1>
+        <h1 className="text-xl md:text-[24px] font-semibold tracking-[.02em] mb-3" style={{ color: '#333', fontFamily: 'Fraunces, ui-serif, Georgia, serif' }}>Datenerfassung</h1>
       </div>
 
-      <div className="space-y-8">
-        {/* Standort Section */}
-        <section aria-labelledby="standort">
-          <h3 id="standort" className="uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', color: '#333333' }}>
-            <MapPin className="w-4 h-4" style={{ color: '#333333' }} />
-            STANDORT
-          </h3>
-          <div className="mt-3">
-            <FormField
-              label="Adresse"
-              name="address"
-              required
-              placeholder="Bitte auswählen"
-            />
-          </div>
-        </section>
+      {/* Two-column layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Column */}
+        <div className="space-y-4">
+          {/* Standort Section */}
+          <section aria-labelledby="standort">
+            <h3 id="standort" className="uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2 mb-3" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', color: '#333333' }}>
+              <MapPin className="w-4 h-4" style={{ color: '#333333' }} />
+              STANDORT
+            </h3>
+            <div>
+              <FormField
+                label="Adresse"
+                name="address"
+                required
+                placeholder="Bitte auswählen"
+              />
+            </div>
+          </section>
 
-        {/* Objekttyp & Basisdaten Section */}
-        <section aria-labelledby="basis">
-          <h3 id="basis" className="uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', color: '#333333' }}>
-            <Home className="w-4 h-4" style={{ color: '#333333' }} />
-            OBJEKTTYP & BASISDATEN
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-            <SelectField
-              label="Immobilientyp"
-              name="propertyType"
-              required
-              options={propertyTypeOptions}
-            />
-            
-            <SelectField
-              label="Wohnungstyp"
-              name="apartmentType"
-              required
-              options={apartmentTypeOptions}
-            />
-            
-            <FormField
-              label="Baujahr"
-              name="constructionYear"
-              required
-              placeholder="Bitte auswählen"
-            />
-            
-            <FormField
-              label="Gesamtwohnfläche (m²)"
-              name="livingSpace"
-              required
-              placeholder="Bitte auswählen"
-            />
-            
-            <FormField
-              label="Anzahl der Zimmer"
-              name="numberOfRooms"
-              required
-              placeholder="Bitte auswählen"
-            />
-            
-            <FormField
-              label="Stockwerk"
-              name="floor"
-              required
-              placeholder="Bitte auswählen"
-            />
-          </div>
-        </section>
+          {/* Objekttyp & Basisdaten Section */}
+          <section aria-labelledby="basis">
+            <h3 id="basis" className="uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2 mb-3" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', color: '#333333' }}>
+              <Home className="w-4 h-4" style={{ color: '#333333' }} />
+              OBJEKTTYP & BASISDATEN
+            </h3>
+            <div className="space-y-3">
+              <SelectField
+                label="Immobilientyp"
+                name="propertyType"
+                required
+                options={propertyTypeOptions}
+              />
+              
+              <SelectField
+                label="Wohnungstyp"
+                name="apartmentType"
+                required
+                options={apartmentTypeOptions}
+              />
+              
+              <FormField
+                label="Baujahr"
+                name="constructionYear"
+                required
+                placeholder="Bitte auswählen"
+              />
+              
+              <FormField
+                label="Gesamtwohnfläche (m²)"
+                name="livingSpace"
+                required
+                placeholder="Bitte auswählen"
+              />
+              
+              <FormField
+                label="Anzahl der Zimmer"
+                name="numberOfRooms"
+                required
+                placeholder="Bitte auswählen"
+              />
+              
+              <FormField
+                label="Stockwerk"
+                name="floor"
+                required
+                placeholder="Bitte auswählen"
+              />
+            </div>
+          </section>
+        </div>
 
-        {/* Zustand & Ausstattung Section */}
-        <section aria-labelledby="zustand">
-          <h3 id="zustand" className="uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', color: '#333333' }}>
-            <Wrench className="w-4 h-4" style={{ color: '#333333' }} />
-            ZUSTAND & AUSSTATTUNG
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-            <SelectField
-              label="Zustand"
-              name="condition"
-              required
-              options={conditionOptions}
-            />
-            
-            <SelectField
-              label="Ausstattung"
-              name="equipment"
-              required
-              options={equipmentOptions}
-            />
-            
-            <div className="col-span-2">
+        {/* Right Column */}
+        <div className="space-y-4">
+          {/* Zustand & Ausstattung Section */}
+          <section aria-labelledby="zustand">
+            <h3 id="zustand" className="uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2 mb-3" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', color: '#333333' }}>
+              <Wrench className="w-4 h-4" style={{ color: '#333333' }} />
+              ZUSTAND & AUSSTATTUNG
+            </h3>
+            <div className="space-y-3">
+              <SelectField
+                label="Zustand"
+                name="condition"
+                required
+                options={conditionOptions}
+              />
+              
+              <SelectField
+                label="Ausstattung"
+                name="equipment"
+                required
+                options={equipmentOptions}
+              />
+              
               <SelectField
                 label="Letzte Modernisierung"
                 name="lastRenovation"
@@ -208,60 +213,62 @@ const DataCollectionStep: React.FC = () => {
                 options={renovationOptions}
               />
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Energie & Rechtliche Aspekte (Optional) */}
-        <section aria-labelledby="energie">
-          <h3 id="energie" className="uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', color: '#333333' }}>
-            <Zap className="w-4 h-4" style={{ color: '#333333' }} />
-            ENERGIE & RECHTLICHE ASPEKTE (OPTIONAL)
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-            <FormField
-              label="Energiekennwert (kWh/m²a)"
-              name="energyValue"
-              placeholder="Bitte auswählen"
-            />
-            
-            <FormField
-              label="Ist-Miete (€)"
-              name="currentRent"
-              placeholder="Bitte auswählen"
-            />
-            
-            <FormField
-              label="Soll-Miete (€)"
-              name="targetRent"
-              placeholder="Bitte auswählen"
-            />
-            
-            <FormField
-              label="Rechtliche Hinweise"
-              name="legalAspects"
-              placeholder="Bitte auswählen"
-            />
-          </div>
-        </section>
-
-        {/* Sonstige Angaben */}
-        <section aria-labelledby="sonstiges">
-          <h3 id="sonstiges" className="uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', color: '#333333' }}>
-            <FileText className="w-4 h-4" style={{ color: '#333333' }} />
-            SONSTIGE ANGABEN (OPTIONAL)
-          </h3>
-          <div className="grid grid-cols-1 gap-4 mt-3">
-            <label className="block">
-              <span className="text-sm font-medium flex items-center" style={{ color: '#999999' }}>Ergänzende Infos</span>
-              <Textarea
-                {...useFormContext<PropertyFormData>().register("additionalInfo")}
+          {/* Energie & Rechtliche Aspekte (Optional) */}
+          <section aria-labelledby="energie">
+            <h3 id="energie" className="uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2 mb-3" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', color: '#333333' }}>
+              <Zap className="w-4 h-4" style={{ color: '#333333' }} />
+              ENERGIE & RECHTLICHE ASPEKTE (OPTIONAL)
+            </h3>
+            <div className="space-y-3">
+              <FormField
+                label="Energiekennwert (kWh/m²a)"
+                name="energyValue"
                 placeholder="Bitte auswählen"
-                rows={4}
-                className="mt-1 block w-full rounded-md bg-white/95 shadow-[0_1px_3px_rgba(0,0,0,0.22)] placeholder-[#999] text-[#1F2937] focus:ring-2 focus:ring-[#F97316] px-3.5 py-2.5 text-sm"
               />
-            </label>
-          </div>
-        </section>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <FormField
+                  label="Ist-Miete (€)"
+                  name="currentRent"
+                  placeholder="Bitte auswählen"
+                />
+                
+                <FormField
+                  label="Soll-Miete (€)"
+                  name="targetRent"
+                  placeholder="Bitte auswählen"
+                />
+              </div>
+              
+              <FormField
+                label="Rechtliche Hinweise"
+                name="legalAspects"
+                placeholder="Bitte auswählen"
+              />
+            </div>
+          </section>
+
+          {/* Sonstige Angaben */}
+          <section aria-labelledby="sonstiges">
+            <h3 id="sonstiges" className="uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2 mb-3" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', color: '#333333' }}>
+              <FileText className="w-4 h-4" style={{ color: '#333333' }} />
+              SONSTIGE ANGABEN (OPTIONAL)
+            </h3>
+            <div>
+              <label className="block">
+                <span className="text-sm font-medium flex items-center" style={{ color: '#999999' }}>Ergänzende Infos</span>
+                <Textarea
+                  {...useFormContext<PropertyFormData>().register("additionalInfo")}
+                  placeholder="Bitte auswählen"
+                  rows={3}
+                  className="mt-1 block w-full rounded-md bg-white/95 shadow-[0_1px_3px_rgba(0,0,0,0.22)] placeholder-[#999] text-[#1F2937] focus:ring-2 focus:ring-[#F97316] px-3.5 py-2.5 text-sm"
+                />
+              </label>
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   );

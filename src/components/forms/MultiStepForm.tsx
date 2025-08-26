@@ -28,24 +28,32 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
   
   return (
     <nav role="tablist" aria-label="Schritte" className="pb-2">
-      <div className="flex w-full items-center gap-3 text-sm bg-[rgba(238,238,238,0.88)] rounded-[3px] px-3 py-2">
+      <div className="flex w-full items-center justify-between text-sm rounded-[10px] px-6 py-1" style={{ background: '#B3B0A633', height: '40px' }}>
         {steps.map((s, i) => (
           <div key={s.n} className="flex items-center gap-3">
             <button
               role="tab"
               aria-selected={s.n === currentStep}
-              className={[
-                'flex items-center gap-2 px-2 py-2 rounded-md',
-                s.n === currentStep ? 'text-black' : 'text-[#999999]',
-              ].join(' ')}
+              className="flex items-center gap-2"
             >
               <span className={[
-                'inline-flex items-center justify-center size-6 rounded-full border',
-                s.n === currentStep ? 'border-black text-black bg-white' : 'border-black/20 text-[#999999] bg-white'
+                'inline-flex items-center justify-center w-6 h-6 rounded-full text-sm font-medium',
+                s.n === currentStep ? 'bg-black text-white' : 'bg-transparent text-[#1C1C1C]'
               ].join(' ')}>{s.n}</span>
-              <span className="whitespace-nowrap" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', fontWeight: 700, color: s.n === currentStep ? '#333333' : '#999999' }}>{s.label}</span>
+              <span 
+                className="whitespace-nowrap text-sm font-medium" 
+                style={{ 
+                  fontFamily: 'David Libre, ui-serif, Georgia, serif', 
+                  fontWeight: 500,
+                  color: s.n === currentStep ? '#1C1C1C' : '#1C1C1C'
+                }}
+              >
+                {s.label}
+              </span>
             </button>
-            {i < steps.length - 1 && <span className="text-[#999999]">›</span>}
+            {i < steps.length - 1 && (
+              <span className="text-[#1C1C1C] mx-2">›</span>
+            )}
           </div>
         ))}
       </div>
@@ -160,10 +168,10 @@ const MultiStepForm: React.FC = () => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(handleSubmit)} className="w-full h-full flex flex-col">
-        <Card className="w-full max-w-[920px] h-[800px] bg-[#FDFAF6] rounded-[3px] shadow-[2px_2px_12px_0_rgba(0,0,0,0.2)] border-0 flex flex-col">
-          <CardContent className="p-6 md:p-8 flex-1 flex flex-col overflow-hidden">
+        <Card className="w-full max-w-[950px] h-full bg-[#FAF4E6] rounded-[3px] shadow-[2px_2px_12px_0_rgba(0,0,0,0.2)] border-0 flex flex-col">
+          <CardContent className="p-4 md:p-5 flex-1 flex flex-col overflow-hidden">
             {/* Step Indicator */}
-            <div className="flex-shrink-0 mb-2">
+            <div className="flex-shrink-0 mb-4">
               <StepIndicator 
                 currentStep={currentStep} 
                 totalSteps={totalSteps} 
@@ -172,20 +180,20 @@ const MultiStepForm: React.FC = () => {
             </div>
 
             {/* Step Content */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto pr-1" style={{ maxHeight: 'calc(100vh - 280px)' }}>
               {renderCurrentStep()}
             </div>
 
             {/* Bottom section with text and button */}
-            <div className="space-y-2 flex-shrink-0">
-              <p className="text-[12px] text-[#f97373] mt-2">
+            <div className="space-y-3 flex-shrink-0 mt-4">
+              <p className="text-[11px] text-[#f97373]">
                 Bitte ergänze fehlende Informationen, um den Immobilienwert berechnen zu lassen.
               </p>
               
-              <div className="mt-8">
+              <div>
                 <Button
                   type="submit"
-                  className="w-full rounded-md py-3 font-medium shadow-sm uppercase tracking-[.06em]"
+                  className="w-full rounded-md py-2.5 font-medium shadow-sm uppercase tracking-[.06em] text-sm"
                   style={{ 
                     fontFamily: 'Fraunces, ui-serif, Georgia, serif', 
                     backgroundColor: isNextDisabled() ? '#eeeeee' : '#F97316', 
