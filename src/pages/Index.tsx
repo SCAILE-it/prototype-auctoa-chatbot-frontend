@@ -156,10 +156,8 @@ const Index = () => {
           </div>
 
           {/* Right side - Multi-step form */}
-          <div className="flex flex-col flex-1" style={{ maxWidth: '950px' }}>
-            <div className="h-full flex items-center justify-center">
-              <MultiStepForm />
-            </div>
+          <div className="w-full md:w-3/5 p-6 md:p-10 overflow-y-auto">
+            <MultiStepForm />
           </div>
         </main>
 
