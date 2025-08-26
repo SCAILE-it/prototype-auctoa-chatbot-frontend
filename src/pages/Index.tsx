@@ -51,7 +51,7 @@ const Index = () => {
           {/* Left side - Chat interface */}
           <div className="flex flex-col pr-8" style={{ width: '42%', maxWidth: '580px' }}>
             {/* Chat messages area */}
-            <div className="flex-1 mb-3 overflow-y-auto flex flex-col justify-end">
+            <div className="flex-1 mb-3 overflow-y-auto flex flex-col justify-end" style={{ width: '580px' }}>
               {messages.length > 0 && (
                 <div className="flex flex-col gap-3">
                   {messages.map((message) => (
@@ -75,7 +75,7 @@ const Index = () => {
 
             {/* Chat input at bottom of left side */}
             <div className="flex-shrink-0">
-              <div className="rounded-2xl p-4 flex flex-col justify-between" style={{ background: '#FFFFFF33', backdropFilter: 'blur(10px)', width: '516px', height: '143px' }}>
+              <div className="rounded-2xl p-4 flex flex-col justify-between" style={{ background: '#FFFFFF33', backdropFilter: 'blur(10px)', width: '580px', height: '143px' }}>
                 {/* Chat input field at top */}
                 <input 
                   type="text"
