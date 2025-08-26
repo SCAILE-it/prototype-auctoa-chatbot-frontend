@@ -3,11 +3,36 @@
 
 import { useRef, useState } from "react";
 import MultiStepForm from "@/components/forms/MultiStepForm";
-import { Button } from "@/components/ui/button";
+
+interface Message {
+  id: number;
+  text: string;
+  isUser: boolean;
+}
 
 const Index = () => {
   const [inputValue, setInputValue] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const sendMessage = () => {
+    if (!inputValue.trim()) return;
+    
+    const userMessage: Message = {
+      id: Date.now(),
+      text: inputValue,
+      isUser: true
+    };
+    
+    const botResponse: Message = {
+      id: Date.now() + 1,
+      text: "Hallo Inga! Gerne helfe ich euch kostenlos. Lass uns mit ein paar Basisdaten starten – das dauert nur wenige Minuten.",
+      isUser: false
+    };
+    
+    setMessages(prev => [...prev, userMessage, botResponse]);
+    setInputValue("");
+  };
 
   return (
     <div className="h-screen flex flex-col relative overflow-hidden">
@@ -21,52 +46,31 @@ const Index = () => {
 
       {/* Content overlay */}
       <div className="relative z-10 flex flex-col h-screen">
-        {/* Header */}
-        <header className="flex items-center justify-between px-6 py-3 flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <img 
-              src="/uploads/auctoa-logo-creme.png" 
-              alt="Auctoa" 
-              className="h-7 w-auto"
-            />
-          </div>
-          <Button 
-            variant="outline" 
-            className="bg-amber-500 hover:bg-amber-600 text-white border-amber-500 text-sm px-4 py-2"
-          >
-            Gratis Expertengespräch anfragen
-          </Button>
-        </header>
-
         {/* Main content area - split layout */}
-        <main className="flex-1 flex overflow-hidden px-6 pb-3">
+        <main className="flex-1 flex overflow-hidden pl-4 pr-8 pt-1 pb-3">
           {/* Left side - Chat interface */}
           <div className="flex flex-col pr-8" style={{ width: '42%', maxWidth: '580px' }}>
             {/* Chat messages area */}
-            <div className="flex-1 mb-3 overflow-y-auto">
-              {/* Welcome chat bubble */}
-              <div className="flex justify-start mb-3">
-                <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-lg max-w-md border border-gray-200 relative">
-                  <div className="absolute -left-2 top-4 w-4 h-4 bg-white/95 border-l border-b border-gray-200 transform rotate-45"></div>
-                  <p className="text-gray-700 text-sm leading-relaxed">
-                    Hallo! Meine Schwester und ich haben in Nürnberg-Eibach 
-                    eine Wohnung geerbt. Wir wissen weder, was sie wert ist 
-                    noch, wie wir den Verkauf angehen.
-                  </p>
+            <div className="flex-1 mb-3 overflow-y-auto flex flex-col justify-end">
+              {messages.length > 0 && (
+                <div className="flex flex-col gap-3">
+                  {messages.map((message) => (
+                    <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
+                      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-lg max-w-md border border-gray-200 relative">
+                        {!message.isUser && (
+                          <div className="absolute -left-2 top-4 w-4 h-4 bg-white/95 border-l border-b border-gray-200 transform rotate-45"></div>
+                        )}
+                        {message.isUser && (
+                          <div className="absolute -right-2 top-4 w-4 h-4 bg-white/95 border-r border-b border-gray-200 transform -rotate-45"></div>
+                        )}
+                        <p className="text-gray-700 text-sm leading-relaxed">
+                          {message.text}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-
-              {/* Second chat bubble */}
-              <div className="flex justify-start mb-3">
-                <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-lg max-w-md border border-gray-200 relative">
-                  <div className="absolute -left-2 top-4 w-4 h-4 bg-white/95 border-l border-b border-gray-200 transform rotate-45"></div>
-                  <p className="text-gray-700 text-sm leading-relaxed">
-                    Hallo Inga! Gerne helfe ich euch kostenlos. Lass uns mit 
-                    ein paar Basisdaten starten – das dauert nur wenige 
-                    Minuten.
-                  </p>
-                </div>
-              </div>
+              )}
             </div>
 
             {/* Chat input at bottom of left side */}
@@ -78,9 +82,8 @@ const Index = () => {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={(e) => {
-                    if (e.key === 'Enter' && inputValue.trim()) {
-                      console.log("Sending message:", inputValue);
-                      setInputValue("");
+                    if (e.key === 'Enter') {
+                      sendMessage();
                     }
                   }}
                   placeholder="Schreibe deine Nachricht"
@@ -113,15 +116,10 @@ const Index = () => {
                     </svg>
                     Dokumente hochladen
                   </button>
-                              <button 
-                className="flex-shrink-0"
-                onClick={() => {
-                  if (inputValue.trim()) {
-                    console.log("Sending message:", inputValue);
-                    setInputValue("");
-                  }
-                }}
-              >
+                                                <button 
+                    className="flex-shrink-0"
+                    onClick={sendMessage}
+                  >
               <svg width="60" height="40" viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <foreignObject x="-4" y="-4" width="68" height="48"><div style={{backdropFilter:'blur(2px)', clipPath:'url(#bgblur_0_241_585_clip_path)', height:'100%', width:'100%'}}></div></foreignObject>
                 <g data-figma-bg-blur-radius="4">
