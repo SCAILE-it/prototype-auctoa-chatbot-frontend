@@ -123,7 +123,7 @@ const Index = () => {
                 }}
               >
               <svg width="60" height="40" viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <foreignObject x="-4" y="-4" width="68" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style={{backdropFilter:'blur(2px)', clipPath:'url(#bgblur_0_241_585_clip_path)', height:'100%', width:'100%'}}></div></foreignObject>
+                <foreignObject x="-4" y="-4" width="68" height="48"><div style={{backdropFilter:'blur(2px)', clipPath:'url(#bgblur_0_241_585_clip_path)', height:'100%', width:'100%'}}></div></foreignObject>
                 <g data-figma-bg-blur-radius="4">
                   <rect width="60" height="40" rx="10" fill="#FAF4E6"/>
                   <path d="M24 25.3327V14.666L36.6667 19.9993L24 25.3327ZM25.3333 23.3327L33.2333 19.9993L25.3333 16.666V18.9993L29.3333 19.9993L25.3333 20.9993V23.3327ZM25.3333 23.3327V19.9993V16.666V18.9993V20.9993V23.3327Z" fill="#B3B0A6"/>
@@ -153,6 +153,14 @@ const Index = () => {
                 }}
               />
             </div>
+
+            {/* Footer - moved to left side under chat */}
+            <footer className="mt-4 flex-shrink-0">
+              <div className="flex items-center gap-4 text-white/70 text-xs">
+                <span>Datenschutz</span>
+                <span>Impressum</span>
+              </div>
+            </footer>
           </div>
 
           {/* Right side - Multi-step form */}
@@ -160,14 +168,6 @@ const Index = () => {
             <MultiStepForm />
           </div>
         </main>
-
-        {/* Footer */}
-        <footer className="text-center py-2 flex-shrink-0">
-          <div className="flex items-center justify-center gap-4 text-white/70 text-xs">
-            <span>Datenschutz</span>
-            <span>Impressum</span>
-          </div>
-        </footer>
       </div>
     </div>
   );
