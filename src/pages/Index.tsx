@@ -154,7 +154,7 @@ const Index = () => {
 
             {/* Footer - moved to left side under chat */}
             <footer className="mt-4 flex-shrink-0">
-              <div className="flex items-center gap-4 text-white/70 text-xs">
+              <div className="flex items-center justify-center gap-4 text-white/70 text-xs">
                 <span>Datenschutz</span>
                 <span>Impressum</span>
               </div>
