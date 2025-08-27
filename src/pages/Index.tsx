@@ -40,8 +40,8 @@ const Index = () => {
         <main className="flex-1 overflow-hidden pl-4 pr-0 pt-1 pb-0 min-h-0">
           <div className="h-full w-full flex min-h-0">
             <div className="flex-1 min-w-0 min-h-0 relative">
-              {/* Top gradient/blur overlay to keep logo area readable */}
-              <div className="pointer-events-none absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[rgba(250,244,230,0.85)] to-transparent backdrop-blur-sm z-10" />
+              {/* Invisible blur overlay: blurs messages under the logo without visible gradient */}
+              <div className="pointer-events-none absolute top-0 left-0 right-0 h-16 bg-transparent backdrop-blur-sm z-10" />
               <ChatPanel />
             </div>
             <div className="h-full min-h-0 overflow-hidden" style={{ width: "61%" }}>
