@@ -12,9 +12,9 @@ type ChatContainerProps = {
 
 const ChatContainer = ({ messages, isTyping, files }: ChatContainerProps) => {
   return (
-    <div className="h-full flex flex-col overflow-hidden">
+    <div className="h-full flex flex-col overflow-hidden min-h-0 relative">
       {/* The MessageList will handle bottom anchoring and internal scroll positioning */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto min-h-0">
         <MessageList messages={messages} isTyping={isTyping} />
       </div>
     </div>

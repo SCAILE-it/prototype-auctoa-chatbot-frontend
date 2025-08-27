@@ -16,7 +16,7 @@ const Index = () => {
       />
 
       {/* Content overlay */}
-      <div className="relative z-10 flex flex-col h-screen">
+      <div className="relative z-10 flex flex-col h-screen min-h-0">
         {/* Auctoa logo - top left corner */}
         <div className="absolute top-4 left-6 z-20">
           <svg width="126" height="21" viewBox="0 0 84 14" fill="none" xmlns="http://www.w3.org/2000/svg" className="opacity-90">
@@ -37,12 +37,14 @@ const Index = () => {
         </div>
 
         {/* Main content area - fixed split layout (Form 61% width) */}
-        <main className="flex-1 overflow-hidden pl-4 pr-0 pt-1 pb-0">
-          <div className="h-full w-full flex">
-            <div className="flex-1 min-w-0">
+        <main className="flex-1 overflow-hidden pl-4 pr-0 pt-1 pb-0 min-h-0">
+          <div className="h-full w-full flex min-h-0">
+            <div className="flex-1 min-w-0 min-h-0 relative">
+              {/* Top gradient/blur overlay to keep logo area readable */}
+              <div className="pointer-events-none absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[rgba(250,244,230,0.85)] to-transparent backdrop-blur-sm z-10" />
               <ChatPanel />
             </div>
-            <div className="h-full" style={{ width: "61%" }}>
+            <div className="h-full min-h-0 overflow-hidden" style={{ width: "61%" }}>
               <FormPanel />
             </div>
           </div>

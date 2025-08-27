@@ -31,9 +31,9 @@ const ChatPanel = () => {
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col min-h-0">
       {/* Single scroll area lives inside ChatContainer (MessageList) to avoid nested scroll */}
-      <div className="flex-1">
+      <div className="flex-1 min-h-0">
         <ChatContainer messages={messages} isTyping={isTyping} />
       </div>
       <div className="px-2 md:px-3 pb-2 md:pb-4">

@@ -96,8 +96,8 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
 
   const containerClasses =
     messages.length === 0 && !isTyping
-      ? "flex flex-col justify-center items-center min-h-full p-2 md:p-4" // If no messages and not typing, center the content
-      : "flex flex-col justify-end min-h-full px-2 pt-4 pb-4 md:px-2 md:pt-4 md:pb-6 max-w-4xl mx-auto"; // Otherwise, anchor messages to bottom
+      ? "flex flex-col justify-center items-center h-full p-2 md:p-4" // If no messages and not typing, center the content
+      : "flex flex-col justify-end h-full px-2 pt-8 pb-28 md:px-2 md:pt-8 md:pb-32 max-w-4xl mx-auto"; // Anchor to bottom with padding top (logo safe-zone) and bottom (input)
 
   return (
     <div className={containerClasses}>
