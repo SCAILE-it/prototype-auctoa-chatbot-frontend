@@ -15,16 +15,21 @@ import { Message } from "@/lib/chatTypes";
 type MessageListProps = {
   messages: Message[]; // Array of messages to display in the chat
   isTyping: boolean; // Indicates if the AI is currently typing a response
+  bottomOffset?: number; // Additional bottom padding (input height + 20px)
+  lastBubbleRef?: React.RefObject<HTMLDivElement>;
 };
 
-const MessageList = ({ messages, isTyping }: MessageListProps) => {
+const MessageList = ({ messages, isTyping, bottomOffset = 20, lastBubbleRef }: MessageListProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Scroll to the bottom of the message list whenever messages change or when typing status updates
   useEffect(() => {
-    // Smooth scroll to bottom on new messages; keep experience if user is near bottom
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [messages, isTyping]);
+    // Smooth scroll to bottom when messages change (after layout settled)
+    const id = requestAnimationFrame(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [messages]);
 
   // Helper function to render HTML content safely
   // This function uses dangerouslySetInnerHTML to render HTML content in a React component.
@@ -95,17 +100,24 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
     );
   };
 
+  const containerBase = "flex flex-col min-h-full max-w-4xl mx-auto px-2 md:px-2";
   const containerClasses =
     messages.length === 0 && !isTyping
-      ? "flex flex-col justify-center items-center h-full p-2 md:p-4"
-      : "flex flex-col justify-end h-full px-2 pt-4 pb-20 md:px-2 md:pt-4 md:pb-20 max-w-4xl mx-auto"; // bottom padding ~20px above input
+      ? `${containerBase} justify-center items-center p-2 md:p-4`
+      : `${containerBase} justify-end pt-2`;
 
   return (
     <div className={containerClasses}>
       <div className="text-sm md:text-base w-full">
-        {messages.map(renderMessage)}
+        {messages.map((msg, idx) => (
+          <div ref={idx === messages.length - 1 ? lastBubbleRef : undefined} key={msg.id}>
+            {renderMessage(msg, idx)}
+          </div>
+        ))}
         {isTyping && <TypingIndicator />}
       </div>
+      {/* Spacer to keep the last bubble exactly bottomOffset above the chat box */}
+      <div style={{ height: bottomOffset }} />
       <div ref={messagesEndRef} />
     </div>
   );
