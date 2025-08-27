@@ -22,7 +22,8 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
 
   // Scroll to the bottom of the message list whenever messages change or when typing status updates
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Smooth scroll to bottom on new messages; keep experience if user is near bottom
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, isTyping]);
 
   // Helper function to render HTML content safely
