@@ -39,7 +39,7 @@ const Index = () => {
         {/* Main content area - fixed split layout (Form 61% width) */}
         <main className="flex-1 overflow-hidden pl-4 pr-0 pt-1 pb-0 min-h-0">
           <div className="h-full w-full flex min-h-0">
-            <div className="flex-1 min-w-0 min-h-0 relative">
+            <div className="flex-1 min-w-0 min-h-0">
               <ChatPanel />
             </div>
             <div className="h-full min-h-0 overflow-hidden" style={{ width: "61%" }}>
