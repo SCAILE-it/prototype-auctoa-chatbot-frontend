@@ -54,7 +54,7 @@ const ChatInput = ({
   const canSend = (value.trim() || hasFiles) && !disabled;
 
   return (
-    <div className="flex flex-col bg-[color:var(--transparent-10)] backdrop-blur-md rounded-xl px-3 py-3 gap-y-2 z-0">
+    <div className="flex flex-col bg-[color:var(--transparent-10)] backdrop-blur-md rounded-xl px-3 py-3 gap-y-2 z-0 shadow-[2px_2px_12px_0_rgba(0,0,0,0.2)]">
       {/* FILE BUBBLES ABOVE TEXTAREA */}
       {fileBubbles && (
         <div className="mb-1 flex justify-start">{fileBubbles}</div>

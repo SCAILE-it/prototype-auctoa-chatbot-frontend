@@ -90,7 +90,7 @@ export default function StatusQuo() {
               <MapPinIcon /> STANDORT
             </div>
             <div className="text-sm" style={{ color: '#666666' }}>Flurstraße 8, 90451 Nürnberg-Eibach</div>
-            <div className="rounded-[3px] bg-white/95 shadow-[0_1px_3px_rgba(0,0,0,0.22)] w-full h-48 flex items-center justify-center text-sm" style={{ color: '#999999' }}>
+            <div className="rounded-[3px] bg-transparent shadow-[0_1px_3px_rgba(0,0,0,0.12)] w-full h-48 flex items-center justify-center text-sm" style={{ color: '#999999' }}>
               Kartenplatzhalter
             </div>
           </div>
@@ -156,7 +156,7 @@ export default function StatusQuo() {
               <div className="text-[12px] inline-flex items-center px-2 py-1 rounded-full" style={{ backgroundColor: '#eef2ff', color: '#1F2937' }}>
                 Matchscore: {score}
               </div>
-              <div className="rounded-[3px] overflow-hidden bg-white/95 shadow-[0_1px_3px_rgba(0,0,0,0.22)] aspect-[4/3] flex items-center justify-center" style={{ color: '#999999' }}>
+              <div className="rounded-[3px] overflow-hidden bg-transparent shadow-[0_1px_3px_rgba(0,0,0,0.12)] aspect-[4/3] flex items-center justify-center" style={{ color: '#999999' }}>
                 Bildplatzhalter
               </div>
             </div>

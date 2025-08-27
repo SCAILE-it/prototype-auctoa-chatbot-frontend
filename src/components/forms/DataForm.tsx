@@ -101,7 +101,7 @@ export default function DataForm({ onSuccess }: { onSuccess?: () => void }) {
     onSuccess?.()
   }
 
-  const inputBase = 'mt-1 block w-full rounded-md bg-white/95 shadow-[0_1px_3px_rgba(0,0,0,0.22)] placeholder-[#999] text-[#1F2937] focus:ring-2 focus:ring-[color:var(--color-brand-orange)] px-3.5 py-2.5'
+  const inputBase = 'mt-1 block w-full rounded-md bg-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.12)] placeholder-[#999] text-[#1F2937] focus:ring-2 focus:ring-[color:var(--color-brand-orange)] px-3.5 py-2.5'
   const labelCls = 'text-sm font-medium flex items-center' as const
   const sectionTitle = 'uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2' as const
 
@@ -260,7 +260,18 @@ export default function DataForm({ onSuccess }: { onSuccess?: () => void }) {
       </p>
 
       <div className="mt-8">
-        <button type="submit" disabled={!isValid} className="w-full rounded-md py-3 font-medium shadow-sm uppercase tracking-[.06em]" style={{ fontFamily: 'Fraunces, ui-serif, Georgia, serif', backgroundColor: !isValid ? '#eeeeee' as any : 'var(--color-brand-orange)', color: !isValid ? '#999999' : '#ffffff' }}>
+        <button
+          type="submit"
+          disabled={!isValid}
+          className="w-full rounded-[12px] py-4 md:py-5 font-semibold uppercase tracking-[.06em] transition-all duration-200 disabled:cursor-not-allowed shadow-[2px_2px_12px_0_rgba(0,0,0,0.2)] hover:-translate-y-[1px] hover:shadow-[0_10px_24px_rgba(249,115,22,0.35)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[color:var(--color-brand-orange)]"
+          style={{
+            fontFamily: 'Fraunces, ui-serif, Georgia, serif',
+            background: isValid
+              ? 'linear-gradient(90deg, #FFDB84 0%, #F97316 100%)'
+              : '#eeeeee',
+            color: isValid ? '#1C1C1C' : '#999999',
+          }}
+        >
           Bewertung erhalten
         </button>
       </div>

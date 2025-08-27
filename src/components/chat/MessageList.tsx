@@ -10,30 +10,7 @@ import FileBubble from "./FileBubble";
 import SourcesDropdown from "./SourcesDropdown";
 import TypingIndicator from "./TypingIndicator";
 import { CTA_CONFIG } from "@/lib/ctaConfig";
-
-// Represents a single message in the chat
-export type Message = {
-  id: string;
-  content: string; // Text content of the message (user)
-  isUser: boolean; // Indicates if the message is from the user (true) or the AI (false)
-  files?: MessageFile[]; // Optional array of files attached to the message
-  html?: string; // Optional HTML content for the message (AI)
-  sources?: { title: string; url: string }[]; // Optional sources for the message, each with a title and URL
-  ctaType?:
-    | "gutachten"
-    | "termin"
-    | "makler"
-    | "finanzrechner"
-    | "anwalt"
-    | "ibuyer"
-    | "sanierer"; // Optional CTA type for specific message actions
-};
-
-// Represents a file attached to a message
-export type MessageFile = {
-  name: string;
-  url?: string;
-};
+import { Message } from "@/lib/chatTypes";
 
 type MessageListProps = {
   messages: Message[]; // Array of messages to display in the chat
@@ -120,7 +97,7 @@ const MessageList = ({ messages, isTyping }: MessageListProps) => {
   const containerClasses =
     messages.length === 0 && !isTyping
       ? "flex flex-col justify-center items-center min-h-full p-2 md:p-4" // If no messages and not typing, center the content
-      : "flex flex-col px-2 pt-9 pb-40 md:px-2 md:pt-4 md:pb-30 max-w-4xl mx-auto"; // Otherwise, use the standard chat layout
+      : "flex flex-col justify-end min-h-full px-2 pt-4 pb-4 md:px-2 md:pt-4 md:pb-6 max-w-4xl mx-auto"; // Otherwise, anchor messages to bottom
 
   return (
     <div className={containerClasses}>

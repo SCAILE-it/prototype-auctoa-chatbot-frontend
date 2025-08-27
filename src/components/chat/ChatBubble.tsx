@@ -30,7 +30,7 @@ const ChatBubble = ({ isUser, children }: ChatBubbleProps) => { // Determines if
 
       <div
         className={cn(
-          "rounded-xl p-3 mb-3",
+          "rounded-xl p-3 mb-3 shadow-[2px_2px_12px_0_rgba(0,0,0,0.2)]",
           isUser
             ? "bg-[color:var(--neutral-grey)] text-[color:var(--neutral-dark)]"
             : "bg-[color:var(--primary-creme)] text-[color:var(--neutral-dark)] max-w-[90%] md:max-w-[80%]"

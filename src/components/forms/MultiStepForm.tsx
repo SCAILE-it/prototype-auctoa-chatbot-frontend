@@ -8,8 +8,8 @@ export default function MultiStepForm() {
   const [activeTab, setActiveTab] = useState<1 | 2 | 3>(1)
   
   return (
-    <div className="max-w-[920px] mx-auto bg-[color:var(--color-cream)] rounded-[3px] shadow-[2px_2px_12px_0_rgba(0,0,0,0.2)] min-h-[calc(100vh-4rem)]">
-      <div className="sticky top-0 z-10 bg-transparent rounded-t-[3px]">
+    <div className="max-w-[920px] mx-auto bg-[#FAF4E6] rounded-[12px] min-h-full pb-4" style={{ boxShadow: '2px 2px 12px 0 rgba(0,0,0,0.2)' }}>
+      <div className="sticky top-[10px] z-10 bg-transparent rounded-t-[3px]">
         <Tabs active={activeTab} onChange={setActiveTab} />
       </div>
       <div className="p-6 md:p-8">
