@@ -18,7 +18,7 @@ type RawForm = Partial<{
   ergaenzendeInfos: unknown;
 }>;
 
-export type NormalizedForm = Partial<{
+export type NormalizedForm = {
   adresse: string;
   immobilienart: string;
   wohnungstyp: string;
@@ -34,7 +34,7 @@ export type NormalizedForm = Partial<{
   sollMiete: number | null;
   rechtlicheHinweise: string | null;
   ergaenzendeInfos: string | null;
-}>;
+};
 
 const isEmpty = (v: unknown) => v === undefined || v === null || (typeof v === "string" && v.trim() === "");
 
@@ -58,46 +58,33 @@ export const loadDataFormFromStorage = (): RawForm | null => {
   }
 };
 
-export const buildFormPayload = (): NormalizedForm | null => {
-  const v = loadDataFormFromStorage();
-  if (!v) return null;
+export const buildFormPayload = (): NormalizedForm => {
+  const v = loadDataFormFromStorage() || {};
 
-  const out: NormalizedForm = {};
+  // Always include all fields. Required strings default to "", required numbers to 0, optionals to null.
+  const str = (val: unknown) => (isEmpty(val) ? "" : String(val));
+  const num = (val: unknown) => {
+    const n = toNumber(val);
+    return n === null ? 0 : n;
+  };
 
-  // Required strings
-  if (!isEmpty(v.adresse)) out.adresse = String(v.adresse);
-  if (!isEmpty(v.immobilienart)) out.immobilienart = String(v.immobilienart);
-  if (!isEmpty(v.wohnungstyp)) out.wohnungstyp = String(v.wohnungstyp);
-  if (!isEmpty(v.zustand)) out.zustand = String(v.zustand);
-  if (!isEmpty(v.ausstattung)) out.ausstattung = String(v.ausstattung);
-  if (!isEmpty(v.letzteModernisierung)) out.letzteModernisierung = String(v.letzteModernisierung);
-
-  // Required numbers
-  {
-    const n = toNumber(v.baujahr);
-    if (n !== null) out.baujahr = n;
-  }
-  {
-    const n = toNumber(v.wohnflaeche);
-    if (n !== null) out.wohnflaeche = n;
-  }
-  {
-    const n = toNumber(v.zimmer);
-    if (n !== null) out.zimmer = n;
-  }
-  {
-    const n = toNumber(v.stockwerk);
-    if (n !== null) out.stockwerk = n;
-  }
-
-  // Optional fields
-  out.energiekennwert = toNumber(v.energiekennwert);
-  out.istMiete = toNumber(v.istMiete);
-  out.sollMiete = toNumber(v.sollMiete);
-  out.rechtlicheHinweise = toString(v.rechtlicheHinweise);
-  out.ergaenzendeInfos = toString(v.ergaenzendeInfos);
-
-  return out;
+  return {
+    adresse: str((v as any).adresse),
+    immobilienart: str((v as any).immobilienart),
+    wohnungstyp: str((v as any).wohnungstyp),
+    baujahr: num((v as any).baujahr),
+    wohnflaeche: num((v as any).wohnflaeche),
+    zimmer: num((v as any).zimmer),
+    stockwerk: num((v as any).stockwerk),
+    zustand: str((v as any).zustand),
+    ausstattung: str((v as any).ausstattung),
+    letzteModernisierung: str((v as any).letzteModernisierung),
+    energiekennwert: toNumber((v as any).energiekennwert),
+    istMiete: toNumber((v as any).istMiete),
+    sollMiete: toNumber((v as any).sollMiete),
+    rechtlicheHinweise: toString((v as any).rechtlicheHinweise),
+    ergaenzendeInfos: toString((v as any).ergaenzendeInfos),
+  };
 };
 
 
