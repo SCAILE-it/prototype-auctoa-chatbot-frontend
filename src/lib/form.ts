@@ -29,11 +29,11 @@ export type NormalizedForm = {
   zustand: string;
   ausstattung: string;
   letzteModernisierung: string;
-  energiekennwert: number | null;
-  istMiete: number | null;
-  sollMiete: number | null;
-  rechtlicheHinweise: string | null;
-  ergaenzendeInfos: string | null;
+  energiekennwert: number;
+  istMiete: number;
+  sollMiete: number;
+  rechtlicheHinweise: string;
+  ergaenzendeInfos: string;
 };
 
 const isEmpty = (v: unknown) => v === undefined || v === null || (typeof v === "string" && v.trim() === "");
@@ -61,7 +61,7 @@ export const loadDataFormFromStorage = (): RawForm | null => {
 export const buildFormPayload = (): NormalizedForm => {
   const v = loadDataFormFromStorage() || {};
 
-  // Always include all fields. Required strings default to "", required numbers to 0, optionals to null.
+  // Always include all fields. Strings default to "", numbers to 0.
   const str = (val: unknown) => (isEmpty(val) ? "" : String(val));
   const num = (val: unknown) => {
     const n = toNumber(val);
@@ -79,11 +79,11 @@ export const buildFormPayload = (): NormalizedForm => {
     zustand: str((v as any).zustand),
     ausstattung: str((v as any).ausstattung),
     letzteModernisierung: str((v as any).letzteModernisierung),
-    energiekennwert: toNumber((v as any).energiekennwert),
-    istMiete: toNumber((v as any).istMiete),
-    sollMiete: toNumber((v as any).sollMiete),
-    rechtlicheHinweise: toString((v as any).rechtlicheHinweise),
-    ergaenzendeInfos: toString((v as any).ergaenzendeInfos),
+    energiekennwert: num((v as any).energiekennwert),
+    istMiete: num((v as any).istMiete),
+    sollMiete: num((v as any).sollMiete),
+    rechtlicheHinweise: str((v as any).rechtlicheHinweise),
+    ergaenzendeInfos: str((v as any).ergaenzendeInfos),
   };
 };
 
