@@ -63,6 +63,16 @@ export function useChatState({
     async (content: string, uploadedFiles: File[] = []) => {
       if (!content.trim() && uploadedFiles.length === 0) return;
 
+      if (!apiUrl || typeof apiUrl !== "string") {
+        console.error("VITE_API_URL is not configured. Received:", apiUrl);
+        toast({
+          title: "Konfiguration fehlt",
+          description: "Die API-URL ist nicht gesetzt (VITE_API_URL).",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const userMessage: Message = {
         id: uuidv4(),
         content,
@@ -99,7 +109,8 @@ export function useChatState({
         });
 
         if (!response.ok) {
-          await response.text();
+          const errText = await response.text().catch(() => "");
+          console.error("Chat API error:", response.status, errText);
           throw new Error("Request failed");
         }
 
@@ -118,6 +129,7 @@ export function useChatState({
         setPills(data.pills || []);
         setFiles([]);
       } catch (err: any) {
+        console.error("Chat request failed:", err);
         if (err?.name !== "AbortError") {
           toast({
             title: "Error",
