@@ -28,3 +28,13 @@ Frontend für den AI-gestützten Immobilien-Chatbot von Auctoa. Entwickelt mit R
     Die .env-Variable **VITE_API_URL** muss dort ebenfalls hinterlegt werden.
 
     🌐 [https://auctoa-chat-frontend.vercel.app](https://auctoa-chat-frontend.vercel.app)
+
+### Environment
+
+Erstellen Sie eine `.env` im Projektroot mit:
+
+```
+VITE_API_URL=https://n8n.scaile.it/webhook/REPLACE_ME
+```
+
+Sie können sich an `.env.example` orientieren.

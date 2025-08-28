@@ -1,34 +1,36 @@
-import { useEffect, useRef, useState } from "react";
-import { v4 as uuid } from "uuid";
+import { useEffect, useRef, useState, useCallback } from "react";
 import ChatContainer from "./ChatContainer";
 import ChatInput from "./ChatInput";
-import { Message } from "@/lib/chatTypes";
+import FileUploadBar from "./FileUploadBar";
+import { useChatState } from "@/hooks/useChatState";
 
 const ChatPanel = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isTyping, setIsTyping] = useState(false);
-  const [input, setInput] = useState("");
-
-  const send = (text: string) => {
-    const trimmed = text.trim();
-    if (!trimmed) return;
-    const user: Message = { id: uuid(), content: trimmed, isUser: true };
-    setMessages((m) => [...m, user]);
-    setInput("");
-    setIsTyping(true);
-    setTimeout(() => {
-      setMessages((m) => [
-        ...m,
-        {
-          id: uuid(),
-          content:
-            "Hallo Inga! Gerne helfe ich euch kostenlos. Lass uns mit ein paar Basisdaten starten – das dauert nur wenige Minuten.",
-          isUser: false,
-        },
-      ]);
-      setIsTyping(false);
-    }, 400);
+  const getVariant = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get("variant") || "valuation";
   };
+
+  const {
+    messages,
+    isTyping,
+    files,
+    inputValue,
+    setInputValue,
+    sendMessage,
+    handleFilesAdded,
+    handleFileRemove,
+    clearFiles,
+  } = useChatState({ variant: getVariant() });
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSend = useCallback(
+    (text: string) => {
+      sendMessage(text, files);
+      clearFiles();
+    },
+    [sendMessage, files, clearFiles]
+  );
 
   const inputWrapRef = useRef<HTMLDivElement>(null);
   const [inputHeight, setInputHeight] = useState<number>(0);
@@ -83,17 +85,35 @@ const ChatPanel = () => {
 
   return (
     <div className="h-full flex flex-col min-h-0">
-      {/* Messages scroller mirrors form column behavior */}
       <div
         ref={scrollerRef}
         className="flex-1 min-h-0 overflow-y-auto chat-scroll overscroll-contain flex flex-col h-full"
         style={{ ['--chat-input-h' as any]: `${inputHeight}px` }}
       >
-        <ChatContainer messages={messages} isTyping={isTyping} bottomOffset={inputHeight + 20} lastBubbleRef={lastBubbleRef} />
+        <ChatContainer
+          messages={messages}
+          isTyping={isTyping}
+          bottomOffset={inputHeight + 20}
+          lastBubbleRef={lastBubbleRef}
+        />
       </div>
-      {/* Input sits below the scroller, no sticky/absolute */}
+
       <div ref={inputWrapRef} className="px-2 md:px-3 pb-2 md:pb-4">
-        <ChatInput value={input} onChange={setInput} onSendMessage={send} />
+        <ChatInput
+          value={inputValue}
+          onChange={setInputValue}
+          onSendMessage={handleSend}
+          onFileButtonClick={() => fileInputRef.current?.click()}
+          hasFiles={files.length > 0}
+          fileBubbles={
+            <FileUploadBar
+              files={files}
+              onFilesAdded={handleFilesAdded}
+              onFileRemove={handleFileRemove}
+              uploadInputRef={fileInputRef}
+            />
+          }
+        />
       </div>
     </div>
   );
