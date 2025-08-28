@@ -5,6 +5,7 @@ import { Message } from "@/lib/chatTypes";
 import { convertFileToBase64 } from "@/lib/files";
 import { loadSession, saveSession } from "@/lib/session";
 import { buildFormPayload } from "@/lib/form";
+import { resolveApiUrl } from "@/lib/config";
 
 type ApiResponse = {
   chatResponse: string;
@@ -64,7 +65,8 @@ export function useChatState({
     async (content: string, uploadedFiles: File[] = []) => {
       if (!content.trim() && uploadedFiles.length === 0) return;
 
-      if (!apiUrl || typeof apiUrl !== "string") {
+      const resolvedApi = resolveApiUrl(apiUrl);
+      if (!resolvedApi) {
         console.error("VITE_API_URL is not configured. Received:", apiUrl);
         toast({
           title: "Konfiguration fehlt",
@@ -100,7 +102,7 @@ export function useChatState({
         const form = buildFormPayload();
         const requestData = { message: content, files: fileStrings, variant, form } as const;
 
-        const response = await fetch(apiUrl, {
+        const response = await fetch(resolvedApi, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
