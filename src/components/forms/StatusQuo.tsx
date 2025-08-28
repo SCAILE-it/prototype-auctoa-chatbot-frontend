@@ -65,7 +65,24 @@ function KeyValue({ label, value }: { label: string; value: string }) {
   )
 }
 
+import { useEffect, useState } from 'react'
+
 export default function StatusQuo() {
+  const [summaryHtml, setSummaryHtml] = useState<string | null>(null)
+
+  useEffect(() => {
+    const raw = localStorage.getItem('analysis.summary')
+    if (raw) setSummaryHtml(raw)
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<any>).detail
+      if (detail && typeof detail === 'object' && typeof detail.summary === 'string') {
+        setSummaryHtml(detail.summary)
+      }
+    }
+    window.addEventListener('analysis:updated', handler as EventListener)
+    return () => window.removeEventListener('analysis:updated', handler as EventListener)
+  }, [])
+
   return (
     <div className="space-y-8">
       <h1 className="text-2xl md:text-[28px] font-semibold tracking-[.02em]" style={{ color: '#333', fontFamily: 'Fraunces, ui-serif, Georgia, serif' }}>Status Quo Analyse</h1>
@@ -73,11 +90,13 @@ export default function StatusQuo() {
       {/* 1. Zusammenfassung */}
       <div className="space-y-3">
         <SubTitle><NumBadge n={1} /> Zusammenfassung</SubTitle>
-        <p className="text-sm leading-[22px]" style={{ color: '#666666' }}>
-          Die 65-m²-Eigentumswohnung (BJ 1980, guter Zustand, modernisiert 2019) liegt in ruhiger Lage mit guter ÖPNV-Anbindung.
-          Aktuelle Vergleichstransaktionen ergeben einen Marktwert von 240 000 – 295 000 €. Die Ist-Miete liegt leicht unter dem
-          Quartiersdurchschnitt und bietet moderates Steigerungspotenzial.
-        </p>
+        {summaryHtml ? (
+          <div className="text-sm leading-[22px]" style={{ color: '#666666' }} dangerouslySetInnerHTML={{ __html: summaryHtml }} />
+        ) : (
+          <p className="text-sm leading-[22px]" style={{ color: '#666666' }}>
+            Sobald die Analyse gestartet wurde, erscheint hier die Zusammenfassung.
+          </p>
+        )}
       </div>
 
       {/* 2. Immobiliendaten */}

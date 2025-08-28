@@ -1,4 +1,5 @@
 import { useEffect, type ReactNode } from 'react'
+import { buildFormPayload } from '@/lib/form'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -109,8 +110,51 @@ export default function DataForm({ onSuccess }: { onSuccess?: () => void }) {
     return () => window.removeEventListener('form:updated', handler as EventListener)
   }, [reset])
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
+    try {
+      localStorage.setItem('form_complete', 'true')
+    } catch {}
+
+    // Trigger analysis webhook and switch tab via onSuccess
     onSuccess?.()
+
+    try {
+      const conversationId = localStorage.getItem('conversation-id') || crypto.randomUUID()
+      localStorage.setItem('conversation-id', conversationId)
+      const form = buildFormPayload()
+      let form_complete = false
+      try { form_complete = localStorage.getItem('form_complete') === 'true' } catch {}
+      const res = await fetch('https://n8n.scaile.it/webhook/a2edcb9d-00a4-49e4-aa3f-892b72bf1f03', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-conversation-id': conversationId,
+        },
+        body: JSON.stringify({ form, form_complete, meta: { conversationId, clientTs: Date.now() } }),
+      })
+      if (!res.ok) {
+        const t = await res.text().catch(() => '')
+        console.error('Analysis API error:', res.status, t)
+        return
+      }
+      const raw = await res.json()
+      const out = Array.isArray(raw) ? (raw[0]?.output ?? {}) : raw
+      const summary = out.summary || out.chatResponse || ''
+      if (typeof summary === 'string' && summary.trim()) {
+        localStorage.setItem('analysis.summary', summary)
+        window.dispatchEvent(new CustomEvent('analysis:updated', { detail: { summary } }))
+      }
+
+      // If webhook returns canonical form, adopt it
+      if (out.form && typeof out.form === 'object') {
+        try {
+          localStorage.setItem('dataform', JSON.stringify(out.form))
+          window.dispatchEvent(new CustomEvent('form:updated', { detail: out.form }))
+        } catch {}
+      }
+    } catch (e) {
+      console.error('Analysis request failed:', e)
+    }
   }
 
   const inputBase = 'mt-1 block w-full rounded-md bg-white/20 shadow-[0_1px_3px_rgba(0,0,0,0.12)] placeholder-[#999] text-[#1F2937] focus:ring-2 focus:ring-[color:var(--color-brand-orange)] px-3.5 py-2.5'

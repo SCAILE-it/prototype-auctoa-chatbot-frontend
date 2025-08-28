@@ -34,7 +34,6 @@ export type NormalizedForm = {
   sollMiete: number;
   rechtlicheHinweise: string;
   ergaenzendeInfos: string;
-  form_complete?: boolean;
 };
 
 const isEmpty = (v: unknown) => v === undefined || v === null || (typeof v === "string" && v.trim() === "");
@@ -87,24 +86,8 @@ export const buildFormPayload = (): NormalizedForm => {
     ergaenzendeInfos: str((v as any).ergaenzendeInfos),
   };
 
-  // Compute form_complete: all required fields filled
-  const requiredStrings = [
-    payload.adresse,
-    payload.immobilienart,
-    payload.wohnungstyp,
-    payload.zustand,
-    payload.ausstattung,
-    payload.letzteModernisierung,
-  ];
-  const requiredNumbers = [
-    payload.baujahr,
-    payload.wohnflaeche,
-    payload.zimmer,
-    payload.stockwerk,
-  ];
-  const stringsOk = requiredStrings.every((s) => typeof s === "string" && s.trim().length > 0);
-  const numbersOk = requiredNumbers.every((n) => typeof n === "number" && n > 0);
-  (payload as any).form_complete = stringsOk && numbersOk;
+  // Read form_complete only from storage (set on user action), default false
+  // form_complete is handled and stored separately, not embedded inside the form
 
   return payload;
 };
@@ -136,23 +119,6 @@ export const normalizeIncomingForm = (value: unknown): NormalizedForm => {
     rechtlicheHinweise: str(v.rechtlicheHinweise),
     ergaenzendeInfos: str(v.ergaenzendeInfos),
   };
-  const requiredStrings = [
-    payload.adresse,
-    payload.immobilienart,
-    payload.wohnungstyp,
-    payload.zustand,
-    payload.ausstattung,
-    payload.letzteModernisierung,
-  ];
-  const requiredNumbers = [
-    payload.baujahr,
-    payload.wohnflaeche,
-    payload.zimmer,
-    payload.stockwerk,
-  ];
-  const stringsOk = requiredStrings.every((s) => typeof s === "string" && s.trim().length > 0);
-  const numbersOk = requiredNumbers.every((n) => typeof n === "number" && n > 0);
-  (payload as any).form_complete = stringsOk && numbersOk;
   return payload;
 };
 

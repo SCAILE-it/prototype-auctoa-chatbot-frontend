@@ -101,7 +101,11 @@ export function useChatState({
         const fileStrings = filesEncoded.map((f) => f.base64);
 
         const form = buildFormPayload();
-        const requestData = { message: content, files: fileStrings, variant, form } as const;
+        let form_complete = false;
+        try {
+          form_complete = localStorage.getItem("form_complete") === "true";
+        } catch {}
+        const requestData = { message: content, files: fileStrings, variant, form, form_complete } as const;
 
         const response = await fetch(resolvedApi, {
           method: "POST",
