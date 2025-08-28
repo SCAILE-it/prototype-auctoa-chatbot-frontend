@@ -3,6 +3,7 @@ import ChatContainer from "./ChatContainer";
 import ChatInput from "./ChatInput";
 import FileUploadBar from "./FileUploadBar";
 import { useChatState } from "@/hooks/useChatState";
+import ApiUrlBanner from "./ApiUrlBanner";
 
 const ChatPanel = () => {
   const getVariant = () => {
@@ -99,6 +100,7 @@ const ChatPanel = () => {
       </div>
 
       <div ref={inputWrapRef} className="px-2 md:px-3 pb-2 md:pb-4">
+        <ApiUrlBanner />
         <ChatInput
           value={inputValue}
           onChange={setInputValue}
