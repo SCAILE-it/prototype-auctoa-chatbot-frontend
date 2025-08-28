@@ -34,6 +34,7 @@ export type NormalizedForm = {
   sollMiete: number;
   rechtlicheHinweise: string;
   ergaenzendeInfos: string;
+  form_complete?: boolean;
 };
 
 const isEmpty = (v: unknown) => v === undefined || v === null || (typeof v === "string" && v.trim() === "");
@@ -68,7 +69,7 @@ export const buildFormPayload = (): NormalizedForm => {
     return n === null ? 0 : n;
   };
 
-  return {
+  const payload: NormalizedForm = {
     adresse: str((v as any).adresse),
     immobilienart: str((v as any).immobilienart),
     wohnungstyp: str((v as any).wohnungstyp),
@@ -85,6 +86,27 @@ export const buildFormPayload = (): NormalizedForm => {
     rechtlicheHinweise: str((v as any).rechtlicheHinweise),
     ergaenzendeInfos: str((v as any).ergaenzendeInfos),
   };
+
+  // Compute form_complete: all required fields filled
+  const requiredStrings = [
+    payload.adresse,
+    payload.immobilienart,
+    payload.wohnungstyp,
+    payload.zustand,
+    payload.ausstattung,
+    payload.letzteModernisierung,
+  ];
+  const requiredNumbers = [
+    payload.baujahr,
+    payload.wohnflaeche,
+    payload.zimmer,
+    payload.stockwerk,
+  ];
+  const stringsOk = requiredStrings.every((s) => typeof s === "string" && s.trim().length > 0);
+  const numbersOk = requiredNumbers.every((n) => typeof n === "number" && n > 0);
+  (payload as any).form_complete = stringsOk && numbersOk;
+
+  return payload;
 };
 
 // Normalize a form object coming from the server into our type-stable shape
@@ -97,7 +119,7 @@ export const normalizeIncomingForm = (value: unknown): NormalizedForm => {
     const n = typeof val === "number" ? val : Number(val);
     return Number.isFinite(n) ? n : 0;
   };
-  return {
+  const payload: NormalizedForm = {
     adresse: str(v.adresse),
     immobilienart: str(v.immobilienart),
     wohnungstyp: str(v.wohnungstyp),
@@ -114,6 +136,24 @@ export const normalizeIncomingForm = (value: unknown): NormalizedForm => {
     rechtlicheHinweise: str(v.rechtlicheHinweise),
     ergaenzendeInfos: str(v.ergaenzendeInfos),
   };
+  const requiredStrings = [
+    payload.adresse,
+    payload.immobilienart,
+    payload.wohnungstyp,
+    payload.zustand,
+    payload.ausstattung,
+    payload.letzteModernisierung,
+  ];
+  const requiredNumbers = [
+    payload.baujahr,
+    payload.wohnflaeche,
+    payload.zimmer,
+    payload.stockwerk,
+  ];
+  const stringsOk = requiredStrings.every((s) => typeof s === "string" && s.trim().length > 0);
+  const numbersOk = requiredNumbers.every((n) => typeof n === "number" && n > 0);
+  (payload as any).form_complete = stringsOk && numbersOk;
+  return payload;
 };
 
 

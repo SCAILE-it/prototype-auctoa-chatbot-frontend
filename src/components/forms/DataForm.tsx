@@ -152,14 +152,7 @@ export default function DataForm({ onSuccess }: { onSuccess?: () => void }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
           <label className="block">
             <span className={labelCls} style={{ color: '#999999' }}>Immobilienart <RequiredStar /> <Req show={hasIssue('immobilienart')} /></span>
-            <SelectWrap>
-              <select {...register('immobilienart')} defaultValue="" className={`${inputBase} appearance-none`}>
-                <option value="">Bitte auswählen</option>
-                <option value="Wohnung">Wohnung</option>
-                <option value="Haus">Haus</option>
-                <option value="Mehrfamilienhaus">Mehrfamilienhaus</option>
-              </select>
-            </SelectWrap>
+            <input {...register('immobilienart')} placeholder="Bitte auswählen" className={inputBase} />
             {errors.immobilienart && <p className="text-xs text-red-600 mt-1">{errors.immobilienart.message}</p>}
           </label>
           <label className="block">
@@ -207,13 +200,7 @@ export default function DataForm({ onSuccess }: { onSuccess?: () => void }) {
           </label>
           <label className="block">
             <span className={labelCls} style={{ color: '#999999' }}>Ausstattung <RequiredStar /> <Req show={hasIssue('ausstattung')} /></span>
-            <SelectWrap>
-              <select {...register('ausstattung')} defaultValue="" className={`${inputBase} appearance-none`}>
-                <option value="">Bitte auswählen</option>
-                <option value="Standard">Standard</option>
-                <option value="Luxus">Luxus</option>
-              </select>
-            </SelectWrap>
+            <input {...register('ausstattung')} placeholder="Bitte auswählen" className={inputBase} />
           </label>
           <label className="block">
             <span className={labelCls} style={{ color: '#999999' }}>Letzte Modernisierung <RequiredStar /> <Req show={hasIssue('letzteModernisierung')} /></span>
