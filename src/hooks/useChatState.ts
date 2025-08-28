@@ -4,7 +4,7 @@ import { toast } from "@/hooks/use-toast";
 import { Message } from "@/lib/chatTypes";
 import { convertFileToBase64 } from "@/lib/files";
 import { loadSession, saveSession } from "@/lib/session";
-import { buildFormPayload } from "@/lib/form";
+import { buildFormPayload, normalizeIncomingForm } from "@/lib/form";
 import { resolveApiUrl } from "@/lib/config";
 
 type ApiResponse = {
@@ -119,7 +119,8 @@ export function useChatState({
           throw new Error("Request failed");
         }
 
-        const data: ApiResponse = await response.json();
+        const raw = await response.json();
+        const data: ApiResponse = Array.isArray(raw) ? (raw[0]?.output ?? {}) : raw;
 
         const botMessage: Message = {
           id: uuidv4(),
@@ -133,6 +134,17 @@ export function useChatState({
         setMessages((prev) => [...prev, botMessage]);
         setPills(data.pills || []);
         setFiles([]);
+
+        // If server returns a canonical form, adopt it and persist
+        try {
+          const incomingForm = (data as any).form || (data as any).formState || (data as any).forms;
+          if (incomingForm && typeof incomingForm === "object") {
+            const normalized = normalizeIncomingForm(incomingForm);
+            localStorage.setItem("dataform", JSON.stringify(normalized));
+            // Broadcast update so the form UI can react immediately without reload
+            window.dispatchEvent(new CustomEvent("form:updated", { detail: normalized }));
+          }
+        } catch {}
       } catch (err: any) {
         console.error("Chat request failed:", err);
         if (err?.name !== "AbortError") {

@@ -97,6 +97,18 @@ export default function DataForm({ onSuccess }: { onSuccess?: () => void }) {
     return () => sub.unsubscribe()
   }, [watch])
 
+  // Listen for canonical form updates from chat responses and adopt them
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<any>).detail
+      if (detail && typeof detail === 'object') {
+        reset(detail)
+      }
+    }
+    window.addEventListener('form:updated', handler as EventListener)
+    return () => window.removeEventListener('form:updated', handler as EventListener)
+  }, [reset])
+
   const onSubmit = () => {
     onSuccess?.()
   }

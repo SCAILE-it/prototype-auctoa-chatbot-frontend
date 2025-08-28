@@ -87,4 +87,33 @@ export const buildFormPayload = (): NormalizedForm => {
   };
 };
 
+// Normalize a form object coming from the server into our type-stable shape
+export const normalizeIncomingForm = (value: unknown): NormalizedForm => {
+  const v = (value as any) || {};
+  const isEmpty = (val: unknown) => val === undefined || val === null || (typeof val === "string" && val.trim() === "");
+  const str = (val: unknown) => (isEmpty(val) ? "" : String(val));
+  const toNumber = (val: unknown): number => {
+    if (isEmpty(val)) return 0;
+    const n = typeof val === "number" ? val : Number(val);
+    return Number.isFinite(n) ? n : 0;
+  };
+  return {
+    adresse: str(v.adresse),
+    immobilienart: str(v.immobilienart),
+    wohnungstyp: str(v.wohnungstyp),
+    baujahr: toNumber(v.baujahr),
+    wohnflaeche: toNumber(v.wohnflaeche),
+    zimmer: toNumber(v.zimmer),
+    stockwerk: toNumber(v.stockwerk),
+    zustand: str(v.zustand),
+    ausstattung: str(v.ausstattung),
+    letzteModernisierung: str(v.letzteModernisierung),
+    energiekennwert: toNumber(v.energiekennwert),
+    istMiete: toNumber(v.istMiete),
+    sollMiete: toNumber(v.sollMiete),
+    rechtlicheHinweise: str(v.rechtlicheHinweise),
+    ergaenzendeInfos: str(v.ergaenzendeInfos),
+  };
+};
+
 
