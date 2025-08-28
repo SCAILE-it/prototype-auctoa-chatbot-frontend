@@ -66,6 +66,7 @@ export function useChatState({
       if (!content.trim() && uploadedFiles.length === 0) return;
 
       const resolvedApi = resolveApiUrl(apiUrl);
+      console.debug("Resolved API URL:", resolvedApi);
       if (!resolvedApi) {
         console.error("VITE_API_URL is not configured. Received:", apiUrl);
         toast({
