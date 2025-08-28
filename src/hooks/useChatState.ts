@@ -4,6 +4,7 @@ import { toast } from "@/hooks/use-toast";
 import { Message } from "@/lib/chatTypes";
 import { convertFileToBase64 } from "@/lib/files";
 import { loadSession, saveSession } from "@/lib/session";
+import { buildFormPayload } from "@/lib/form";
 
 type ApiResponse = {
   chatResponse: string;
@@ -96,7 +97,8 @@ export function useChatState({
         const filesEncoded = await Promise.all(uploadedFiles.map((f) => convertFileToBase64(f)));
         const fileStrings = filesEncoded.map((f) => f.base64);
 
-        const requestData = { message: content, files: fileStrings, variant };
+        const form = buildFormPayload();
+        const requestData = { message: content, files: fileStrings, variant, form } as const;
 
         const response = await fetch(apiUrl, {
           method: "POST",
