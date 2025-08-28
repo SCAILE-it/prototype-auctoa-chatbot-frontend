@@ -6,6 +6,7 @@ import { convertFileToBase64 } from "@/lib/files";
 import { loadSession, saveSession } from "@/lib/session";
 import { buildFormPayload, normalizeIncomingForm } from "@/lib/form";
 import { resolveApiUrl } from "@/lib/config";
+import { buildStateFormPayload, normalizeIncomingStateForm, saveStateFormToStorage } from "@/lib/stateForm";
 
 type ApiResponse = {
   chatResponse: string;
@@ -101,11 +102,12 @@ export function useChatState({
         const fileStrings = filesEncoded.map((f) => f.base64);
 
         const form = buildFormPayload();
+        const state_form = buildStateFormPayload();
         let form_complete = false;
         try {
           form_complete = localStorage.getItem("form_complete") === "true";
         } catch {}
-        const requestData = { message: content, files: fileStrings, variant, form, form_complete } as const;
+        const requestData = { message: content, files: fileStrings, variant, form, form_complete, state_form } as const;
 
         const response = await fetch(resolvedApi, {
           method: "POST",
@@ -147,6 +149,14 @@ export function useChatState({
             localStorage.setItem("dataform", JSON.stringify(normalized));
             // Broadcast update so the form UI can react immediately without reload
             window.dispatchEvent(new CustomEvent("form:updated", { detail: normalized }));
+          }
+          const incomingStateForm = (data as any).state_form;
+          if (incomingStateForm && typeof incomingStateForm === "object") {
+            const normalizedSF = normalizeIncomingStateForm(incomingStateForm);
+            saveStateFormToStorage(normalizedSF);
+            // Also update summary cache for Status Quo
+            localStorage.setItem('analysis.summary', normalizedSF.summaryHtml);
+            window.dispatchEvent(new CustomEvent('analysis:updated', { detail: { summary: normalizedSF.summaryHtml } }))
           }
         } catch {}
       } catch (err: any) {
