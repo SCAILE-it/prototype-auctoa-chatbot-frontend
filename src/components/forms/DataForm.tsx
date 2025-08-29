@@ -1,6 +1,6 @@
 import { useEffect, type ReactNode } from 'react'
 import { buildFormPayload, normalizeIncomingForm } from '@/lib/form'
-import { normalizeIncomingStatusQuoForm, saveStatusQuoFormToStorage } from '@/lib/statusQuoForm'
+import { normalizeIncomingStatusQuoForm, saveStatusQuoFormToStorage, deriveStatusQuoFromForm, loadStatusQuoFormFromStorage, mergeStatusQuoForm } from '@/lib/statusQuoForm'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -51,6 +51,9 @@ function NoteIcon({ className, size = 18 }: { className?: string; size?: number 
   )
 }
 
+const toNumberPre = (v: unknown) =>
+  typeof v === 'string' ? v.replace(',', '.').trim() : v
+
 const schema = z.object({
   adresse: z.string().min(1, 'Pflichtfeld'),
   zustand: z.string().min(1, 'Pflichtfeld'),
@@ -58,19 +61,23 @@ const schema = z.object({
   letzteModernisierung: z.string().min(1, 'Pflichtfeld'),
   immobilienart: z.string().min(1, 'Pflichtfeld'),
   wohnungstyp: z.string().min(1, 'Pflichtfeld'),
-  baujahr: z.coerce
-    .number()
-    .int()
-    .gte(1800, 'Ungültig')
-    .lte(new Date().getFullYear(), 'Ungültig'),
-  wohnflaeche: z.coerce.number().positive('Ungültig'),
-  zimmer: z.coerce.number().positive('Ungültig'),
-  stockwerk: z.coerce.number().int().nonnegative('Ungültig'),
+  baujahr: z.preprocess(toNumberPre,
+    z.coerce.number().int().gte(1800, 'Ungültig').lte(new Date().getFullYear(), 'Ungültig')
+  ),
+  wohnflaeche: z.preprocess(toNumberPre,
+    z.coerce.number().gt(0, 'Ungültig')
+  ),
+  zimmer: z.preprocess(toNumberPre,
+    z.coerce.number().gt(0, 'Ungültig')
+  ),
+  stockwerk: z.preprocess(toNumberPre,
+    z.coerce.number().int().nonnegative('Ungültig')
+  ),
   rechtlicheHinweise: z.string().optional(),
   ergaenzendeInfos: z.string().optional(),
-  energiekennwert: z.coerce.number().nonnegative('Ungültig').optional(),
-  istMiete: z.coerce.number().nonnegative('Ungültig').optional(),
-  sollMiete: z.coerce.number().nonnegative('Ungültig').optional(),
+  energiekennwert: z.preprocess(toNumberPre, z.coerce.number().nonnegative('Ungültig')).optional(),
+  istMiete: z.preprocess(toNumberPre, z.coerce.number().nonnegative('Ungültig')).optional(),
+  sollMiete: z.preprocess(toNumberPre, z.coerce.number().nonnegative('Ungültig')).optional(),
 })
 
 type FormValues = z.input<typeof schema>
@@ -116,6 +123,18 @@ export default function DataForm({ onSuccess }: { onSuccess?: () => void }) {
       localStorage.setItem('form_complete', 'true')
     } catch {}
 
+    // Prepare Status-Quo display fields from current form for immediate render
+    try {
+      const currentForm = buildFormPayload()
+      const sqPatch = deriveStatusQuoFromForm(currentForm)
+      saveStatusQuoFormToStorage(sqPatch)
+      // Also update summary cache if present in patch (usually empty here)
+      if (sqPatch.summaryHtml) {
+        localStorage.setItem('analysis.summary', sqPatch.summaryHtml)
+        window.dispatchEvent(new CustomEvent('analysis:updated', { detail: { summary: sqPatch.summaryHtml } }))
+      }
+    } catch {}
+
     // Trigger analysis webhook and switch tab via onSuccess
     onSuccess?.()
 
@@ -144,8 +163,16 @@ export default function DataForm({ onSuccess }: { onSuccess?: () => void }) {
 
       // Read summary from status_quo_form.summaryHtml, or fallback keys
       const summaryFromSQ = out?.status_quo_form?.summaryHtml
-      const summary = (typeof summaryFromSQ === 'string' && summaryFromSQ) || out.summary || out.chatResponse || ''
-      if (typeof summary === 'string' && summary.trim()) {
+      const decodeHtml = (s: string) => {
+        if (!s) return s
+        if (!(/[&]lt;|&gt;|&amp;/.test(s))) return s
+        const txt = document.createElement('textarea')
+        txt.innerHTML = s
+        return txt.value
+      }
+      const summaryRaw = (typeof summaryFromSQ === 'string' && summaryFromSQ) || out.summary || out.chatResponse || ''
+      const summary = typeof summaryRaw === 'string' ? decodeHtml(summaryRaw) : ''
+      if (summary && summary.trim()) {
         localStorage.setItem('analysis.summary', summary)
         window.dispatchEvent(new CustomEvent('analysis:updated', { detail: { summary } }))
       }
@@ -159,15 +186,40 @@ export default function DataForm({ onSuccess }: { onSuccess?: () => void }) {
         } catch {}
       }
 
-      // Adopt status_quo_form if present
+      // Adopt status_quo_form if present; accept potential/risk too
       if (out.status_quo_form && typeof out.status_quo_form === 'object') {
         try {
           const normalizedSQ = normalizeIncomingStatusQuoForm(out.status_quo_form)
-          saveStatusQuoFormToStorage(normalizedSQ)
+          const existingSQ = loadStatusQuoFormFromStorage()
+          const mergedSQ = mergeStatusQuoForm(existingSQ, normalizedSQ)
+          saveStatusQuoFormToStorage(mergedSQ)
           if (normalizedSQ.summaryHtml && normalizedSQ.summaryHtml.trim()) {
-            localStorage.setItem('analysis.summary', normalizedSQ.summaryHtml)
-            window.dispatchEvent(new CustomEvent('analysis:updated', { detail: { summary: normalizedSQ.summaryHtml } }))
+            const dec = decodeHtml(normalizedSQ.summaryHtml)
+            localStorage.setItem('analysis.summary', dec)
+            window.dispatchEvent(new CustomEvent('analysis:updated', { detail: { summary: dec } }))
           }
+          // Broadcast lists and/or HTML blocks for live UI update
+          window.dispatchEvent(new CustomEvent('analysis:updated', { detail: {
+            opportunities: mergedSQ.opportunities,
+            risks: mergedSQ.risks,
+            opportunitiesHtml: mergedSQ.opportunitiesHtml,
+            risksHtml: mergedSQ.risksHtml,
+          } }))
+        } catch {}
+      }
+      // Handle top-level potential/risk without status_quo_form wrapper
+      if ((out.potential || out.risk) && !out.status_quo_form) {
+        try {
+          const normalizedSQ = normalizeIncomingStatusQuoForm({ summaryHtml: '', potential: out.potential, risk: out.risk })
+          const existingSQ = loadStatusQuoFormFromStorage()
+          const mergedSQ = mergeStatusQuoForm(existingSQ, normalizedSQ)
+          saveStatusQuoFormToStorage(mergedSQ)
+          window.dispatchEvent(new CustomEvent('analysis:updated', { detail: {
+            opportunities: mergedSQ.opportunities,
+            risks: mergedSQ.risks,
+            opportunitiesHtml: mergedSQ.opportunitiesHtml,
+            risksHtml: mergedSQ.risksHtml,
+          } }))
         } catch {}
       }
     } catch (e) {
@@ -229,19 +281,19 @@ export default function DataForm({ onSuccess }: { onSuccess?: () => void }) {
           <label className="block">
             <span className={labelCls} style={{ color: '#999999' }}>Gesamtwohnfläche [m²] <RequiredStar /> <Req show={hasIssue('wohnflaeche')} /></span>
             <div className="relative">
-              <input type="number" inputMode="decimal" {...register('wohnflaeche', { valueAsNumber: true })} placeholder="Bitte auswählen" className={`${inputBase} pr-12`} />
+              <input type="text" inputMode="decimal" {...register('wohnflaeche')} placeholder="Bitte auswählen" className={`${inputBase} pr-12`} />
               <span className="absolute inset-y-0 right-3 flex items-center unit-muted">m²</span>
             </div>
             {errors.wohnflaeche && <p className="text-sm text-red-600 mt-1">{errors.wohnflaeche.message}</p>}
           </label>
           <label className="block">
             <span className={labelCls} style={{ color: '#999999' }}>Anzahl der Zimmer <RequiredStar /> <Req show={hasIssue('zimmer')} /></span>
-            <input type="number" inputMode="decimal" step="0.5" {...register('zimmer', { valueAsNumber: true })} placeholder="Bitte auswählen" className={inputBase} />
+            <input type="text" inputMode="decimal" step="0.5" {...register('zimmer')} placeholder="Bitte auswählen" className={inputBase} />
             {errors.zimmer && <p className="text-sm text-red-600 mt-1">{errors.zimmer.message}</p>}
           </label>
           <label className="block">
             <span className={labelCls} style={{ color: '#999999' }}>Stockwerk <RequiredStar /> <Req show={hasIssue('stockwerk')} /></span>
-            <input type="number" inputMode="numeric" {...register('stockwerk', { valueAsNumber: true })} placeholder="Bitte auswählen" className={inputBase} />
+            <input type="text" inputMode="numeric" {...register('stockwerk')} placeholder="Bitte auswählen" className={inputBase} />
             {errors.stockwerk && <p className="text-sm text-red-600 mt-1">{errors.stockwerk.message}</p>}
           </label>
         </div>
@@ -279,21 +331,21 @@ export default function DataForm({ onSuccess }: { onSuccess?: () => void }) {
           <label className="block">
             <span className="text-sm font-medium" style={{ color: '#999999' }}>Energiekennwert [kWh/m²a]</span>
             <div className="relative">
-              <input type="number" inputMode="decimal" {...register('energiekennwert', { valueAsNumber: true })} placeholder="Bitte eintragen" className={`${inputBase} pr-16`} />
+              <input type="text" inputMode="decimal" {...register('energiekennwert')} placeholder="Bitte eintragen" className={`${inputBase} pr-16`} />
               <span className="absolute inset-y-0 right-3 flex items-center unit-muted">kWh/m²a</span>
             </div>
           </label>
           <label className="block">
             <span className="text-sm font-medium" style={{ color: '#999999' }}>Ist-Miete [€]</span>
             <div className="relative">
-              <input type="number" inputMode="decimal" {...register('istMiete', { valueAsNumber: true })} placeholder="Bitte auswählen" className={`${inputBase} pr-8`} />
+              <input type="text" inputMode="decimal" {...register('istMiete')} placeholder="Bitte auswählen" className={`${inputBase} pr-8`} />
               <span className="absolute inset-y-0 right-3 flex items-center unit-muted">€</span>
             </div>
           </label>
           <label className="block">
             <span className="text-sm font-medium" style={{ color: '#999999' }}>Soll-Miete [€]</span>
             <div className="relative">
-              <input type="number" inputMode="decimal" {...register('sollMiete', { valueAsNumber: true })} placeholder="Bitte auswählen" className={`${inputBase} pr-8`} />
+              <input type="text" inputMode="decimal" {...register('sollMiete')} placeholder="Bitte auswählen" className={`${inputBase} pr-8`} />
               <span className="absolute inset-y-0 right-3 flex items-center unit-muted">€</span>
             </div>
           </label>

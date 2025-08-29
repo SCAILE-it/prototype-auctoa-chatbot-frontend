@@ -66,17 +66,74 @@ function KeyValue({ label, value }: { label: string; value: string }) {
 }
 
 import { useEffect, useState } from 'react'
+import { loadStatusQuoFormFromStorage } from '@/lib/statusQuoForm'
 
 export default function StatusQuo() {
   const [summaryHtml, setSummaryHtml] = useState<string | null>(null)
+  const [opportunities, setOpportunities] = useState<string[]>([])
+  const [risks, setRisks] = useState<string[]>([])
+  const [opportunitiesHtml, setOpportunitiesHtml] = useState<string>("")
+  const [risksHtml, setRisksHtml] = useState<string>("")
+  const [sqDisplay, setSqDisplay] = useState(() => ({
+    adresse: '', immobilienart: '', wohnungstyp: '', baujahr: '', wohnflaeche: '', zimmer: '', stockwerk: '',
+    zustand: '', ausstattung: '', letzteModernisierung: '', energiekennwert: '', istMiete: '', sollMiete: '',
+    rechtlicheHinweise: '', ergaenzendeInfos: ''
+  }))
 
   useEffect(() => {
     const raw = localStorage.getItem('analysis.summary')
     if (raw) setSummaryHtml(raw)
+    const sq = loadStatusQuoFormFromStorage()
+    setOpportunities(Array.isArray(sq.opportunities) ? sq.opportunities : [])
+    setRisks(Array.isArray(sq.risks) ? sq.risks : [])
+    setOpportunitiesHtml(typeof sq.opportunitiesHtml === 'string' ? sq.opportunitiesHtml : '')
+    setRisksHtml(typeof sq.risksHtml === 'string' ? sq.risksHtml : '')
+    setSqDisplay({
+      adresse: sq.displayAdresse || '',
+      immobilienart: sq.displayImmobilienart || '',
+      wohnungstyp: sq.displayWohnungstyp || '',
+      baujahr: sq.displayBaujahr || '',
+      wohnflaeche: sq.displayWohnflaecheLabel || '',
+      zimmer: sq.displayZimmerLabel || '',
+      stockwerk: sq.displayStockwerkLabel || '',
+      zustand: sq.displayZustand || '',
+      ausstattung: sq.displayAusstattung || '',
+      letzteModernisierung: sq.displayLetzteModernisierung || '',
+      energiekennwert: sq.displayEnergiekennwertLabel || '',
+      istMiete: sq.displayIstMieteLabel || '',
+      sollMiete: sq.displaySollMieteLabel || '',
+      rechtlicheHinweise: sq.displayRechtlicheHinweise || '',
+      ergaenzendeInfos: sq.displayErgaenzendeInfos || '',
+    })
     const handler = (e: Event) => {
       const detail = (e as CustomEvent<any>).detail
-      if (detail && typeof detail === 'object' && typeof detail.summary === 'string') {
-        setSummaryHtml(detail.summary)
+      if (detail && typeof detail === 'object') {
+        if (typeof detail.summary === 'string') setSummaryHtml(detail.summary)
+        // Always refresh from storage in case backend updated status_quo_form
+        const sqNow = loadStatusQuoFormFromStorage()
+        setOpportunities(Array.isArray(sqNow.opportunities) ? sqNow.opportunities : [])
+        setRisks(Array.isArray(sqNow.risks) ? sqNow.risks : [])
+        if (typeof detail.opportunitiesHtml === 'string') setOpportunitiesHtml(detail.opportunitiesHtml)
+        else setOpportunitiesHtml(typeof sqNow.opportunitiesHtml === 'string' ? sqNow.opportunitiesHtml : '')
+        if (typeof detail.risksHtml === 'string') setRisksHtml(detail.risksHtml)
+        else setRisksHtml(typeof sqNow.risksHtml === 'string' ? sqNow.risksHtml : '')
+        setSqDisplay({
+          adresse: sqNow.displayAdresse || '',
+          immobilienart: sqNow.displayImmobilienart || '',
+          wohnungstyp: sqNow.displayWohnungstyp || '',
+          baujahr: sqNow.displayBaujahr || '',
+          wohnflaeche: sqNow.displayWohnflaecheLabel || '',
+          zimmer: sqNow.displayZimmerLabel || '',
+          stockwerk: sqNow.displayStockwerkLabel || '',
+          zustand: sqNow.displayZustand || '',
+          ausstattung: sqNow.displayAusstattung || '',
+          letzteModernisierung: sqNow.displayLetzteModernisierung || '',
+          energiekennwert: sqNow.displayEnergiekennwertLabel || '',
+          istMiete: sqNow.displayIstMieteLabel || '',
+          sollMiete: sqNow.displaySollMieteLabel || '',
+          rechtlicheHinweise: sqNow.displayRechtlicheHinweise || '',
+          ergaenzendeInfos: sqNow.displayErgaenzendeInfos || '',
+        })
       }
     }
     window.addEventListener('analysis:updated', handler as EventListener)
@@ -108,7 +165,7 @@ export default function StatusQuo() {
             <div className="uppercase text-[11px] font-semibold tracking-[.12em] flex items-center gap-2" style={{ color: '#333333' }}>
               <MapPinIcon /> STANDORT
             </div>
-            <div className="text-sm" style={{ color: '#666666' }}>Flurstraße 8, 90451 Nürnberg-Eibach</div>
+            <div className="text-sm" style={{ color: '#666666' }}>{sqDisplay.adresse || '—'}</div>
             <div className="rounded-[3px] bg-transparent shadow-[0_1px_3px_rgba(0,0,0,0.12)] w-full h-48 flex items-center justify-center text-sm" style={{ color: '#999999' }}>
               Kartenplatzhalter
             </div>
@@ -121,11 +178,11 @@ export default function StatusQuo() {
                 <HomeIcon /> OBJEKTTYP & BASISDATEN
               </div>
               <div className="space-y-0.5">
-                <KeyValue label="Immobilienart" value="Etagenwohnung" />
-                <KeyValue label="Gesamtwohnfläche" value="65 m²" />
-                <KeyValue label="Anzahl der Zimmer" value="2,5" />
-                <KeyValue label="Stockwerk" value="2. OG" />
-                <KeyValue label="Aufzug" value="Ja" />
+                <KeyValue label="Immobilienart" value={sqDisplay.immobilienart || '—'} />
+                <KeyValue label="Wohnungstyp" value={sqDisplay.wohnungstyp || '—'} />
+                <KeyValue label="Gesamtwohnfläche" value={sqDisplay.wohnflaeche || '—'} />
+                <KeyValue label="Anzahl der Zimmer" value={sqDisplay.zimmer || '—'} />
+                <KeyValue label="Stockwerk" value={sqDisplay.stockwerk || '—'} />
               </div>
             </div>
             <div className="space-y-3">
@@ -133,9 +190,9 @@ export default function StatusQuo() {
                 <ToolboxIcon /> ZUSTAND & AUSSTATTUNG
               </div>
               <div className="space-y-0.5">
-                <KeyValue label="Zustand" value="Gut" />
-                <KeyValue label="Ausstattung" value="Normal" />
-                <KeyValue label="Letzte Modernisierung" value="2019 (Bad & Elektrik)" />
+                <KeyValue label="Zustand" value={sqDisplay.zustand || '—'} />
+                <KeyValue label="Ausstattung" value={sqDisplay.ausstattung || '—'} />
+                <KeyValue label="Letzte Modernisierung" value={sqDisplay.letzteModernisierung || '—'} />
               </div>
             </div>
           </div>
@@ -147,11 +204,10 @@ export default function StatusQuo() {
                 <BoltIcon /> ENERGIE & RECHTLICHES
               </div>
               <div className="space-y-0.5">
-                <KeyValue label="Energiekennwert [kWh/m²a]" value="85 (Klasse C)" />
-                <KeyValue label="Mietstatus" value="Vermietet" />
-                <KeyValue label="Ist-Miete [€]" value="700" />
-                <KeyValue label="Soll-Miete [€]" value="760" />
-                <KeyValue label="Rechtliche Hinweise" value="Unbefristeter MV, § 577 BGB Vorkaufsrecht" />
+                <KeyValue label="Energiekennwert [kWh/m²a]" value={sqDisplay.energiekennwert || '—'} />
+                <KeyValue label="Ist-Miete [€]" value={sqDisplay.istMiete || '—'} />
+                <KeyValue label="Soll-Miete [€]" value={sqDisplay.sollMiete || '—'} />
+                <KeyValue label="Rechtliche Hinweise" value={sqDisplay.rechtlicheHinweise || '—'} />
               </div>
             </div>
             <div className="space-y-3">
@@ -159,27 +215,41 @@ export default function StatusQuo() {
                 <NoteIcon /> SONSTIGES
               </div>
               <div className="space-y-0.5">
-                <KeyValue label="Besonderheiten" value="Balkon, Fahrstuhl, Einbauküche, Garage, Garten" />
+                <KeyValue label="Ergänzende Infos" value={sqDisplay.ergaenzendeInfos || '—'} />
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 3. Vergleichsobjekte */}
+      {/* 3. Potenziale & Risiken */}
       <div className="space-y-4">
-        <SubTitle><NumBadge n={3} /> Vergleichsobjekte</SubTitle>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {['87%', '82%', '79%'].map((score, idx) => (
-            <div key={idx} className="space-y-2">
-              <div className="text-[12px] inline-flex items-center px-2 py-1 rounded-full" style={{ backgroundColor: '#eef2ff', color: '#1F2937' }}>
-                Matchscore: {score}
-              </div>
-              <div className="rounded-[3px] overflow-hidden bg-transparent shadow-[0_1px_3px_rgba(0,0,0,0.12)] aspect-[4/3] flex items-center justify-center" style={{ color: '#999999' }}>
-                Bildplatzhalter
-              </div>
+        <SubTitle><NumBadge n={3} /> Potenziale & Risiken</SubTitle>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <div className="uppercase text-[11px] font-semibold tracking-[.12em] mb-3" style={{ color: '#333333' }}>
+              POTENZIALE
             </div>
-          ))}
+            {opportunitiesHtml && opportunitiesHtml.trim() ? (
+              <div className="text-sm leading-[22px] space-y-2" style={{ color: '#666666' }} dangerouslySetInnerHTML={{ __html: opportunitiesHtml }} />
+            ) : (
+              <p className="text-sm leading-[22px]" style={{ color: '#666666' }}>
+                Wird nach Analyse ergänzt.
+              </p>
+            )}
+          </div>
+          <div>
+            <div className="uppercase text-[11px] font-semibold tracking-[.12em] mb-3" style={{ color: '#333333' }}>
+              RISIKEN
+            </div>
+            {risksHtml && risksHtml.trim() ? (
+              <div className="text-sm leading-[22px] space-y-2" style={{ color: '#666666' }} dangerouslySetInnerHTML={{ __html: risksHtml }} />
+            ) : (
+              <p className="text-sm leading-[22px]" style={{ color: '#666666' }}>
+                Wird nach Analyse ergänzt.
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>
