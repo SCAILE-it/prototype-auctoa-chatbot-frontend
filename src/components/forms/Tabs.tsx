@@ -19,10 +19,23 @@ export default function Tabs({ active, onChange }: TabsProps) {
               role="tab"
               aria-selected={s.n === active}
               className={[
-                'flex items-center gap-2 px-2 py-2 rounded-md cursor-pointer select-none min-w-0',
+                'flex items-center gap-2 px-2 py-2 rounded-md select-none min-w-0',
+                // lock forward flow until unlocked
+                (() => {
+                  try {
+                    const unlocked = localStorage.getItem('next_steps_unlocked') === 'true'
+                    return unlocked ? 'cursor-pointer' : 'cursor-default pointer-events-none'
+                  } catch { return 'cursor-default pointer-events-none' }
+                })(),
                 s.n === active ? 'text-black' : 'text-[#999999]',
               ].join(' ')}
-              onClick={() => onChange?.(s.n)}
+              onClick={() => {
+                try {
+                  const unlocked = localStorage.getItem('next_steps_unlocked') === 'true'
+                  if (!unlocked) return
+                } catch {}
+                onChange?.(s.n)
+              }}
             >
               <span className={[
                 'inline-flex items-center justify-center w-6 h-6 aspect-square rounded-full border shrink-0 leading-none',

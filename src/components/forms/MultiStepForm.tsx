@@ -3,6 +3,7 @@ import Tabs from './Tabs'
 import DataForm from './DataForm'
 import NextSteps from './NextSteps'
 import StatusQuo from './StatusQuo'
+import NextStepsCTA from './NextStepsCTA'
 
 export default function MultiStepForm() {
   const [activeTab, setActiveTab] = useState<1 | 2 | 3>(1)
@@ -22,7 +23,10 @@ export default function MultiStepForm() {
           </>
         )}
         {activeTab === 2 && (
-          <StatusQuo />
+          <>
+            <StatusQuo />
+            <NextStepsCTA onClick={() => { try { localStorage.setItem('next_steps_unlocked','true'); } catch {}; setActiveTab(3) }} />
+          </>
         )}
         {activeTab === 3 && (
           <NextSteps />
