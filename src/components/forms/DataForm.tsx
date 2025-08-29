@@ -1,5 +1,6 @@
 import { useEffect, type ReactNode } from 'react'
-import { buildFormPayload } from '@/lib/form'
+import { buildFormPayload, normalizeIncomingForm } from '@/lib/form'
+import { normalizeIncomingStatusQuoForm, saveStatusQuoFormToStorage } from '@/lib/statusQuoForm'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -138,18 +139,35 @@ export default function DataForm({ onSuccess }: { onSuccess?: () => void }) {
         return
       }
       const raw = await res.json()
-      const out = Array.isArray(raw) ? (raw[0]?.output ?? {}) : raw
-      const summary = out.summary || out.chatResponse || ''
+      const root = Array.isArray(raw) ? (raw[0] ?? {}) : raw
+      const out = root.output ?? root
+
+      // Read summary from status_quo_form.summaryHtml, or fallback keys
+      const summaryFromSQ = out?.status_quo_form?.summaryHtml
+      const summary = (typeof summaryFromSQ === 'string' && summaryFromSQ) || out.summary || out.chatResponse || ''
       if (typeof summary === 'string' && summary.trim()) {
         localStorage.setItem('analysis.summary', summary)
         window.dispatchEvent(new CustomEvent('analysis:updated', { detail: { summary } }))
       }
 
-      // If webhook returns canonical form, adopt it
+      // Adopt canonical form if present
       if (out.form && typeof out.form === 'object') {
         try {
-          localStorage.setItem('dataform', JSON.stringify(out.form))
-          window.dispatchEvent(new CustomEvent('form:updated', { detail: out.form }))
+          const normalized = normalizeIncomingForm(out.form)
+          localStorage.setItem('dataform', JSON.stringify(normalized))
+          window.dispatchEvent(new CustomEvent('form:updated', { detail: normalized }))
+        } catch {}
+      }
+
+      // Adopt status_quo_form if present
+      if (out.status_quo_form && typeof out.status_quo_form === 'object') {
+        try {
+          const normalizedSQ = normalizeIncomingStatusQuoForm(out.status_quo_form)
+          saveStatusQuoFormToStorage(normalizedSQ)
+          if (normalizedSQ.summaryHtml && normalizedSQ.summaryHtml.trim()) {
+            localStorage.setItem('analysis.summary', normalizedSQ.summaryHtml)
+            window.dispatchEvent(new CustomEvent('analysis:updated', { detail: { summary: normalizedSQ.summaryHtml } }))
+          }
         } catch {}
       }
     } catch (e) {
@@ -298,21 +316,24 @@ export default function DataForm({ onSuccess }: { onSuccess?: () => void }) {
         </div>
       </section>
 
-      <p className="text-[12px] text-[#f97373] mt-2">
-        Bitte ergänze fehlende Informationen, um den Immobilienwert berechnen zu lassen.
-      </p>
+      {!isValid && (
+        <p className="text-[12px] text-[#f97373] mt-2">
+          Bitte ergänze fehlende Informationen, um den Immobilienwert berechnen zu lassen.
+        </p>
+      )}
 
       <div className="mt-8">
         <button
           type="submit"
           disabled={!isValid}
-          className="w-full rounded-[12px] py-4 md:py-5 font-semibold uppercase tracking-[.06em] transition-all duration-200 disabled:cursor-not-allowed shadow-[2px_2px_12px_0_rgba(0,0,0,0.2)] hover:-translate-y-[1px] hover:shadow-[0_10px_24px_rgba(249,115,22,0.35)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[color:var(--color-brand-orange)]"
+          className="w-full rounded-[12px] py-4 md:py-5 font-semibold uppercase tracking-[.06em] transition-all duration-200 disabled:cursor-not-allowed shadow-[2px_2px_12px_0_rgba(0,0,0,0.2)] hover:-translate-y-[1px] hover:shadow-[0_12px_28px_rgba(0,0,0,0.25)] focus:outline-none focus:ring-2 focus:ring-offset-2"
           style={{
             fontFamily: 'Fraunces, ui-serif, Georgia, serif',
             background: isValid
-              ? 'linear-gradient(90deg, #FFDB84 0%, #F97316 100%)'
-              : '#eeeeee',
-            color: isValid ? '#1C1C1C' : '#999999',
+              ? 'linear-gradient(90deg, #FFE48A 0%, #FFD152 100%)'
+              : 'rgba(255,255,255,0.65)',
+            color: isValid ? '#1C1C1C' : '#6B7280',
+            // no border per spec; rely on shadow and contrast for readability
           }}
         >
           Bewertung erhalten
