@@ -12,7 +12,7 @@ export default function NextStepsCTA({ onClick, className }: NextStepsCTAProps) 
       aria-label="Strategische Next Steps"
       onClick={onClick}
       className={
-        "fixed right-4 md:right-6 bottom-4 md:bottom-6 z-30 " +
+        "z-30 " +
         "px-5 md:px-6 py-2.5 md:py-3 rounded-full flex items-center gap-4 " +
         "text-base tracking-[.01em] " +
         "backdrop-blur-sm shadow-[0_1px_3px_rgba(0,0,0,0.12)] " +

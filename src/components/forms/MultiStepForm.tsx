@@ -25,7 +25,11 @@ export default function MultiStepForm() {
         {activeTab === 2 && (
           <>
             <StatusQuo />
-            <NextStepsCTA onClick={() => { try { localStorage.setItem('next_steps_unlocked','true'); } catch {}; setActiveTab(3) }} />
+            <div className="sticky bottom-[10px] z-30 pb-[env(safe-area-inset-bottom)] -mb-6 md:-mb-8">
+              <div className="w-full flex justify-end pr-[10px]">
+                <NextStepsCTA onClick={() => { try { localStorage.setItem('next_steps_unlocked','true'); } catch {}; setActiveTab(3) }} />
+              </div>
+            </div>
           </>
         )}
         {activeTab === 3 && (
