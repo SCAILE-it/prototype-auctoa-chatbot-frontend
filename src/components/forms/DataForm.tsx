@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from 'react'
 import { buildFormPayload, normalizeIncomingForm } from '@/lib/form'
 import { normalizeIncomingStatusQuoForm, saveStatusQuoFormToStorage, deriveStatusQuoFromForm, loadStatusQuoFormFromStorage, mergeStatusQuoForm } from '@/lib/statusQuoForm'
+import { sanitizeHtml } from '@/lib/html'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -126,8 +127,10 @@ export default function DataForm({ onSuccess }: { onSuccess?: () => void }) {
     // Prepare Status-Quo display fields from current form for immediate render
     try {
       const currentForm = buildFormPayload()
-      const sqPatch = deriveStatusQuoFromForm(currentForm)
-      saveStatusQuoFormToStorage(sqPatch)
+      const existingSQ = loadStatusQuoFormFromStorage()
+      const sqPatch = deriveStatusQuoFromForm(currentForm, existingSQ)
+      const mergedSQ = mergeStatusQuoForm(existingSQ, sqPatch)
+      saveStatusQuoFormToStorage(mergedSQ)
       // Also update summary cache if present in patch (usually empty here)
       if (sqPatch.summaryHtml) {
         localStorage.setItem('analysis.summary', sqPatch.summaryHtml)
@@ -163,15 +166,8 @@ export default function DataForm({ onSuccess }: { onSuccess?: () => void }) {
 
       // Read summary from status_quo_form.summaryHtml, or fallback keys
       const summaryFromSQ = out?.status_quo_form?.summaryHtml
-      const decodeHtml = (s: string) => {
-        if (!s) return s
-        if (!(/[&]lt;|&gt;|&amp;/.test(s))) return s
-        const txt = document.createElement('textarea')
-        txt.innerHTML = s
-        return txt.value
-      }
       const summaryRaw = (typeof summaryFromSQ === 'string' && summaryFromSQ) || out.summary || out.chatResponse || ''
-      const summary = typeof summaryRaw === 'string' ? decodeHtml(summaryRaw) : ''
+      const summary = typeof summaryRaw === 'string' ? sanitizeHtml(summaryRaw) : ''
       if (summary && summary.trim()) {
         localStorage.setItem('analysis.summary', summary)
         window.dispatchEvent(new CustomEvent('analysis:updated', { detail: { summary } }))
@@ -194,9 +190,9 @@ export default function DataForm({ onSuccess }: { onSuccess?: () => void }) {
           const mergedSQ = mergeStatusQuoForm(existingSQ, normalizedSQ)
           saveStatusQuoFormToStorage(mergedSQ)
           if (normalizedSQ.summaryHtml && normalizedSQ.summaryHtml.trim()) {
-            const dec = decodeHtml(normalizedSQ.summaryHtml)
-            localStorage.setItem('analysis.summary', dec)
-            window.dispatchEvent(new CustomEvent('analysis:updated', { detail: { summary: dec } }))
+            const safe = sanitizeHtml(normalizedSQ.summaryHtml)
+            localStorage.setItem('analysis.summary', safe)
+            window.dispatchEvent(new CustomEvent('analysis:updated', { detail: { summary: safe } }))
           }
           // Broadcast lists and/or HTML blocks for live UI update
           window.dispatchEvent(new CustomEvent('analysis:updated', { detail: {

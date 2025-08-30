@@ -6,7 +6,8 @@ import { convertFileToBase64 } from "@/lib/files";
 import { loadSession, saveSession } from "@/lib/session";
 import { buildFormPayload, normalizeIncomingForm } from "@/lib/form";
 import { resolveApiUrl } from "@/lib/config";
-import { buildStatusQuoFormPayload, normalizeIncomingStatusQuoForm, saveStatusQuoFormToStorage } from "@/lib/statusQuoForm";
+import { buildStatusQuoFormPayload, normalizeIncomingStatusQuoForm, saveStatusQuoFormToStorage, loadStatusQuoFormFromStorage, mergeStatusQuoForm } from "@/lib/statusQuoForm";
+import { sanitizeHtml } from "@/lib/html";
 
 type ApiResponse = {
   chatResponse: string;
@@ -131,7 +132,7 @@ export function useChatState({
         const botMessage: Message = {
           id: uuidv4(),
           content: "",
-          html: data.chatResponse,
+          html: sanitizeHtml((data as any).chatResponse || ""),
           isUser: false,
           sources: data.sources || [],
           ctaType: data.ctaType,
@@ -153,10 +154,18 @@ export function useChatState({
           const incomingStatusQuoForm = (data as any).status_quo_form;
           if (incomingStatusQuoForm && typeof incomingStatusQuoForm === "object") {
             const normalizedSF = normalizeIncomingStatusQuoForm(incomingStatusQuoForm);
-            saveStatusQuoFormToStorage(normalizedSF);
-            // Also update summary cache for Status Quo
-            localStorage.setItem('analysis.summary', normalizedSF.summaryHtml);
-            window.dispatchEvent(new CustomEvent('analysis:updated', { detail: { summary: normalizedSF.summaryHtml } }))
+            const existingSQ = loadStatusQuoFormFromStorage();
+            const mergedSQ = mergeStatusQuoForm(existingSQ, normalizedSF);
+            saveStatusQuoFormToStorage(mergedSQ);
+            // Also update summary cache and broadcast merged analysis for live UI
+            localStorage.setItem('analysis.summary', sanitizeHtml(mergedSQ.summaryHtml));
+            window.dispatchEvent(new CustomEvent('analysis:updated', { detail: {
+              summary: mergedSQ.summaryHtml,
+              opportunitiesHtml: mergedSQ.opportunitiesHtml,
+              risksHtml: mergedSQ.risksHtml,
+              opportunities: mergedSQ.opportunities,
+              risks: mergedSQ.risks,
+            } }))
           }
         } catch {}
       } catch (err: any) {

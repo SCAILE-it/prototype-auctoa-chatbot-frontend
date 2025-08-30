@@ -51,9 +51,12 @@ export const buildStatusQuoFormPayload = (): StatusQuoForm => {
   return loadStatusQuoFormFromStorage();
 };
 
+import { isLikelyHtml, sanitizeHtml } from '@/lib/html';
+
 export const normalizeIncomingStatusQuoForm = (value: unknown): StatusQuoForm => {
   const v = (value as any) || {};
-  const summaryHtml = typeof v.summaryHtml === "string" ? v.summaryHtml : (typeof v.summary === 'string' ? v.summary : (typeof v.chatResponse === 'string' ? v.chatResponse : ""));
+  const summaryRaw = typeof v.summaryHtml === "string" ? v.summaryHtml : (typeof v.summary === 'string' ? v.summary : (typeof v.chatResponse === 'string' ? v.chatResponse : ""));
+  const summaryHtml = sanitizeHtml(summaryRaw);
   const toList = (src: any): string[] => {
     if (Array.isArray(src)) return src.filter((x) => typeof x === 'string' && x.trim().length > 0).map((s) => s.trim());
     if (typeof src === 'string') {
@@ -65,50 +68,48 @@ export const normalizeIncomingStatusQuoForm = (value: unknown): StatusQuoForm =>
     }
     return [];
   };
-  const isLikelyHtml = (s: unknown) => typeof s === 'string' && /<\s*\w|&lt;\s*\w/i.test(s as string);
-  const decodeHtml = (s: string) => {
-    if (!s) return s;
-    if (!(/[&]lt;|&gt;|&amp;/.test(s))) return s;
-    const txt = typeof document !== 'undefined' ? document.createElement('textarea') : null;
-    if (!txt) return s;
-    txt.innerHTML = s;
-    return txt.value;
-  };
   // Normalize list or HTML for opportunities
+  // Prefer explicit HTML field if present (e.g., from storage or backend)
+  const explicitOppHtml = typeof v.opportunitiesHtml === 'string' ? sanitizeHtml(v.opportunitiesHtml) : undefined;
   const srcOpp = (v.opportunities !== undefined ? v.opportunities : v.potential);
   let opportunities: string[] = [];
-  let opportunitiesHtml: string | undefined = undefined;
-  if (Array.isArray(srcOpp)) {
-    const hasHtml = srcOpp.some((s: any) => isLikelyHtml(s));
-    if (hasHtml) {
-      opportunitiesHtml = decodeHtml(srcOpp.join(""));
-    } else {
-      opportunities = toList(srcOpp);
-    }
-  } else if (typeof srcOpp === 'string') {
-    if (isLikelyHtml(srcOpp)) {
-      opportunitiesHtml = decodeHtml(srcOpp);
-    } else {
-      opportunities = toList(srcOpp);
+  let opportunitiesHtml: string | undefined = explicitOppHtml;
+  if (!opportunitiesHtml) {
+    if (Array.isArray(srcOpp)) {
+      const hasHtml = srcOpp.some((s: any) => isLikelyHtml(s));
+      if (hasHtml) {
+        opportunitiesHtml = sanitizeHtml(srcOpp.join(""));
+      } else {
+        opportunities = toList(srcOpp);
+      }
+    } else if (typeof srcOpp === 'string') {
+      if (isLikelyHtml(srcOpp)) {
+        opportunitiesHtml = sanitizeHtml(srcOpp);
+      } else {
+        opportunities = toList(srcOpp);
+      }
     }
   }
 
   // Normalize list or HTML for risks
+  const explicitRiskHtml = typeof v.risksHtml === 'string' ? sanitizeHtml(v.risksHtml) : undefined;
   const srcRisk = (v.risks !== undefined ? v.risks : v.risk);
   let risks: string[] = [];
-  let risksHtml: string | undefined = undefined;
-  if (Array.isArray(srcRisk)) {
-    const hasHtml = srcRisk.some((s: any) => isLikelyHtml(s));
-    if (hasHtml) {
-      risksHtml = decodeHtml(srcRisk.join(""));
-    } else {
-      risks = toList(srcRisk);
-    }
-  } else if (typeof srcRisk === 'string') {
-    if (isLikelyHtml(srcRisk)) {
-      risksHtml = decodeHtml(srcRisk);
-    } else {
-      risks = toList(srcRisk);
+  let risksHtml: string | undefined = explicitRiskHtml;
+  if (!risksHtml) {
+    if (Array.isArray(srcRisk)) {
+      const hasHtml = srcRisk.some((s: any) => isLikelyHtml(s));
+      if (hasHtml) {
+        risksHtml = sanitizeHtml(srcRisk.join(""));
+      } else {
+        risks = toList(srcRisk);
+      }
+    } else if (typeof srcRisk === 'string') {
+      if (isLikelyHtml(srcRisk)) {
+        risksHtml = sanitizeHtml(srcRisk);
+      } else {
+        risks = toList(srcRisk);
+      }
     }
   }
   const updatedAt = Number.isFinite(v.updatedAt) ? Number(v.updatedAt) : Date.now();
@@ -155,6 +156,8 @@ export const deriveStatusQuoFromForm = (form: NormalizedForm, existing?: StatusQ
     summaryHtml: existing?.summaryHtml || '',
     opportunities: existing?.opportunities || [],
     risks: existing?.risks || [],
+    opportunitiesHtml: existing?.opportunitiesHtml,
+    risksHtml: existing?.risksHtml,
     displayAdresse: toStr(form.adresse),
     displayImmobilienart: toStr(form.immobilienart),
     displayWohnungstyp: toStr(form.wohnungstyp),

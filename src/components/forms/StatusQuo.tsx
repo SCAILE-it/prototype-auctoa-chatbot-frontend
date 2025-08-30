@@ -81,9 +81,9 @@ export default function StatusQuo() {
   }))
 
   useEffect(() => {
-    const raw = localStorage.getItem('analysis.summary')
-    if (raw) setSummaryHtml(raw)
+    // Always source from status_quo_form storage for consistency
     const sq = loadStatusQuoFormFromStorage()
+    setSummaryHtml(typeof sq.summaryHtml === 'string' ? sq.summaryHtml : null)
     setOpportunities(Array.isArray(sq.opportunities) ? sq.opportunities : [])
     setRisks(Array.isArray(sq.risks) ? sq.risks : [])
     setOpportunitiesHtml(typeof sq.opportunitiesHtml === 'string' ? sq.opportunitiesHtml : '')
@@ -105,36 +105,31 @@ export default function StatusQuo() {
       rechtlicheHinweise: sq.displayRechtlicheHinweise || '',
       ergaenzendeInfos: sq.displayErgaenzendeInfos || '',
     })
-    const handler = (e: Event) => {
-      const detail = (e as CustomEvent<any>).detail
-      if (detail && typeof detail === 'object') {
-        if (typeof detail.summary === 'string') setSummaryHtml(detail.summary)
-        // Always refresh from storage in case backend updated status_quo_form
-        const sqNow = loadStatusQuoFormFromStorage()
-        setOpportunities(Array.isArray(sqNow.opportunities) ? sqNow.opportunities : [])
-        setRisks(Array.isArray(sqNow.risks) ? sqNow.risks : [])
-        if (typeof detail.opportunitiesHtml === 'string') setOpportunitiesHtml(detail.opportunitiesHtml)
-        else setOpportunitiesHtml(typeof sqNow.opportunitiesHtml === 'string' ? sqNow.opportunitiesHtml : '')
-        if (typeof detail.risksHtml === 'string') setRisksHtml(detail.risksHtml)
-        else setRisksHtml(typeof sqNow.risksHtml === 'string' ? sqNow.risksHtml : '')
-        setSqDisplay({
-          adresse: sqNow.displayAdresse || '',
-          immobilienart: sqNow.displayImmobilienart || '',
-          wohnungstyp: sqNow.displayWohnungstyp || '',
-          baujahr: sqNow.displayBaujahr || '',
-          wohnflaeche: sqNow.displayWohnflaecheLabel || '',
-          zimmer: sqNow.displayZimmerLabel || '',
-          stockwerk: sqNow.displayStockwerkLabel || '',
-          zustand: sqNow.displayZustand || '',
-          ausstattung: sqNow.displayAusstattung || '',
-          letzteModernisierung: sqNow.displayLetzteModernisierung || '',
-          energiekennwert: sqNow.displayEnergiekennwertLabel || '',
-          istMiete: sqNow.displayIstMieteLabel || '',
-          sollMiete: sqNow.displaySollMieteLabel || '',
-          rechtlicheHinweise: sqNow.displayRechtlicheHinweise || '',
-          ergaenzendeInfos: sqNow.displayErgaenzendeInfos || '',
-        })
-      }
+    const handler = () => {
+      // On analysis updates, fully refresh from storage for all sections
+      const sqNow = loadStatusQuoFormFromStorage()
+      setSummaryHtml(typeof sqNow.summaryHtml === 'string' ? sqNow.summaryHtml : null)
+      setOpportunities(Array.isArray(sqNow.opportunities) ? sqNow.opportunities : [])
+      setRisks(Array.isArray(sqNow.risks) ? sqNow.risks : [])
+      setOpportunitiesHtml(typeof sqNow.opportunitiesHtml === 'string' ? sqNow.opportunitiesHtml : '')
+      setRisksHtml(typeof sqNow.risksHtml === 'string' ? sqNow.risksHtml : '')
+      setSqDisplay({
+        adresse: sqNow.displayAdresse || '',
+        immobilienart: sqNow.displayImmobilienart || '',
+        wohnungstyp: sqNow.displayWohnungstyp || '',
+        baujahr: sqNow.displayBaujahr || '',
+        wohnflaeche: sqNow.displayWohnflaecheLabel || '',
+        zimmer: sqNow.displayZimmerLabel || '',
+        stockwerk: sqNow.displayStockwerkLabel || '',
+        zustand: sqNow.displayZustand || '',
+        ausstattung: sqNow.displayAusstattung || '',
+        letzteModernisierung: sqNow.displayLetzteModernisierung || '',
+        energiekennwert: sqNow.displayEnergiekennwertLabel || '',
+        istMiete: sqNow.displayIstMieteLabel || '',
+        sollMiete: sqNow.displaySollMieteLabel || '',
+        rechtlicheHinweise: sqNow.displayRechtlicheHinweise || '',
+        ergaenzendeInfos: sqNow.displayErgaenzendeInfos || '',
+      })
     }
     window.addEventListener('analysis:updated', handler as EventListener)
     return () => window.removeEventListener('analysis:updated', handler as EventListener)
@@ -148,7 +143,7 @@ export default function StatusQuo() {
       <div className="space-y-3">
         <SubTitle><NumBadge n={1} /> Zusammenfassung</SubTitle>
         {summaryHtml ? (
-          <div className="text-sm leading-[22px]" style={{ color: '#666666' }} dangerouslySetInnerHTML={{ __html: summaryHtml }} />
+          <div className="text-sm leading-[22px] space-y-2" style={{ color: '#666666' }} dangerouslySetInnerHTML={{ __html: summaryHtml }} />
         ) : (
           <p className="text-sm leading-[22px]" style={{ color: '#666666' }}>
             Sobald die Analyse gestartet wurde, erscheint hier die Zusammenfassung.
@@ -232,11 +227,15 @@ export default function StatusQuo() {
             </div>
             {opportunitiesHtml && opportunitiesHtml.trim() ? (
               <div className="text-sm leading-[22px] space-y-2" style={{ color: '#666666' }} dangerouslySetInnerHTML={{ __html: opportunitiesHtml }} />
+            ) : (opportunities && opportunities.length > 0 ? (
+              <ul className="text-sm leading-[22px] list-disc pl-5" style={{ color: '#666666' }}>
+                {opportunities.map((it, i) => <li key={i}>{it}</li>)}
+              </ul>
             ) : (
               <p className="text-sm leading-[22px]" style={{ color: '#666666' }}>
                 Wird nach Analyse ergänzt.
               </p>
-            )}
+            ))}
           </div>
           <div>
             <div className="uppercase text-[11px] font-semibold tracking-[.12em] mb-3" style={{ color: '#333333' }}>
@@ -244,11 +243,15 @@ export default function StatusQuo() {
             </div>
             {risksHtml && risksHtml.trim() ? (
               <div className="text-sm leading-[22px] space-y-2" style={{ color: '#666666' }} dangerouslySetInnerHTML={{ __html: risksHtml }} />
+            ) : (risks && risks.length > 0 ? (
+              <ul className="text-sm leading-[22px] list-disc pl-5" style={{ color: '#666666' }}>
+                {risks.map((it, i) => <li key={i}>{it}</li>)}
+              </ul>
             ) : (
               <p className="text-sm leading-[22px]" style={{ color: '#666666' }}>
                 Wird nach Analyse ergänzt.
               </p>
-            )}
+            ))}
           </div>
         </div>
       </div>
